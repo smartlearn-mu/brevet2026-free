@@ -1,278 +1,555 @@
 <!DOCTYPE html>
+
 <html lang="fr">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMART LEARN Â· 40 sujets Â· correction personnalisÃ©e</title>
+
+    <title>SMART LEARN · 40 sujets · correction personnalisée</title>
+
     <style>
+
         * {
+
             margin: 0;
+
             padding: 0;
+
             box-sizing: border-box;
+
         }
+
+
 
         body {
+
             background: linear-gradient(145deg, #f6f9fc 0%, #e9eef3 100%);
+
             font-family: 'Segoe UI', 'Poppins', 'DM Sans', system-ui, sans-serif;
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
+
             padding: 32px 24px;
+
         }
+
+
 
         .a4 {
+
             max-width: 1050px;
+
             width: 100%;
+
             background: white;
+
             border-radius: 48px;
+
             box-shadow: 0 25px 45px rgba(0, 0, 0, 0.08);
+
             padding: 28px 32px 32px;
+
             border: 1px solid rgba(255, 140, 0, 0.15);
+
         }
+
+
 
         /* TITRE FUN */
+
         .hero {
+
             text-align: center;
+
             margin-bottom: 20px;
+
         }
+
         .hero h1 {
+
             font-size: 2.3rem;
+
             font-weight: 800;
+
             background: linear-gradient(135deg, #1E2A5E, #FF8C00, #FFB347);
+
             -webkit-background-clip: text;
+
             background-clip: text;
+
             color: transparent;
+
             letter-spacing: -0.5px;
+
         }
+
         .badge-main {
+
             background: #FF8C10;
+
             color: white;
+
             font-size: 0.7rem;
+
             font-weight: 700;
+
             padding: 4px 20px;
+
             border-radius: 50px;
+
             display: inline-block;
+
             margin-bottom: 8px;
+
             box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3);
+
         }
+
+
 
         /* GAIN DE TEMPS */
+
         .time-block {
+
             background: linear-gradient(115deg, #FFF7EB 0%, #FFF2E0 100%);
+
             border-radius: 30px;
+
             padding: 14px 20px;
+
             display: flex;
+
             justify-content: space-between;
+
             flex-wrap: wrap;
+
             gap: 12px;
+
             margin: 12px 0 18px;
+
             border: 1px solid #FFE0B5;
-        }
-        .time-item {
-            flex: 1;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-            background: white;
-            padding: 8px 6px;
-            border-radius: 60px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-        }
-        .time-item span {
-            font-size: 1.7rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #FF8C00, #FFB347);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: inline-block;
-            margin-right: 6px;
+
         }
 
-        /* CORRECTION PERSONNALISÃ‰E : SURVOLET BLEU */
-        .highlight-blue {
-            background: #E8F0FE;
-            border-radius: 28px;
-            padding: 14px 20px;
+        .time-item {
+
+            flex: 1;
+
             text-align: center;
-            margin: 8px 0 16px;
-            border: 1px solid #B5D0FF;
-            box-shadow: 0 4px 12px rgba(0, 110, 255, 0.08);
+
+            font-weight: 700;
+
+            font-size: 0.85rem;
+
+            background: white;
+
+            padding: 8px 6px;
+
+            border-radius: 60px;
+
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+
         }
-        .highlight-blue strong {
-            font-size: 0.95rem;
-            background: #1E2A5E;
-            color: white;
-            padding: 4px 16px;
-            border-radius: 40px;
+
+        .time-item span {
+
+            font-size: 1.7rem;
+
+            font-weight: 800;
+
+            background: linear-gradient(135deg, #FF8C00, #FFB347);
+
+            -webkit-background-clip: text;
+
+            background-clip: text;
+
+            color: transparent;
+
             display: inline-block;
+
+            margin-right: 6px;
+
+        }
+
+
+
+        /* CORRECTION PERSONNALISÉE : SURVOLET BLEU */
+
+        .highlight-blue {
+
+            background: #E8F0FE;
+
+            border-radius: 28px;
+
+            padding: 14px 20px;
+
+            text-align: center;
+
+            margin: 8px 0 16px;
+
+            border: 1px solid #B5D0FF;
+
+            box-shadow: 0 4px 12px rgba(0, 110, 255, 0.08);
+
+        }
+
+        .highlight-blue strong {
+
+            font-size: 0.95rem;
+
+            background: #1E2A5E;
+
+            color: white;
+
+            padding: 4px 16px;
+
+            border-radius: 40px;
+
+            display: inline-block;
+
             margin-bottom: 6px;
+
         }
+
         .highlight-detail {
+
             font-size: 0.75rem;
+
             margin-top: 6px;
+
             color: #1E2A5E;
+
         }
+
+
 
         /* GRILLE FONCTIONS */
+
         .grid-2 {
+
             display: grid;
+
             grid-template-columns: 1fr 1fr;
+
             gap: 16px;
+
             margin: 14px 0 12px;
+
         }
+
         .fonction-card {
+
             background: #FCFDFF;
+
             border-radius: 24px;
+
             padding: 12px 16px;
+
             border: 1px solid #f0f2f5;
+
             transition: transform 0.15s ease, box-shadow 0.2s;
+
         }
+
         .fonction-card:hover {
+
             transform: translateY(-3px);
+
             box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.15);
+
             border-color: #FFCD94;
+
         }
+
         .fonction-titre {
+
             font-weight: 800;
+
             font-size: 1rem;
+
             margin-bottom: 6px;
+
             display: flex;
+
             align-items: center;
+
             gap: 6px;
+
         }
+
         .fonction-desc {
+
             font-size: 0.75rem;
+
             color: #2c3e4e;
+
             margin-bottom: 8px;
+
         }
+
         .fonction-etude {
+
             font-size: 0.65rem;
+
             color: #9b6a3c;
+
             background: #FFF2E5;
+
             padding: 5px 8px;
+
             border-radius: 20px;
+
             display: inline-block;
+
         }
+
+
 
         /* TROIS PILIERS */
+
         .trois-piliers {
+
             display: flex;
+
             gap: 12px;
+
             margin: 16px 0 12px;
+
         }
+
         .pilier {
+
             flex: 1;
+
             background: #F2F5FF;
+
             border-radius: 24px;
+
             padding: 10px 6px;
+
             text-align: center;
+
             font-size: 0.7rem;
+
             font-weight: 700;
+
             border: 1px solid #e0e8f5;
+
         }
+
         .pilier span {
+
             font-size: 0.6rem;
+
             font-weight: 400;
+
             color: #5c6b7e;
+
         }
+
+
 
         hr {
+
             margin: 16px 0 12px;
+
             border: 0;
+
             height: 2px;
+
             background: linear-gradient(90deg, #FFCD94, #FF8C00, #FFCD94);
+
             border-radius: 5px;
+
         }
+
         .small-note {
+
             font-size: 0.65rem;
+
             color: #8f9bb3;
+
             text-align: center;
+
             margin-top: 12px;
+
             font-weight: 500;
+
         }
+
+
 
         @media (max-width: 700px) {
+
             .a4 { padding: 20px 18px; }
+
             .grid-2, .trois-piliers { grid-template-columns: 1fr; flex-direction: column; }
+
             .time-item span { font-size: 1.3rem; }
+
         }
+
     </style>
 
+
+
 <script>
+
 const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
+
 function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
+
 function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
+
 function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
+
 function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
+
 function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
+
 function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
+
 function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
+
 function afficherBlocageEssaiExpire(){afficherOverlay();}
+
 function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
+
 function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
+
 window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
+
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
+
 </script>
+
 </head>
+
 <body>
+
 <div class="a4">
 
+
+
     <div class="hero">
-        <div class="badge-main">ðŸŽ¯ 40 vrais sujets DNB Â· annales 2022â†’2025</div>
+
+        <div class="badge-main">🎯 40 vrais sujets DNB · annales 2022→2025</div>
+
         <h1>âš¡ Gagnez du temps pour le Brevet</h1>
+
     </div>
+
+
 
     <!-- POURQUOI ON GAGNE DU TEMPS -->
+
     <div class="time-block">
-        <div class="time-item"><span>ðŸš€ âˆ’40%</span> de rÃ©visions inutiles</div>
-        <div class="time-item"><span>ðŸ§  3Ã—</span> de rÃ©tention</div>
-        <div class="time-item"><span>ðŸŽ¯ repÃ©rage immÃ©diat</span> des chapitres faibles</div>
+
+        <div class="time-item"><span>🚀 −40%</span> de révisions inutiles</div>
+
+        <div class="time-item"><span>🧠 3×</span> de rétention</div>
+
+        <div class="time-item"><span>🎯 repérage immédiat</span> des chapitres faibles</div>
+
     </div>
+
+
 
     <!-- BLOC SURVOLET BLEU : 40 SUJETS ANNALES -->
+
     <div class="highlight-blue">
-        <strong>ðŸ“š 40 sujets annales des annÃ©es prÃ©cÃ©dentes Â· correction personnalisÃ©e</strong>
-        <div class="highlight-detail">âœ” cours suivi âœ” transfert des connaissances âœ” rÃ©daction + mÃ©thodologie â†’ note dÃ©taillÃ©e + pistes concrÃ¨tes</div>
+
+        <strong>📚 40 sujets annales des années précédentes · correction personnalisée</strong>
+
+        <div class="highlight-detail">✔ cours suivi ✔ transfert des connaissances ✔ rédaction + méthodologie → note détaillée + pistes concrètes</div>
+
     </div>
 
-    <!-- 4 FONCTIONS CLÃ‰S -->
+
+
+    <!-- 4 FONCTIONS CLÉS -->
+
     <div class="grid-2">
+
         <div class="fonction-card">
-            <div class="fonction-titre">ðŸ“‹ 40 sujets officiels</div>
-            <div class="fonction-desc">annales PDF Â· conditions rÃ©elles dâ€™examen</div>
-            <div class="fonction-etude">ðŸŽ“ entraÃ®nement sur documents authentiques</div>
+
+            <div class="fonction-titre">📋 40 sujets officiels</div>
+
+            <div class="fonction-desc">annales PDF · conditions réelles d'examen</div>
+
+            <div class="fonction-etude">🎓 entraînement sur documents authentiques</div>
+
         </div>
+
         <div class="fonction-card">
-            <div class="fonction-titre">ðŸ¤–âš¡ Correcteur intÃ©grÃ©</div>
-            <div class="fonction-desc">analyse fond + forme Â· pas de rÃ©ponse binaire</div>
-            <div class="fonction-etude">ðŸ’¡ feedback Ã©pistÃ©mique : savoir POURQUOI câ€™est perfectible</div>
+
+            <div class="fonction-titre">🤖⚡ Correcteur intégré</div>
+
+            <div class="fonction-desc">analyse fond + forme · pas de réponse binaire</div>
+
+            <div class="fonction-etude">💡 feedback épistémique : savoir POURQUOI c'est perfectible</div>
+
         </div>
+
         <div class="fonction-card">
-            <div class="fonction-titre">ðŸŽ¤ðŸŽ™ï¸ Agent oral</div>
-            <div class="fonction-desc">3 questions sur lâ€™exposÃ© + 7 questions culture Â· feedback sur mesure</div>
-            <div class="fonction-etude">ðŸŽ§ prÃ©paration active Ã  lâ€™Ã©preuve orale</div>
+
+            <div class="fonction-titre">🎤🎙️ Agent oral</div>
+
+            <div class="fonction-desc">3 questions sur l'exposé + 7 questions culture · feedback sur mesure</div>
+
+            <div class="fonction-etude">🎧 préparation active à l'épreuve orale</div>
+
         </div>
+
         <div class="fonction-card">
-            <div class="fonction-titre">ðŸ“ŠðŸ‘ª Suivi parental</div>
-            <div class="fonction-desc">frÃ©quence, notes, chapitres faibles/forts Â· alerte inactivitÃ©</div>
-            <div class="fonction-etude">ðŸ“ˆ monitoring visuel : repÃ©rage immÃ©diat des progrÃ¨s</div>
+
+            <div class="fonction-titre">📊👪 Suivi parental</div>
+
+            <div class="fonction-desc">fréquence, notes, chapitres faibles/forts · alerte inactivité</div>
+
+            <div class="fonction-etude">📈 monitoring visuel : repérage immédiat des progrès</div>
+
         </div>
+
     </div>
+
+
 
     <!-- TROIS PILIERS SCIENTIFIQUES -->
+
     <div class="trois-piliers">
-        <div class="pilier">ðŸ§  <strong>Spaced learning</strong><br><span>rÃ©vision espacÃ©e = on oublie moins</span></div>
-        <div class="pilier">âš¡ <strong>Automatismes</strong><br><span>40 questions / session Â· ciblage des erreurs</span></div>
-        <div class="pilier">ðŸƒ <strong>Flashcards</strong><br><span>score 0â†’3 Â· mÃ©morisation longue durÃ©e</span></div>
+
+        <div class="pilier">🧠 <strong>Spaced learning</strong><br><span>révision espacée = on oublie moins</span></div>
+
+        <div class="pilier">⚡ <strong>Automatismes</strong><br><span>40 questions / session · ciblage des erreurs</span></div>
+
+        <div class="pilier">🃏 <strong>Flashcards</strong><br><span>score 0→3 · mémorisation longue durée</span></div>
+
     </div>
+
+
 
     <hr>
 
+
+
     <div class="small-note">
-        âš¡ SMART LEARN Â· 40 sujets rÃ©els Â· correction sur mesure Â· basÃ© sur spaced learning & feedback Ã©pistÃ©mique
+
+        ⚡ SMART LEARN · 40 sujets réels · correction sur mesure · basé sur spaced learning & feedback épistémique
+
     </div>
 
+
+
 </div>
+
 </body>
+
 </html>

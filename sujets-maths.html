@@ -1,623 +1,1245 @@
 <!DOCTYPE html>
+
 <html lang="fr">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maths â€” 10 sujets DNB avec correction IA</title>
+
+<title>Maths — 10 sujets DNB avec correction IA</title>
+
 <style>
+
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{background:#09090f;color:#e8e8f0;font-family:Arial,sans-serif;min-height:100vh;}
 
+
+
 /* LANDING */
+
 #landing{max-width:1000px;margin:0 auto;padding:1.5rem;}
+
 .header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+
 .header h1{font-size:1.4rem;color:#e8c87a;}
+
 .header p{font-size:12px;color:#9090a8;margin-top:3px;}
+
 a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
+
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+
 .card{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem;cursor:pointer;transition:border-color .2s;}
+
 .card:hover{border-color:#e8c87a;}
+
 .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+
 .card-num{font-size:11px;color:#5a5a72;font-family:monospace;}
+
 .badge{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(232,200,122,.12);color:#e8c87a;border:1px solid rgba(232,200,122,.25);}
+
 .card-titre{font-size:13px;color:#e8e8f0;margin-bottom:6px;line-height:1.4;}
+
 .card-meta{font-size:11px;color:#5a5a72;}
+
 .card-pdf{display:inline-block;margin-top:8px;font-size:11px;color:#5ecfb1;text-decoration:none;}
+
 .card-pdf:hover{text-decoration:underline;}
 
+
+
 /* SUJET VIEW */
+
 #sujetView{display:none;max-width:900px;margin:0 auto;padding:1.5rem;}
+
 #sujetView.active{display:block;}
+
 .sv-header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+
 .sv-titre{font-size:1.1rem;font-weight:700;color:#e8c87a;}
+
 .sv-sub{font-size:12px;color:#9090a8;margin-top:3px;}
+
 .sv-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
 .btn-retour{color:#5ecfb1;text-decoration:none;font-size:13px;cursor:pointer;background:none;border:none;}
+
 .sv-dl{color:#e8c87a;font-size:12px;padding:5px 12px;border-radius:6px;background:rgba(232,200,122,.1);border:1px solid rgba(232,200,122,.3);text-decoration:none;}
+
 .sv-dl:hover{background:rgba(232,200,122,.2);}
+
 .btn-pdf-export{color:#5ecfb1;font-size:12px;padding:5px 12px;border-radius:6px;background:rgba(94,207,177,.08);border:1px solid rgba(94,207,177,.25);cursor:pointer;}
 
+
+
 /* EXERCICES */
+
 .exo{background:#111118;border:1px solid #2a2a38;border-radius:12px;margin-bottom:1.2rem;overflow:hidden;}
+
 .exo-head{padding:12px 16px;border-bottom:1px solid #2a2a38;display:flex;align-items:center;gap:10px;}
+
 .exo-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+
 .badge-auto{background:rgba(126,184,245,.15);color:#7eb8f5;border:1px solid rgba(126,184,245,.25);}
+
 .badge-pb{background:rgba(232,200,122,.15);color:#e8c87a;border:1px solid rgba(232,200,122,.25);}
+
 .exo-label{font-size:12px;color:#9090a8;}
+
 .question{padding:14px 16px;border-bottom:1px solid #1a1a24;}
+
 .question:last-child{border-bottom:none;}
+
 .q-texte{font-size:13px;line-height:1.6;margin-bottom:10px;color:#e8e8f0;}
+
 .q-texte strong{color:#e8c87a;}
+
 .answer-wrap{margin-top:8px;}
+
 .answer-area{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:8px;color:#e8e8f0;font-size:13px;padding:10px;font-family:inherit;resize:vertical;min-height:70px;outline:none;}
+
 .answer-area:focus{border-color:#e8c87a;}
+
 .btn-corriger{margin-top:8px;padding:7px 16px;border-radius:7px;border:1px solid rgba(232,200,122,.4);background:rgba(232,200,122,.08);color:#e8c87a;font-size:12px;cursor:pointer;}
+
 .btn-corriger:hover{background:rgba(232,200,122,.15);}
+
 .btn-corriger:disabled{opacity:.4;cursor:not-allowed;}
+
 .panel{display:none;margin-top:10px;background:#0d0d14;border-radius:8px;border:1px solid #2a2a38;padding:14px;font-size:13px;}
+
 .panel.show{display:block;}
+
 .loading{display:flex;align-items:center;gap:8px;color:#9090a8;font-size:13px;}
+
 .dot{width:8px;height:8px;border-radius:50%;background:#e8c87a;animation:pulse 1s infinite;}
+
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
 .corr-note{font-size:1.1rem;font-weight:800;color:#5ecfb1;margin-bottom:8px;}
+
 .corr-conseil{background:#1a1a24;border-radius:6px;padding:8px 12px;margin-bottom:6px;font-size:12px;line-height:1.5;}
+
 .corr-txt{font-size:13px;line-height:1.6;color:#e8e8f0;margin-bottom:8px;}
+
 .corr-off{margin-top:12px;padding-top:12px;border-top:1px solid #2a2a38;font-size:12px;color:#9090a8;}
+
 .corr-off strong{color:#5ecfb1;display:block;margin-bottom:4px;}
+
 .btn-copy{margin-top:8px;padding:5px 12px;border-radius:6px;border:1px solid #2a2a38;background:#1a1a24;color:#9090a8;font-size:11px;cursor:pointer;}
+
 </style>
+
 <script>
+
 const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
+
 function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
+
 function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
+
 function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
+
 function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
+
 function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
+
 function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxzUhsZ4ewxV_zGsu5h_L2eryTJiW2E-gZLvihC-vPl2DimCJxAeTF2dhbDF8no-ocG/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
+
 function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
+
 function afficherBlocageEssaiExpire(){afficherOverlay();}
+
 function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
+
 function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
+
 window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
+
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
+
 </script>
+
 </head>
+
 <body>
 
+
+
 <!-- LANDING -->
+
 <div id="landing">
+
   <div class="header">
+
     <div>
-      <h1>ðŸ“ Sujets Maths â€” Brevet DNB</h1>
-      <p>10 vrais sujets officiels Â· Correction IA expert Â· 2019â†’2026</p>
+
+      <h1>📐 Sujets Maths — Brevet DNB</h1>
+
+      <p>10 vrais sujets officiels · Correction IA expert · 2019→2026</p>
+
     </div>
-    <a href="index.html" class="back">â† Hub</a>
+
+    <a href="index.html" class="back">← Hub</a>
+
   </div>
+
   <div class="grid" id="grid"></div>
+
 </div>
+
+
 
 <!-- SUJET VIEW -->
+
 <div id="sujetView">
+
   <div class="sv-header">
+
     <div>
+
       <div class="sv-titre" id="svTitre"></div>
+
       <div class="sv-sub" id="svSub"></div>
+
     </div>
+
     <div class="sv-actions">
-      <a class="sv-dl" id="svDl" href="#" target="_blank" download>â¬‡ PDF officiel</a>
-      <button class="btn-pdf-export" id="btnPdfExport">ðŸ“„ Mes corrections</button>
-      <button class="btn-retour" onclick="retour()">â† Retour</button>
+
+      <a class="sv-dl" id="svDl" href="#" target="_blank" download>⬇ PDF officiel</a>
+
+      <button class="btn-pdf-export" id="btnPdfExport">📄 Mes corrections</button>
+
+      <button class="btn-retour" onclick="retour()">← Retour</button>
+
     </div>
+
   </div>
+
   <div id="svContent"></div>
+
 </div>
 
+
+
 <!-- ============================================================ -->
-<!-- CHARGEMENT DES FICHIERS EXTERNES (monÃ©tisation + IA + tracker) -->
+
+<!-- CHARGEMENT DES FICHIERS EXTERNES (monétisation + IA + tracker) -->
+
 <!-- ============================================================ -->
+
+
 
 <script src="proxy-client.js"></script>
+
 <script src="tracker_gs.js"></script>
 
+
+
 <script>
+
 // ============================================================
-// DONNÃ‰ES DES 10 SUJETS (contenu pÃ©dagogique intact)
+
+// DONNÉES DES 10 SUJETS (contenu pédagogique intact)
+
 // ============================================================
+
+
 
 const STORAGE_CORRECTIONS_KEY = 'mat_corrections_ia';
+
 const STORE = {};
 
-// Charger les corrections sauvegardÃ©es
+
+
+// Charger les corrections sauvegardées
+
 try {
+
   const saved = JSON.parse(localStorage.getItem(STORAGE_CORRECTIONS_KEY) || '{}');
+
   Object.assign(STORE, saved);
+
 } catch(e) {}
 
+
+
 function saveCorrections() {
+
   try {
+
     localStorage.setItem(STORAGE_CORRECTIONS_KEY, JSON.stringify(STORE));
+
   } catch(e) {}
+
 }
+
+
 
 const SUJETS = [
+
   // SUJET 1
+
   {
-    id:1, annee:'2026', session:'France (Sujet B â€” dÃ©cembre 2025)',
-    titre:'Sujet B 2026 â€” Angles Â· ProbabilitÃ©s Â· Fonctions Â· PGCD',
+
+    id:1, annee:'2026', session:'France (Sujet B — décembre 2025)',
+
+    titre:'Sujet B 2026 — Angles · Probabilités · Fonctions · PGCD',
+
     pdf:'https://www.apmep.fr/IMG/pdf/Brevet_0_B_2026_DV.pdf',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” Calcule : 15 Ã— 4 âˆ’ 8', rep:'52'},
-        {texte:'Q2 (0,5 pt) â€” Calcule la moyenne de : 10, 15, 20', rep:'15'},
-        {texte:'Q3 (0,5 pt) â€” PÃ©rimÃ¨tre d\'un carrÃ© de cÃ´tÃ© 7 cm', rep:'28 cm'},
-        {texte:'Q4 (0,5 pt) â€” f(x) = 2x + 3. Calcule f(4)', rep:'11'},
-        {texte:'Q5 (0,5 pt) â€” RÃ©sous : x + 5 = 12', rep:'7'},
-        {texte:'Q6 (0,5 pt) â€” HypotÃ©nuse d\'un triangle rectangle (3 cm et 4 cm)', rep:'5 cm'},
-        {texte:'Q7 (1 pt) â€” ComplÃ¨te l\'Ã©galitÃ© de ThalÃ¨s : AB/AD = AC/...', rep:'AE'},
-        {texte:'Q8 (1 pt) â€” Une urne contient 5 boules rouges et 3 boules bleues. ProbabilitÃ© de tirer une boule rouge ?', rep:'5/8'},
-        {texte:'Q9 (1 pt) â€” Programme de calcul : x â†’ Ã—2 â†’ +3. Pour x = 4, quel est le rÃ©sultat ?', rep:'11'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — Calcule : 15 × 4 − 8', rep:'52'},
+
+        {texte:'Q2 (0,5 pt) — Calcule la moyenne de : 10, 15, 20', rep:'15'},
+
+        {texte:'Q3 (0,5 pt) — Périmètre d\'un carré de côté 7 cm', rep:'28 cm'},
+
+        {texte:'Q4 (0,5 pt) — f(x) = 2x + 3. Calcule f(4)', rep:'11'},
+
+        {texte:'Q5 (0,5 pt) — Résous : x + 5 = 12', rep:'7'},
+
+        {texte:'Q6 (0,5 pt) — Hypoténuse d\'un triangle rectangle (3 cm et 4 cm)', rep:'5 cm'},
+
+        {texte:'Q7 (1 pt) — Complète l\'égalité de Thalès : AB/AD = AC/...', rep:'AE'},
+
+        {texte:'Q8 (1 pt) — Une urne contient 5 boules rouges et 3 boules bleues. Probabilité de tirer une boule rouge ?', rep:'5/8'},
+
+        {texte:'Q9 (1 pt) — Programme de calcul : x → ×2 → +3. Pour x = 4, quel est le résultat ?', rep:'11'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (14 pts)', pts:14, questions:[
-        {texte:'Exercice 1 (3 pts) â€” Points B, A, D alignÃ©s. Droites (BA) et (EC) parallÃ¨les.\n1. Rappeler la propriÃ©tÃ© de la somme des angles d\'un triangle, puis calculer l\'angle ACB (angle x).', rep:'Somme des angles d\'un triangle = 180Â°. Calculer x en utilisant les angles donnÃ©s et les droites parallÃ¨les.'},
-        {texte:'Exercice 2 (2 pts) â€” Urne 21 jetons (1 Ã  21). Ã‰vÃ¨nement A = obtenir 2, 3 ou 10. Calculer P(A).', rep:'P(A) = 3/21 = 1/7'},
-        {texte:'Exercice 3 (4,5 pts) â€” Paquet vide 200 g. 1 cmÂ³ de lessive pÃ¨se 1,5 g. Masse totale pour 600 cmÂ³ de lessive ?', rep:'Lessive : 600 Ã— 1,5 = 900 g. Total : 900 + 200 = 1100 g'},
-        {texte:'Exercice 4 (2,5 pts) â€” 91 filles et 77 garÃ§ons. Combien de groupes au maximum ?', rep:'PGCD(91, 77) = 7 â†’ 7 groupes maximum.'}
+
+      {type:'pb', label:'Partie 2 — Raisonnement (14 pts)', pts:14, questions:[
+
+        {texte:'Exercice 1 (3 pts) — Points B, A, D alignés. Droites (BA) et (EC) parallèles.\n1. Rappeler la propriété de la somme des angles d\'un triangle, puis calculer l\'angle ACB (angle x).', rep:'Somme des angles d\'un triangle = 180°. Calculer x en utilisant les angles donnés et les droites parallèles.'},
+
+        {texte:'Exercice 2 (2 pts) — Urne 21 jetons (1 à 21). Évènement A = obtenir 2, 3 ou 10. Calculer P(A).', rep:'P(A) = 3/21 = 1/7'},
+
+        {texte:'Exercice 3 (4,5 pts) — Paquet vide 200 g. 1 cm³ de lessive pèse 1,5 g. Masse totale pour 600 cm³ de lessive ?', rep:'Lessive : 600 × 1,5 = 900 g. Total : 900 + 200 = 1100 g'},
+
+        {texte:'Exercice 4 (2,5 pts) — 91 filles et 77 garçons. Combien de groupes au maximum ?', rep:'PGCD(91, 77) = 7 → 7 groupes maximum.'}
+
       ]}
+
     ]
+
   },
+
   // SUJET 2
+
   {
-    id:2, annee:'2025', session:'AmÃ©rique du Nord â€” 4 juin 2025',
-    titre:'25GENMATAN1 â€” ProbabilitÃ©s Â· GÃ©omÃ©trie Â· Programmes Â· Graphique Â· Scratch',
+
+    id:2, annee:'2025', session:'Amérique du Nord — 4 juin 2025',
+
+    titre:'25GENMATAN1 — Probabilités · Géométrie · Programmes · Graphique · Scratch',
+
     pdf:'https://pi.ac3j.fr/wp-content/uploads/Brevets/25GENMATAN1.pdf',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” DÃ©veloppe : 3(x + 2)', rep:'3x+6'},
-        {texte:'Q2 (0,5 pt) â€” Aire d\'un rectangle de 8 cm et 3 cm', rep:'24 cmÂ²'},
-        {texte:'Q3 (0,5 pt) â€” 20% de 150 â‚¬', rep:'30'},
-        {texte:'Q4 (0,5 pt) â€” RÃ©sous : x - 3 â‰¤ 5', rep:'x â‰¤ 8'},
-        {texte:'Q5 (0,5 pt) â€” CirconfÃ©rence d\'un cercle de rayon 5 cm (Ï€ = 3,14)', rep:'31,4 cm'},
-        {texte:'Q6 (0,5 pt) â€” sin(30Â°)', rep:'0,5'},
-        {texte:'Q7 (1 pt) â€” MÃ©diane de : 3, 7, 9, 12, 15', rep:'9'},
-        {texte:'Q8 (1 pt) â€” Volume d\'un cube de cÃ´tÃ© 4 cm', rep:'64 cmÂ³'},
-        {texte:'Q9 (1 pt) â€” Milieu de A(2,3) et B(6,7)', rep:'(4,5)'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — Développe : 3(x + 2)', rep:'3x+6'},
+
+        {texte:'Q2 (0,5 pt) — Aire d\'un rectangle de 8 cm et 3 cm', rep:'24 cm²'},
+
+        {texte:'Q3 (0,5 pt) — 20% de 150 €', rep:'30'},
+
+        {texte:'Q4 (0,5 pt) — Résous : x - 3 ≤ 5', rep:'x ≤ 8'},
+
+        {texte:'Q5 (0,5 pt) — Circonférence d\'un cercle de rayon 5 cm (π = 3,14)', rep:'31,4 cm'},
+
+        {texte:'Q6 (0,5 pt) — sin(30°)', rep:'0,5'},
+
+        {texte:'Q7 (1 pt) — Médiane de : 3, 7, 9, 12, 15', rep:'9'},
+
+        {texte:'Q8 (1 pt) — Volume d\'un cube de côté 4 cm', rep:'64 cm³'},
+
+        {texte:'Q9 (1 pt) — Milieu de A(2,3) et B(6,7)', rep:'(4,5)'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (20 pts)', pts:20, questions:[
-        {texte:'Situation 1 â€” Urne 40 boules : 5 rouges, 20 vertes, 15 blanches. Calculer P(verte).', rep:'P(verte) = 20/40 = 1/2'},
-        {texte:'Situation 2 â€” DÃ©composer 1050 en produit de facteurs premiers.', rep:'1050 = 2 Ã— 3 Ã— 5Â² Ã— 7'},
-        {texte:'Situation 3 â€” Article Ã  25 â‚¬, augmentation de 14 %. Nouveau prix ?', rep:'25 Ã— 1,14 = 28,50 â‚¬'},
-        {texte:'Situation 4 â€” Agrandissement coeff 2,5. Aire polygone 1 = 7,5 cmÂ². Aire polygone 2 ?', rep:'7,5 Ã— 2,5Â² = 46,875 cmÂ²'},
-        {texte:'Exercice 2 â€” GÃ©omÃ©trie : AD=70m, BC=30m, AC=50m. Calculer AB.', rep:'AB = 40 m (Pythagore)'},
-        {texte:'Exercice 3 â€” Programmes de calcul. Montrer que programme A donne toujours le mÃªme rÃ©sultat.', rep:'DÃ©velopper : 3x-1-x+5 = 2x+4 â†’ pas constant. VÃ©rifier Ã©noncÃ©.'}
+
+      {type:'pb', label:'Partie 2 — Raisonnement (20 pts)', pts:20, questions:[
+
+        {texte:'Situation 1 — Urne 40 boules : 5 rouges, 20 vertes, 15 blanches. Calculer P(verte).', rep:'P(verte) = 20/40 = 1/2'},
+
+        {texte:'Situation 2 — Décomposer 1050 en produit de facteurs premiers.', rep:'1050 = 2 × 3 × 5² × 7'},
+
+        {texte:'Situation 3 — Article à 25 €, augmentation de 14 %. Nouveau prix ?', rep:'25 × 1,14 = 28,50 €'},
+
+        {texte:'Situation 4 — Agrandissement coeff 2,5. Aire polygone 1 = 7,5 cm². Aire polygone 2 ?', rep:'7,5 × 2,5² = 46,875 cm²'},
+
+        {texte:'Exercice 2 — Géométrie : AD=70m, BC=30m, AC=50m. Calculer AB.', rep:'AB = 40 m (Pythagore)'},
+
+        {texte:'Exercice 3 — Programmes de calcul. Montrer que programme A donne toujours le même résultat.', rep:'Développer : 3x-1-x+5 = 2x+4 → pas constant. Vérifier énoncé.'}
+
       ]}
+
     ]
+
   },
+
   // SUJET 3
+
   {
-    id:3, annee:'2023', session:'AmÃ©rique du Nord â€” 31 mai 2023',
-    titre:'23GENMATAN1 â€” ArithmÃ©tique Â· GÃ©omÃ©trie Â· Statistiques Â· Hippodrome',
+
+    id:3, annee:'2023', session:'Amérique du Nord — 31 mai 2023',
+
+    titre:'23GENMATAN1 — Arithmétique · Géométrie · Statistiques · Hippodrome',
+
     pdf:'https://pi.ac3j.fr/wp-content/uploads/Brevets/23GENMATAN1.pdf',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” Calcule : 7 + 3 Ã— 5', rep:'22'},
-        {texte:'Q2 (0,5 pt) â€” RÃ©sous : 2x = 14', rep:'7'},
-        {texte:'Q3 (0,5 pt) â€” Aire d\'un triangle base 10 cm, hauteur 6 cm', rep:'30 cmÂ²'},
-        {texte:'Q4 (0,5 pt) â€” f(5) pour f(x) = xÂ²', rep:'25'},
-        {texte:'Q5 (0,5 pt) â€” AD = 3, DB = 2 â†’ AD/AB = ?', rep:'3/5'},
-        {texte:'Q6 (0,5 pt) â€” HypotÃ©nuse d\'un triangle rectangle (5,12)', rep:'13'},
-        {texte:'Q7 (1 pt) â€” Un dÃ© Ã  6 faces. P(nombre pair)', rep:'1/2'},
-        {texte:'Q8 (1 pt) â€” 45 km en 0,5 h â†’ km/h', rep:'90'},
-        {texte:'Q9 (1 pt) â€” Programme : x â†’ Ã—3 â†’ -1. Pour x = 2, rÃ©sultat ?', rep:'5'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — Calcule : 7 + 3 × 5', rep:'22'},
+
+        {texte:'Q2 (0,5 pt) — Résous : 2x = 14', rep:'7'},
+
+        {texte:'Q3 (0,5 pt) — Aire d\'un triangle base 10 cm, hauteur 6 cm', rep:'30 cm²'},
+
+        {texte:'Q4 (0,5 pt) — f(5) pour f(x) = x²', rep:'25'},
+
+        {texte:'Q5 (0,5 pt) — AD = 3, DB = 2 → AD/AB = ?', rep:'3/5'},
+
+        {texte:'Q6 (0,5 pt) — Hypoténuse d\'un triangle rectangle (5,12)', rep:'13'},
+
+        {texte:'Q7 (1 pt) — Un dé à 6 faces. P(nombre pair)', rep:'1/2'},
+
+        {texte:'Q8 (1 pt) — 45 km en 0,5 h → km/h', rep:'90'},
+
+        {texte:'Q9 (1 pt) — Programme : x → ×3 → -1. Pour x = 2, résultat ?', rep:'5'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (20 pts)', pts:20, questions:[
-        {texte:'Situation 1 â€” DÃ©composer 780 en produit de facteurs premiers.', rep:'780 = 2Â² Ã— 3 Ã— 5 Ã— 13'},
-        {texte:'Situation 2 â€” Jeu 32 cartes. P(8 de pique) et P(roi ou cÅ“ur).', rep:'P(8 pique)=1/32, P(roi ou cÅ“ur)=11/32'},
-        {texte:'Situation 3 â€” DÃ©velopper A = (2x+5)(3xâˆ’4).', rep:'6xÂ²+7xâˆ’20'},
-        {texte:'Exercice 2 â€” GÃ©omÃ©trie AN=13, LN=5, AL=12. Montrer triangle rectangle.', rep:'5Â²+12Â²=13Â² â†’ rÃ©ciproque Pythagore'},
-        {texte:'Exercice 5 â€” Hippodrome : 2Ã—850 + 2Ã—Ï€Ã—40 â‰ˆ 1951 m.'}
+
+      {type:'pb', label:'Partie 2 — Raisonnement (20 pts)', pts:20, questions:[
+
+        {texte:'Situation 1 — Décomposer 780 en produit de facteurs premiers.', rep:'780 = 2² × 3 × 5 × 13'},
+
+        {texte:'Situation 2 — Jeu 32 cartes. P(8 de pique) et P(roi ou cœur).', rep:'P(8 pique)=1/32, P(roi ou cœur)=11/32'},
+
+        {texte:'Situation 3 — Développer A = (2x+5)(3x−4).', rep:'6x²+7x−20'},
+
+        {texte:'Exercice 2 — Géométrie AN=13, LN=5, AL=12. Montrer triangle rectangle.', rep:'5²+12²=13² → réciproque Pythagore'},
+
+        {texte:'Exercice 5 — Hippodrome : 2×850 + 2×π×40 ≈ 1951 m.'}
+
       ]}
+
     ]
+
   },
+
   // SUJET 4
+
   {
-    id:4, annee:'2019', session:'AmÃ©rique du Nord â€” 4 juin 2019',
-    titre:'19GENMATAN1 â€” Pythagore Â· ThalÃ¨s Â· Statistiques Â· Scratch',
+
+    id:4, annee:'2019', session:'Amérique du Nord — 4 juin 2019',
+
+    titre:'19GENMATAN1 — Pythagore · Thalès · Statistiques · Scratch',
+
     pdf:'https://pi.ac3j.fr/wp-content/uploads/Brevets/19GENMATAN1.pdf',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” Factorise : 6x + 12', rep:'6(x+2)'},
-        {texte:'Q2 (0,5 pt) â€” 25% de 200 â‚¬', rep:'50'},
-        {texte:'Q3 (0,5 pt) â€” Volume d\'un pavÃ© 5Ã—4Ã—3 cm', rep:'60 cmÂ³'},
-        {texte:'Q4 (0,5 pt) â€” f(3) pour f(x) = xÂ² + 1', rep:'10'},
-        {texte:'Q5 (0,5 pt) â€” RÃ©sous : 3x - 4 = 11', rep:'5'},
-        {texte:'Q6 (0,5 pt) â€” cos(60Â°)', rep:'0,5'},
-        {texte:'Q7 (1 pt) â€” Image de (2,3) par translation (4,-1)', rep:'(6,2)'},
-        {texte:'Q8 (1 pt) â€” Urne 2R, 3V, 5B. P(verte)', rep:'3/10'},
-        {texte:'Q9 (1 pt) â€” Distance entre A(1,2) et B(4,6)', rep:'5'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — Factorise : 6x + 12', rep:'6(x+2)'},
+
+        {texte:'Q2 (0,5 pt) — 25% de 200 €', rep:'50'},
+
+        {texte:'Q3 (0,5 pt) — Volume d\'un pavé 5×4×3 cm', rep:'60 cm³'},
+
+        {texte:'Q4 (0,5 pt) — f(3) pour f(x) = x² + 1', rep:'10'},
+
+        {texte:'Q5 (0,5 pt) — Résous : 3x - 4 = 11', rep:'5'},
+
+        {texte:'Q6 (0,5 pt) — cos(60°)', rep:'0,5'},
+
+        {texte:'Q7 (1 pt) — Image de (2,3) par translation (4,-1)', rep:'(6,2)'},
+
+        {texte:'Q8 (1 pt) — Urne 2R, 3V, 5B. P(verte)', rep:'3/10'},
+
+        {texte:'Q9 (1 pt) — Distance entre A(1,2) et B(4,6)', rep:'5'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (17 pts)', pts:17, questions:[
-        {texte:'Exercice 1 â€” AE=8, AF=10, EF=6, AR=12, AT=14. DÃ©montrer triangle AEF rectangle.', rep:'8Â²+6Â²=64+36=100=10Â² â†’ rÃ©ciproque Pythagore'},
-        {texte:'Exercice 2 â€” 3/5+1/2 = (3+1)/(5+2) ?', rep:'FAUX : 11/10 â‰  4/7'},
-        {texte:'Exercice 7 â€” Boulets de canon : 2 niveaux = 1+4=5 boulets.'}
+
+      {type:'pb', label:'Partie 2 — Raisonnement (17 pts)', pts:17, questions:[
+
+        {texte:'Exercice 1 — AE=8, AF=10, EF=6, AR=12, AT=14. Démontrer triangle AEF rectangle.', rep:'8²+6²=64+36=100=10² → réciproque Pythagore'},
+
+        {texte:'Exercice 2 — 3/5+1/2 = (3+1)/(5+2) ?', rep:'FAUX : 11/10 ≠ 4/7'},
+
+        {texte:'Exercice 7 — Boulets de canon : 2 niveaux = 1+4=5 boulets.'}
+
       ]}
+
     ]
+
   },
+
   // SUJET 5
+
   {
-    id:5, annee:'2019', session:'Asie â€” 24 juin 2019',
-    titre:'19GENMATAA1 â€” Programmes Â· COâ‚‚ Â· Scratch Â· Cylindres',
+
+    id:5, annee:'2019', session:'Asie — 24 juin 2019',
+
+    titre:'19GENMATAA1 — Programmes · CO₂ · Scratch · Cylindres',
+
     pdf:'https://pi.ac3j.fr/wp-content/uploads/Brevets/19GENMATAA1.pdf',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” Calcule : 144 Ã· 12', rep:'12'},
-        {texte:'Q2 (0,5 pt) â€” Ã‰chelle 1/500 : 8 cm sur plan â†’ rÃ©el', rep:'40 m'},
-        {texte:'Q3 (0,5 pt) â€” Convertir 2,5 km en m', rep:'2500 m'},
-        {texte:'Q4 (0,5 pt) â€” Trouve x pour f(x)=20 si f(x)=5x', rep:'4'},
-        {texte:'Q5 (0,5 pt) â€” RÃ©sous : -2x + 1 < 5', rep:'x > -2'},
-        {texte:'Q6 (0,5 pt) â€” Aire d\'un disque de rayon 4 cm', rep:'50,24 cmÂ²'},
-        {texte:'Q7 (1 pt) â€” ComplÃ¨te : AF/FC = AE/...', rep:'EB'},
-        {texte:'Q8 (1 pt) â€” Ã‰tendue de 3,7,9,12,15', rep:'12'},
-        {texte:'Q9 (1 pt) â€” Programme : x â†’ +5 â†’ Ã·2. Pour x = 5, rÃ©sultat ?', rep:'5'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — Calcule : 144 ÷ 12', rep:'12'},
+
+        {texte:'Q2 (0,5 pt) — Échelle 1/500 : 8 cm sur plan → réel', rep:'40 m'},
+
+        {texte:'Q3 (0,5 pt) — Convertir 2,5 km en m', rep:'2500 m'},
+
+        {texte:'Q4 (0,5 pt) — Trouve x pour f(x)=20 si f(x)=5x', rep:'4'},
+
+        {texte:'Q5 (0,5 pt) — Résous : -2x + 1 < 5', rep:'x > -2'},
+
+        {texte:'Q6 (0,5 pt) — Aire d\'un disque de rayon 4 cm', rep:'50,24 cm²'},
+
+        {texte:'Q7 (1 pt) — Complète : AF/FC = AE/...', rep:'EB'},
+
+        {texte:'Q8 (1 pt) — Étendue de 3,7,9,12,15', rep:'12'},
+
+        {texte:'Q9 (1 pt) — Programme : x → +5 → ÷2. Pour x = 5, résultat ?', rep:'5'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (14 pts)', pts:14, questions:[
-        {texte:'Exercice 1 â€” Nina: (xâˆ’1)Ã—(âˆ’2)+2, Claire: xÃ—(âˆ’1/2)+1. Pour x=1, Nina = 4Ã—Claire.', rep:'Nina=2, Claire=0,5 â†’ 2=4Ã—0,5 âœ“'},
-        {texte:'Exercice 2 â€” UE COâ‚‚: 5680,9 Mt en 1990, âˆ’21% en 2013. Ã‰missions 2013 ?', rep:'5680,9Ã—0,79 â‰ˆ 4487,9 Mt'},
-        {texte:'Exercice 4 â€” Cylindre bÃ©ton: âˆ…ext 101cm, int 90cm, h=50cm. Masse d\'un cylindre ?', rep:'V=Ï€Ã—(0,505Â²âˆ’0,45Â²)Ã—0,5 â‰ˆ 0,0825 mÂ³ â†’ 198 kg'}
+
+      {type:'pb', label:'Partie 2 — Raisonnement (14 pts)', pts:14, questions:[
+
+        {texte:'Exercice 1 — Nina: (x−1)×(−2)+2, Claire: x×(−1/2)+1. Pour x=1, Nina = 4×Claire.', rep:'Nina=2, Claire=0,5 → 2=4×0,5 ✓'},
+
+        {texte:'Exercice 2 — UE CO₂: 5680,9 Mt en 1990, −21% en 2013. Émissions 2013 ?', rep:'5680,9×0,79 ≈ 4487,9 Mt'},
+
+        {texte:'Exercice 4 — Cylindre béton: ∅ext 101cm, int 90cm, h=50cm. Masse d\'un cylindre ?', rep:'V=π×(0,505²−0,45²)×0,5 ≈ 0,0825 m³ → 198 kg'}
+
       ]}
+
     ]
+
   },
+
   // SUJET 6
+
   {
-    id:6, annee:'2019', session:'Centres Ã©trangers â€” 14 juin 2019',
-    titre:'19GENMATG11 â€” QCM Â· Programme Â· PÃ©rimÃ¨tre Â· ProbabilitÃ©s',
+
+    id:6, annee:'2019', session:'Centres étrangers — 14 juin 2019',
+
+    titre:'19GENMATG11 — QCM · Programme · Périmètre · Probabilités',
+
     pdf:'https://pi.ac3j.fr/wp-content/uploads/Brevets/19GENMATG11.pdf',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” Calcule : 3Â² Ã— 4', rep:'36'},
-        {texte:'Q2 (0,5 pt) â€” 100 km en 2 h â†’ km/h', rep:'50 km/h'},
-        {texte:'Q3 (0,5 pt) â€” PÃ©rimÃ¨tre d\'un rectangle 10 cm Ã— 4 cm', rep:'28 cm'},
-        {texte:'Q4 (0,5 pt) â€” f(0) pour f(x) = 4x - 2', rep:'-2'},
-        {texte:'Q5 (0,5 pt) â€” RÃ©sous : 5x = 25', rep:'5'},
-        {texte:'Q6 (0,5 pt) â€” CÃ´tÃ© 7, hypotÃ©nuse 25 â†’ autre cÃ´tÃ©', rep:'24'},
-        {texte:'Q7 (1 pt) â€” ComplÃ¨te : MN/BC = AM/...', rep:'AB'},
-        {texte:'Q8 (1 pt) â€” Urne 4R, 6B. P(rouge)', rep:'2/5'},
-        {texte:'Q9 (1 pt) â€” Programme : x â†’ Ã—4 â†’ +2. Pour x = 3, rÃ©sultat ?', rep:'14'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — Calcule : 3² × 4', rep:'36'},
+
+        {texte:'Q2 (0,5 pt) — 100 km en 2 h → km/h', rep:'50 km/h'},
+
+        {texte:'Q3 (0,5 pt) — Périmètre d\'un rectangle 10 cm × 4 cm', rep:'28 cm'},
+
+        {texte:'Q4 (0,5 pt) — f(0) pour f(x) = 4x - 2', rep:'-2'},
+
+        {texte:'Q5 (0,5 pt) — Résous : 5x = 25', rep:'5'},
+
+        {texte:'Q6 (0,5 pt) — Côté 7, hypoténuse 25 → autre côté', rep:'24'},
+
+        {texte:'Q7 (1 pt) — Complète : MN/BC = AM/...', rep:'AB'},
+
+        {texte:'Q8 (1 pt) — Urne 4R, 6B. P(rouge)', rep:'2/5'},
+
+        {texte:'Q9 (1 pt) — Programme : x → ×4 → +2. Pour x = 3, résultat ?', rep:'14'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (15 pts)', pts:15, questions:[
-        {texte:'QCM â€” DÃ©composition de 28 en facteurs premiers.', rep:'2Â²Ã—7'},
-        {texte:'Pantalon 58â‚¬, rÃ©duction 20% â†’ prix ?', rep:'46,40â‚¬'},
-        {texte:'MÃ©diane de 2;5;3;12;8;6.', rep:'5,5'},
-        {texte:'Programme xÂ²+3x+2. Pour x=1 â†’ 6.'}
+
+      {type:'pb', label:'Partie 2 — Raisonnement (15 pts)', pts:15, questions:[
+
+        {texte:'QCM — Décomposition de 28 en facteurs premiers.', rep:'2²×7'},
+
+        {texte:'Pantalon 58€, réduction 20% → prix ?', rep:'46,40€'},
+
+        {texte:'Médiane de 2;5;3;12;8;6.', rep:'5,5'},
+
+        {texte:'Programme x²+3x+2. Pour x=1 → 6.'}
+
       ]}
+
     ]
+
   },
+
   // SUJET 7
+
   {
-    id:7, annee:'2025', session:'Centres Ã©trangers Groupe I â€” 16 juin 2025',
-    titre:'25GENMATG11 â€” QCM Â· Colis Â· Programme Â· Triangle agriculteur',
+
+    id:7, annee:'2025', session:'Centres étrangers Groupe I — 16 juin 2025',
+
+    titre:'25GENMATG11 — QCM · Colis · Programme · Triangle agriculteur',
+
     pdf:'https://www.education.gouv.fr/media/228015/download',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” DÃ©veloppe : (x+3)(x-2)', rep:'xÂ²+x-6'},
-        {texte:'Q2 (0,5 pt) â€” 30% de 80 â‚¬', rep:'24'},
-        {texte:'Q3 (0,5 pt) â€” Aire d\'un carrÃ© de cÃ´tÃ© 12 cm', rep:'144 cmÂ²'},
-        {texte:'Q4 (0,5 pt) â€” f(3) pour f(x) = 2xÂ²', rep:'18'},
-        {texte:'Q5 (0,5 pt) â€” RÃ©sous : 4x - 2 = 10', rep:'3'},
-        {texte:'Q6 (0,5 pt) â€” AD = 6, DB = 4 â†’ AD/AB = ?', rep:'3/5'},
-        {texte:'Q7 (1 pt) â€” Moyenne de 8, 12, 16, 4', rep:'10'},
-        {texte:'Q8 (1 pt) â€” SymÃ©trie centrale de O(0,0) pour A(2,3)', rep:'(-2,-3)'},
-        {texte:'Q9 (1 pt) â€” Programme : x â†’ +2 â†’ Ã—3. Pour x = 4, rÃ©sultat ?', rep:'18'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — Développe : (x+3)(x-2)', rep:'x²+x-6'},
+
+        {texte:'Q2 (0,5 pt) — 30% de 80 €', rep:'24'},
+
+        {texte:'Q3 (0,5 pt) — Aire d\'un carré de côté 12 cm', rep:'144 cm²'},
+
+        {texte:'Q4 (0,5 pt) — f(3) pour f(x) = 2x²', rep:'18'},
+
+        {texte:'Q5 (0,5 pt) — Résous : 4x - 2 = 10', rep:'3'},
+
+        {texte:'Q6 (0,5 pt) — AD = 6, DB = 4 → AD/AB = ?', rep:'3/5'},
+
+        {texte:'Q7 (1 pt) — Moyenne de 8, 12, 16, 4', rep:'10'},
+
+        {texte:'Q8 (1 pt) — Symétrie centrale de O(0,0) pour A(2,3)', rep:'(-2,-3)'},
+
+        {texte:'Q9 (1 pt) — Programme : x → +2 → ×3. Pour x = 4, résultat ?', rep:'18'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (20 pts)', pts:20, questions:[
-        {texte:'DÃ©composition de 120 en facteurs premiers.', rep:'2Â³Ã—3Ã—5'},
+
+      {type:'pb', label:'Partie 2 — Raisonnement (20 pts)', pts:20, questions:[
+
+        {texte:'Décomposition de 120 en facteurs premiers.', rep:'2³×3×5'},
+
         {texte:'Masses colis : A=4, B=9, C=2, D=7, E=11 kg. Moyenne ?', rep:'6,6 kg'},
-        {texte:'MÃ©diane ?', rep:'7 kg'},
-        {texte:'Programme f(x) = âˆ’8x+16. Pour x=1 â†’ 8.'}
+
+        {texte:'Médiane ?', rep:'7 kg'},
+
+        {texte:'Programme f(x) = −8x+16. Pour x=1 → 8.'}
+
       ]}
+
     ]
+
   },
+
   // SUJET 8
+
   {
-    id:8, annee:'2023', session:'Centres Ã©trangers Groupe I â€” 14 juin 2023',
-    titre:'23GENMATG11 â€” QCM Â· Cabane Â· Programmes Â· Urne',
+
+    id:8, annee:'2023', session:'Centres étrangers Groupe I — 14 juin 2023',
+
+    titre:'23GENMATG11 — QCM · Cabane · Programmes · Urne',
+
     pdf:'https://www.education.gouv.fr/media/156086/download',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” âˆš64', rep:'8'},
-        {texte:'Q2 (0,5 pt) â€” RÃ©sous : x/3 = 5', rep:'15'},
-        {texte:'Q3 (0,5 pt) â€” Convertir 1,2 h en min', rep:'72 min'},
-        {texte:'Q4 (0,5 pt) â€” f(4) pour f(x) = xÂ² - 3', rep:'13'},
-        {texte:'Q5 (0,5 pt) â€” 8Â² + 15Â² = ?', rep:'289â†’17'},
-        {texte:'Q6 (0,5 pt) â€” sin(60Â°)', rep:'âˆš3/2'},
-        {texte:'Q7 (1 pt) â€” P(chiffre > 4) sur un dÃ©', rep:'1/3'},
-        {texte:'Q8 (1 pt) â€” Volume d\'un cÃ´ne r=3 cm, h=6 cm', rep:'56,52 cmÂ³'},
-        {texte:'Q9 (1 pt) â€” Milieu de A(-2,5) et B(4,-1)', rep:'(1,2)'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — √64', rep:'8'},
+
+        {texte:'Q2 (0,5 pt) — Résous : x/3 = 5', rep:'15'},
+
+        {texte:'Q3 (0,5 pt) — Convertir 1,2 h en min', rep:'72 min'},
+
+        {texte:'Q4 (0,5 pt) — f(4) pour f(x) = x² - 3', rep:'13'},
+
+        {texte:'Q5 (0,5 pt) — 8² + 15² = ?', rep:'289→17'},
+
+        {texte:'Q6 (0,5 pt) — sin(60°)', rep:'√3/2'},
+
+        {texte:'Q7 (1 pt) — P(chiffre > 4) sur un dé', rep:'1/3'},
+
+        {texte:'Q8 (1 pt) — Volume d\'un cône r=3 cm, h=6 cm', rep:'56,52 cm³'},
+
+        {texte:'Q9 (1 pt) — Milieu de A(-2,5) et B(4,-1)', rep:'(1,2)'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (18 pts)', pts:18, questions:[
-        {texte:'Triangle Ã©quilatÃ©ral : angle de rotation dans Scratch ?', rep:'120Â°'},
-        {texte:'(2/3 âˆ’ 1/3) Ã· 4/3 = ?', rep:'1/4'},
+
+      {type:'pb', label:'Partie 2 — Raisonnement (18 pts)', pts:18, questions:[
+
+        {texte:'Triangle équilatéral : angle de rotation dans Scratch ?', rep:'120°'},
+
+        {texte:'(2/3 − 1/3) ÷ 4/3 = ?', rep:'1/4'},
+
         {texte:'Urne 3N + 4R. P(rouge) = ?', rep:'4/7'},
+
         {texte:'PGCD(195, 234) = ?', rep:'39'}
+
       ]}
+
     ]
+
   },
+
   // SUJET 9
+
   {
-    id:9, annee:'2019', session:'GrÃ¨ce â€” 18 juin 2019',
-    titre:'19GENMATGR1 â€” Roues loterie Â· Triangles semblables Â· Course',
+
+    id:9, annee:'2019', session:'Grèce — 18 juin 2019',
+
+    titre:'19GENMATGR1 — Roues loterie · Triangles semblables · Course',
+
     pdf:'https://galilee.ac/annales-brevet/sujets-complets/sujet-brevet-maths-2019-grece-complet-789',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” 2/3 + 1/6 (simplifiÃ©e)', rep:'5/6'},
-        {texte:'Q2 (0,5 pt) â€” MÃ©diane de 2,4,6,8,10,12', rep:'7'},
-        {texte:'Q3 (0,5 pt) â€” 75% de 80 â‚¬', rep:'60'},
-        {texte:'Q4 (0,5 pt) â€” x pour f(x)=10 si f(x)=2x+4', rep:'3'},
-        {texte:'Q5 (0,5 pt) â€” RÃ©sous : 2x + 3 = 15', rep:'6'},
-        {texte:'Q6 (0,5 pt) â€” Longueur d\'un arc de 60Â° rayon 10 cm', rep:'10,47 cm'},
-        {texte:'Q7 (1 pt) â€” ComplÃ¨te : CD/CE = BD/...', rep:'AE'},
-        {texte:'Q8 (1 pt) â€” P(numÃ©ro pair) de 1 Ã  10', rep:'1/2'},
-        {texte:'Q9 (1 pt) â€” Programme : x â†’ Ã—3 â†’ +4. Pour x = 2, rÃ©sultat ?', rep:'10'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — 2/3 + 1/6 (simplifiée)', rep:'5/6'},
+
+        {texte:'Q2 (0,5 pt) — Médiane de 2,4,6,8,10,12', rep:'7'},
+
+        {texte:'Q3 (0,5 pt) — 75% de 80 €', rep:'60'},
+
+        {texte:'Q4 (0,5 pt) — x pour f(x)=10 si f(x)=2x+4', rep:'3'},
+
+        {texte:'Q5 (0,5 pt) — Résous : 2x + 3 = 15', rep:'6'},
+
+        {texte:'Q6 (0,5 pt) — Longueur d\'un arc de 60° rayon 10 cm', rep:'10,47 cm'},
+
+        {texte:'Q7 (1 pt) — Complète : CD/CE = BD/...', rep:'AE'},
+
+        {texte:'Q8 (1 pt) — P(numéro pair) de 1 à 10', rep:'1/2'},
+
+        {texte:'Q9 (1 pt) — Programme : x → ×3 → +4. Pour x = 2, résultat ?', rep:'10'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (15 pts)', pts:15, questions:[
-        {texte:'Roue A {1,2,3,4} Ã— Roue B {1,2,3,4}. Nombres possibles ?', rep:'16 nombres (11 Ã  44)'},
+
+      {type:'pb', label:'Partie 2 — Raisonnement (15 pts)', pts:15, questions:[
+
+        {texte:'Roue A {1,2,3,4} × Roue B {1,2,3,4}. Nombres possibles ?', rep:'16 nombres (11 à 44)'},
+
         {texte:'P(nombre > 40) = ?', rep:'4/16 = 0,25'},
-        {texte:'Vitesse Marc : 400m en 2 min â†’ km/h ?', rep:'12 km/h'}
+
+        {texte:'Vitesse Marc : 400m en 2 min → km/h ?', rep:'12 km/h'}
+
       ]}
+
     ]
+
   },
+
   // SUJET 10
+
   {
-    id:10, annee:'2023', session:'Asie â€” 19 juin 2023',
-    titre:'23GENMATAA1 â€” Potager Â· QCM Â· Programme 10xÂ² Â· Glaces',
+
+    id:10, annee:'2023', session:'Asie — 19 juin 2023',
+
+    titre:'23GENMATAA1 — Potager · QCM · Programme 10x² · Glaces',
+
     pdf:'https://pi.ac3j.fr/wp-content/uploads/Brevets/23GENMATAA1.pdf',
+
     exos:[
-      {type:'auto', label:'Partie 1 â€” Automatismes (6 pts)', pts:6, questions:[
-        {texte:'Q1 (0,5 pt) â€” Factorise : xÂ² - 9', rep:'(x-3)(x+3)'},
-        {texte:'Q2 (0,5 pt) â€” PÃ©rimÃ¨tre d\'un cercle de rayon 7 cm (Ï€=3,14)', rep:'43,96 cm'},
-        {texte:'Q3 (0,5 pt) â€” f(2) pour f(x) = xÂ³', rep:'8'},
-        {texte:'Q4 (0,5 pt) â€” RÃ©sous : 5x - 7 = 18', rep:'5'},
-        {texte:'Q5 (0,5 pt) â€” CÃ´tÃ© 9, hypotÃ©nuse 41 â†’ autre cÃ´tÃ©', rep:'40'},
-        {texte:'Q6 (0,5 pt) â€” cos(30Â°)', rep:'âˆš3/2'},
-        {texte:'Q7 (1 pt) â€” Ã‰crire une Ã©galitÃ© de ThalÃ¨s', rep:'AB/AD = AC/AE = BC/DE'},
-        {texte:'Q8 (1 pt) â€” FrÃ©quence de 4 si effectif 4 sur 20', rep:'0,2'},
-        {texte:'Q9 (1 pt) â€” Programme : x â†’ -1 â†’ Ã—5 â†’ +2. Pour x = 3, rÃ©sultat ?', rep:'12'}
+
+      {type:'auto', label:'Partie 1 — Automatismes (6 pts)', pts:6, questions:[
+
+        {texte:'Q1 (0,5 pt) — Factorise : x² - 9', rep:'(x-3)(x+3)'},
+
+        {texte:'Q2 (0,5 pt) — Périmètre d\'un cercle de rayon 7 cm (π=3,14)', rep:'43,96 cm'},
+
+        {texte:'Q3 (0,5 pt) — f(2) pour f(x) = x³', rep:'8'},
+
+        {texte:'Q4 (0,5 pt) — Résous : 5x - 7 = 18', rep:'5'},
+
+        {texte:'Q5 (0,5 pt) — Côté 9, hypoténuse 41 → autre côté', rep:'40'},
+
+        {texte:'Q6 (0,5 pt) — cos(30°)', rep:'√3/2'},
+
+        {texte:'Q7 (1 pt) — Écrire une égalité de Thalès', rep:'AB/AD = AC/AE = BC/DE'},
+
+        {texte:'Q8 (1 pt) — Fréquence de 4 si effectif 4 sur 20', rep:'0,2'},
+
+        {texte:'Q9 (1 pt) — Programme : x → -1 → ×5 → +2. Pour x = 3, résultat ?', rep:'12'}
+
       ]},
-      {type:'pb', label:'Partie 2 â€” Raisonnement (22 pts)', pts:22, questions:[
-        {texte:'CE=30m, ED=10m, DG=24m. Longueur CG ?', rep:'CGÂ²=20Â²+24Â²=976 â†’ CGâ‰ˆ31,2m'},
+
+      {type:'pb', label:'Partie 2 — Raisonnement (22 pts)', pts:22, questions:[
+
+        {texte:'CE=30m, ED=10m, DG=24m. Longueur CG ?', rep:'CG²=20²+24²=976 → CG≈31,2m'},
+
         {texte:'Urne 2R+3V+3B. P(rouge) ?', rep:'1/4'},
-        {texte:'Programme 10xÂ². Pour x=3 â†’ 90.'},
-        {texte:'Boule diamÃ¨tre 4,2 cm. Volume â‰ˆ ?', rep:'39 cmÂ³'}
+
+        {texte:'Programme 10x². Pour x=3 → 90.'},
+
+        {texte:'Boule diamètre 4,2 cm. Volume ≈ ?', rep:'39 cm³'}
+
       ]}
+
     ]
+
   }
+
 ];
 
+
+
 // ============================================================
+
 // FONCTIONS D'AFFICHAGE
+
 // ============================================================
+
+
 
 function esc(s) {
+
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
 }
+
+
 
 function buildGrid() {
+
   const grid = document.getElementById('grid');
+
   let html = '';
+
   SUJETS.forEach((s, idx) => {
+
     html += '<div class="card" onclick="ouvrirSujet(' + idx + ')">'
+
       + '<div class="card-top"><span class="card-num">Sujet ' + s.id + '</span><span class="badge">' + s.annee + '</span></div>'
+
       + '<div class="card-titre">' + esc(s.titre) + '</div>'
+
       + '<div class="card-meta">' + esc(s.session) + '</div>'
-      + '<a class="card-pdf" href="' + s.pdf + '" target="_blank" onclick="event.stopPropagation()">ðŸ“„ Sujet officiel PDF</a>'
+
+      + '<a class="card-pdf" href="' + s.pdf + '" target="_blank" onclick="event.stopPropagation()">📄 Sujet officiel PDF</a>'
+
       + '</div>';
+
   });
+
   grid.innerHTML = html;
+
 }
+
+
 
 function ouvrirSujet(idx) {
+
   const s = SUJETS[idx];
-  document.getElementById('svTitre').innerHTML = 'DNB ' + s.annee + ' â€” ' + s.session;
+
+  document.getElementById('svTitre').innerHTML = 'DNB ' + s.annee + ' — ' + s.session;
+
   document.getElementById('svSub').textContent = s.titre;
+
   document.getElementById('svDl').href = s.pdf;
+
   document.getElementById('btnPdfExport').onclick = () => exportPDF(idx);
 
+
+
   let html = '';
+
   s.exos.forEach((exo, ei) => {
+
     const cls = exo.type === 'auto' ? 'badge-auto' : 'badge-pb';
+
     html += '<div class="exo">'
-      + '<div class="exo-head"><span class="exo-badge ' + cls + '">' + (exo.type==='auto'?'Automatismes':'ProblÃ¨mes') + '</span><span class="exo-label">' + esc(exo.label) + '</span></div>';
+
+      + '<div class="exo-head"><span class="exo-badge ' + cls + '">' + (exo.type==='auto'?'Automatismes':'Problèmes') + '</span><span class="exo-label">' + esc(exo.label) + '</span></div>';
+
     exo.questions.forEach((q, qi) => {
+
       const qid = 'q_' + s.id + '_' + ei + '_' + qi;
+
       html += '<div class="question">'
+
         + '<div class="q-texte">' + esc(q.texte).replace(/\n/g,'<br>') + '</div>'
+
         + '<div class="answer-wrap">'
-        + '<textarea class="answer-area" id="ans_' + qid + '" placeholder="Ã‰cris ta rÃ©ponse ici..."></textarea>'
-        + '<button class="btn-corriger" onclick="corriger(' + idx + ',' + ei + ',' + qi + ',\'' + qid + '\')">âœ¦ Corriger avec IA</button>'
+
+        + '<textarea class="answer-area" id="ans_' + qid + '" placeholder="Écris ta réponse ici..."></textarea>'
+
+        + '<button class="btn-corriger" onclick="corriger(' + idx + ',' + ei + ',' + qi + ',\'' + qid + '\')">✦ Corriger avec IA</button>'
+
         + '</div>'
+
         + '<div class="panel" id="panel_' + qid + '"></div>'
+
         + '</div>';
+
     });
+
     html += '</div>';
+
   });
+
+
 
   document.getElementById('svContent').innerHTML = html;
+
   document.getElementById('landing').style.display = 'none';
+
   const sv = document.getElementById('sujetView');
+
   sv.style.display = 'block';
+
   sv.classList.add('active');
+
   window.scrollTo(0,0);
+
 }
+
+
 
 function retour() {
+
   document.getElementById('sujetView').style.display = 'none';
+
   document.getElementById('sujetView').classList.remove('active');
+
   document.getElementById('landing').style.display = 'block';
+
   window.scrollTo(0,0);
+
 }
 
+
+
 // ============================================================
+
 // CORRECTION IA (utilise window.callIA du proxy-client.js)
+
 // ============================================================
+
+
 
 function badge(val) {
+
   const ok = (val === 'Oui' || val === 'OK');
+
   const partiel = (val === 'Partiel');
+
   const bg = ok ? 'rgba(94,207,177,.15)' : partiel ? 'rgba(245,166,35,.15)' : 'rgba(232,122,122,.15)';
+
   const col = ok ? '#5ecfb1' : partiel ? '#f5a623' : '#e87a7a';
-  const icon = ok ? 'âœ“' : partiel ? 'â—‘' : 'âœ—';
+
+  const icon = ok ? '✓' : partiel ? '◑' : '✗';
+
   return '<span style="background:'+bg+';color:'+col+';border:1px solid '+col+';border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;">'+icon+' '+esc(val)+'</span>';
+
 }
+
+
 
 async function corriger(sIdx, ei, qi, qid) {
+
   const s = SUJETS[sIdx];
+
   const exo = s.exos[ei];
+
   const q = exo.questions[qi];
+
   const ans = document.getElementById('ans_' + qid).value.trim();
-  if (!ans) { alert("Ã‰cris ta rÃ©ponse d'abord !"); return; }
+
+  if (!ans) { alert("Écris ta réponse d'abord !"); return; }
+
+
 
   const panel = document.getElementById('panel_' + qid);
+
   const btn = panel.previousElementSibling.querySelector('.btn-corriger');
+
   panel.classList.add('show');
+
   panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+
   if (btn) btn.disabled = true;
 
-  // ============================================================
-  // PARTIE 1 : AUTOMATISMES â†’ correction par comparaison directe
-  // ============================================================
-  if (exo.type === 'auto') {
-    const reponseEleve = ans.trim().toLowerCase().replace(/[^a-z0-9\/\+\-\*\.\(\)]/g, '');
-    const reponseAttendue = q.rep.toLowerCase().replace(/[^a-z0-9\/\+\-\*\.\(\)]/g, '');
-    const estCorrect = (reponseEleve === reponseAttendue);
-    const ptsParQuestion = exo.pts / exo.questions.length;
-    const note = estCorrect ? ptsParQuestion : 0;
-    
-    if (estCorrect) {
-      panel.innerHTML = '<div class="corr-ia">'
-        + '<div class="corr-note">âœ“ ' + note + ' / ' + ptsParQuestion.toFixed(1) + '</div>'
-        + '<div class="corr-txt" style="color:#5ecfb1">âœ… RÃ©ponse correcte !</div>'
-        + '</div>'
-        + '<div class="corr-off"><strong>ðŸ“– CORRECTION OFFICIELLE</strong><br>' + esc(q.rep) + '</div>';
-    } else {
-      panel.innerHTML = '<div class="corr-ia">'
-        + '<div class="corr-note">âœ— 0 / ' + ptsParQuestion.toFixed(1) + '</div>'
-        + '<div class="corr-txt" style="color:#e87a7a">âŒ RÃ©ponse incorrecte.<br><br>RÃ©ponse attendue : ' + esc(q.rep) + '</div>'
-        + '</div>'
-        + '<div class="corr-off"><strong>ðŸ“– CORRECTION OFFICIELLE</strong><br>' + esc(q.rep) + '</div>';
-    }
-    
-    if (!STORE[s.id]) STORE[s.id] = [];
-    STORE[s.id].push({
-      exo: exo.label, qi: qi+1, question: q.texte.substring(0,80),
-      reponseEleve: ans, correctionIA: estCorrect ? "Correct" : "Incorrect",
-      correctionOff: q.rep, pts: ptsParQuestion, note: note
-    });
-    saveCorrections();
-    if (btn) btn.disabled = false;
-    return;
-  }
-  
-  // ============================================================
-  // PARTIE 2 : PROBLÃˆMES â†’ correction par IA
-  // ============================================================
-  const pts = exo.pts / exo.questions.length;
-  const qTexteClean = q.texte.replace(/[\n\r]/g,' ').substring(0,300);
-  
-  const system = `Tu es un correcteur expert du DNB en MATHÃ‰MATIQUES, exigeant comme un professeur expÃ©rimentÃ©.
 
-Ta correction doit Ãªtre APPROFONDIE. RÃ©ponds UNIQUEMENT en JSON valide avec cette structure exacte :
+
+  // ============================================================
+
+  // PARTIE 1 : AUTOMATISMES → correction par comparaison directe
+
+  // ============================================================
+
+  if (exo.type === 'auto') {
+
+    const reponseEleve = ans.trim().toLowerCase().replace(/[^a-z0-9\/\+\-\*\.\(\)]/g, '');
+
+    const reponseAttendue = q.rep.toLowerCase().replace(/[^a-z0-9\/\+\-\*\.\(\)]/g, '');
+
+    const estCorrect = (reponseEleve === reponseAttendue);
+
+    const ptsParQuestion = exo.pts / exo.questions.length;
+
+    const note = estCorrect ? ptsParQuestion : 0;
+
+    
+
+    if (estCorrect) {
+
+      panel.innerHTML = '<div class="corr-ia">'
+
+        + '<div class="corr-note">✓ ' + note + ' / ' + ptsParQuestion.toFixed(1) + '</div>'
+
+        + '<div class="corr-txt" style="color:#5ecfb1">✅ Réponse correcte !</div>'
+
+        + '</div>'
+
+        + '<div class="corr-off"><strong>📖 CORRECTION OFFICIELLE</strong><br>' + esc(q.rep) + '</div>';
+
+    } else {
+
+      panel.innerHTML = '<div class="corr-ia">'
+
+        + '<div class="corr-note">✗ 0 / ' + ptsParQuestion.toFixed(1) + '</div>'
+
+        + '<div class="corr-txt" style="color:#e87a7a">❌ Réponse incorrecte.<br><br>Réponse attendue : ' + esc(q.rep) + '</div>'
+
+        + '</div>'
+
+        + '<div class="corr-off"><strong>📖 CORRECTION OFFICIELLE</strong><br>' + esc(q.rep) + '</div>';
+
+    }
+
+    
+
+    if (!STORE[s.id]) STORE[s.id] = [];
+
+    STORE[s.id].push({
+
+      exo: exo.label, qi: qi+1, question: q.texte.substring(0,80),
+
+      reponseEleve: ans, correctionIA: estCorrect ? "Correct" : "Incorrect",
+
+      correctionOff: q.rep, pts: ptsParQuestion, note: note
+
+    });
+
+    saveCorrections();
+
+    if (btn) btn.disabled = false;
+
+    return;
+
+  }
+
+  
+
+  // ============================================================
+
+  // PARTIE 2 : PROBLÈMES → correction par IA
+
+  // ============================================================
+
+  const pts = exo.pts / exo.questions.length;
+
+  const qTexteClean = q.texte.replace(/[\n\r]/g,' ').substring(0,300);
+
+  
+
+  const system = `Tu es un correcteur expert du DNB en MATHÉMATIQUES, exigeant comme un professeur expérimenté.
+
+
+
+Ta correction doit être APPROFONDIE. Réponds UNIQUEMENT en JSON valide avec cette structure exacte :
+
 {
+
   "note": "X/${pts.toFixed(1)}",
+
   "cours_su": "Oui" ou "Partiel" ou "Non",
+
   "methode": "Oui" ou "Partiel" ou "Non",
-  "commentaire": "Analyse dÃ©taillÃ©e de la rÃ©ponse (3-5 lignes)",
-  "pistes": "2 ou 3 conseils prÃ©cis pour progresser"
+
+  "commentaire": "Analyse détaillée de la réponse (3-5 lignes)",
+
+  "pistes": "2 ou 3 conseils précis pour progresser"
+
 }
 
-CritÃ¨res DNB MATHS :
-- cours_su : thÃ©orÃ¨mes nommÃ©s (Pythagore, ThalÃ¨s...), formules correctes, dÃ©finitions ?
-- methode : raisonnement logique, Ã©tapes visibles, calculs intermÃ©diaires, unitÃ©s, conclusion
-- La note sur ${pts.toFixed(1)} pts doit reflÃ©ter : 1/3 bonne rÃ©ponse + 1/3 rÃ©daction + 1/3 justification`;
+
+
+Critères DNB MATHS :
+
+- cours_su : théorèmes nommés (Pythagore, Thalès...), formules correctes, définitions ?
+
+- methode : raisonnement logique, étapes visibles, calculs intermédiaires, unités, conclusion
+
+- La note sur ${pts.toFixed(1)} pts doit refléter : 1/3 bonne réponse + 1/3 rédaction + 1/3 justification`;
+
+
 
   const prompt = `Sujet: ${s.titre} (${s.annee})
+
 Exercice: ${exo.label}
+
 Question: ${qTexteClean}
+
 Correction attendue: ${q.rep}
-RÃ©ponse Ã©lÃ¨ve: ${ans}`;
+
+Réponse élève: ${ans}`;
+
+
 
   try {
+
     const txt = await window.callIA(prompt, system);
+
     const json = window.safeJSON ? window.safeJSON(txt) : (()=>{try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}catch(e){return null;}})();
+
     
+
     if (!STORE[s.id]) STORE[s.id] = [];
+
     STORE[s.id].push({
+
       exo: exo.label, qi: qi+1, question: q.texte.substring(0,80),
+
       reponseEleve: ans, correctionIA: json ? json.commentaire : txt,
+
       correctionOff: q.rep, pts: pts, note: json ? json.note : null
+
     });
+
     saveCorrections();
 
+
+
     panel.innerHTML = `
+
       <div class="corr-ia">
+
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-          <div class="corr-note">âœ“ ${json ? json.note : '?'} / ${pts.toFixed(1)}</div>
+
+          <div class="corr-note">✓ ${json ? json.note : '?'} / ${pts.toFixed(1)}</div>
+
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+
             <span style="font-size:10px;color:#9090a8;">Cours</span>${badge(json ? json.cours_su : '?')}
-            <span style="font-size:10px;color:#9090a8;margin-left:6px;">MÃ©thode</span>${badge(json ? json.methode : '?')}
+
+            <span style="font-size:10px;color:#9090a8;margin-left:6px;">Méthode</span>${badge(json ? json.methode : '?')}
+
           </div>
+
         </div>
+
         <div class="corr-txt">${json ? json.commentaire : txt}</div>
-        ${json && json.pistes ? '<div class="corr-conseil" style="margin-top:8px;color:#e8c87a">ðŸŽ¯ ' + esc(json.pistes) + '</div>' : ''}
+
+        ${json && json.pistes ? '<div class="corr-conseil" style="margin-top:8px;color:#e8c87a">🎯 ' + esc(json.pistes) + '</div>' : ''}
+
       </div>
-      <div class="corr-off"><strong>ðŸ“– CORRECTION OFFICIELLE</strong><br>${esc(q.rep)}</div>
-      <button class="btn-copy" onclick="copier(this)">ðŸ“‹ Copier</button>`;
+
+      <div class="corr-off"><strong>📖 CORRECTION OFFICIELLE</strong><br>${esc(q.rep)}</div>
+
+      <button class="btn-copy" onclick="copier(this)">📋 Copier</button>`;
+
   } catch(err) {
+
     let errMsg = err.message;
-    if (errMsg === 'ACCES_BLOQUE') errMsg = 'AccÃ¨s bloquÃ©. Veuillez activer votre abonnement.';
-    panel.innerHTML = '<div style="color:#e87a7a">âŒ Erreur : ' + errMsg + '</div>';
+
+    if (errMsg === 'ACCES_BLOQUE') errMsg = 'Accès bloqué. Veuillez activer votre abonnement.';
+
+    panel.innerHTML = '<div style="color:#e87a7a">❌ Erreur : ' + errMsg + '</div>';
+
   }
+
   if (btn) btn.disabled = false;
+
 }
+
+
 
 async function copier(btn) {
+
   try {
+
     const txt = btn.parentElement.innerText;
+
     await navigator.clipboard.writeText(txt);
-    btn.textContent = 'âœ“ CopiÃ©';
-    setTimeout(() => btn.textContent = 'ðŸ“‹ Copier', 2000);
+
+    btn.textContent = '✓ Copié';
+
+    setTimeout(() => btn.textContent = '📋 Copier', 2000);
+
   } catch(e) {}
+
 }
+
+
 
 function exportPDF(sIdx) {
+
   const s = SUJETS[sIdx];
+
   const data = STORE[s.id];
+
   if (!data || !data.length) { alert("Corrige au moins une question d'abord."); return; }
+
   let totalObt = 0, totalMax = 0;
+
   data.forEach(c => { if (c.note != null) totalObt += parseFloat(c.note); totalMax += c.pts; });
+
   
+
   let html = `<html><head><meta charset="UTF-8"><style>
+
     body{font-family:Arial,sans-serif;font-size:13px;color:#111;padding:2rem;}
+
     h1{font-size:16px;border-bottom:2px solid #f5a623;color:#b87800;padding-bottom:6px;}
+
     h2{font-size:13px;margin-top:1.2rem;border-left:4px solid #f5a623;padding-left:8px;color:#333;}
+
     .ia{background:#fffbf0;border-left:3px solid #f5a623;padding:8px;border-radius:4px;margin-bottom:6px;}
+
     .off{background:#fff0f0;border-left:3px solid #e74c3c;padding:8px;border-radius:4px;}
+
     .total{margin-top:16px;padding:10px;background:#f5f5f5;border-radius:6px;font-weight:bold;}
+
   </style></head><body>
-  <h1>ðŸ“ Maths DNB ${s.annee} â€” ${s.session}</h1>
-  <p>GÃ©nÃ©rÃ© le ${new Date().toLocaleDateString('fr-FR')} Â· ${data.length} question(s)</p>`;
+
+  <h1>📐 Maths DNB ${s.annee} — ${s.session}</h1>
+
+  <p>Généré le ${new Date().toLocaleDateString('fr-FR')} · ${data.length} question(s)</p>`;
+
   data.forEach(c => {
-    html += `<h2>${c.exo} â€” Q${c.qi} (${c.pts} pts)</h2>
-    <div class="ia">ðŸ¤– ${c.correctionIA}</div>
-    <div class="off">ðŸ“– ${c.correctionOff}</div>`;
+
+    html += `<h2>${c.exo} — Q${c.qi} (${c.pts} pts)</h2>
+
+    <div class="ia">🤖 ${c.correctionIA}</div>
+
+    <div class="off">📖 ${c.correctionOff}</div>`;
+
   });
-  html += `<div class="total">ðŸ“Š Note totale estimÃ©e : ${totalObt.toFixed(1)} / ${totalMax} pts (${Math.round(totalObt/totalMax*100)}%)</div></body></html>`;
+
+  html += `<div class="total">📊 Note totale estimée : ${totalObt.toFixed(1)} / ${totalMax} pts (${Math.round(totalObt/totalMax*100)}%)</div></body></html>`;
+
   const win = window.open('','_blank');
+
   win.document.write(html);
+
   win.document.close();
+
   win.print();
+
 }
 
+
+
 // Initialisation
+
 buildGrid();
+
 </script>
+
 </body>
+
 </html>

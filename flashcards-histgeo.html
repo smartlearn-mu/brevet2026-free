@@ -1,566 +1,1132 @@
 <!DOCTYPE html>
+
 <html lang="fr">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flashcards Histoire-GÃ©o â€” Brevet 2026</title>
+
+<title>Flashcards Histoire-Géo — Brevet 2026</title>
+
 <style>
+
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{background:#09090f;color:#e8e8f0;font-family:Arial,sans-serif;padding:1rem;}
+
 .box{max-width:900px;margin:0 auto;background:#111118;border:2px solid #f5a623;border-radius:16px;padding:1.5rem;}
+
 h1{color:#f5a623;margin-bottom:.3rem;}
+
 .sub{color:#9090a8;font-size:.85rem;margin-bottom:1.5rem;}
+
 .nav{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.2rem;}
+
 .nav label{font-size:11px;color:#9090a8;text-transform:uppercase;display:block;margin-bottom:4px;}
+
 select{background:#1a1a24;border:1px solid #2a2a38;border-radius:8px;padding:8px 12px;color:#e8e8f0;font-size:13px;min-width:280px;outline:none;cursor:pointer;}
+
 select:focus{border-color:#f5a623;}
+
 .part-label{font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;margin-bottom:4px;display:inline-block;}
+
 .part-hi{background:rgba(232,66,74,.15);color:#e84249;}
+
 .part-ge{background:rgba(94,207,177,.15);color:#5ecfb1;}
+
 .part-em{background:rgba(245,166,35,.15);color:#f5a623;}
+
 .stats{background:#1a1a24;border:1px solid #2a2a38;border-radius:8px;padding:8px 14px;margin-bottom:1rem;font-size:12px;display:flex;gap:16px;flex-wrap:wrap;}
+
 .stats b{color:#f5a623;}
+
 .flashcard{background:#1a1a24;border:1px solid #2a2a38;border-radius:14px;padding:2rem;text-align:center;cursor:pointer;min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:.2s;margin-bottom:1rem;}
+
 .flashcard:hover{border-color:#f5a623;}
+
 .fc-theme{font-size:10px;color:#9090a8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+
 .fc-q{font-size:1.1rem;font-weight:600;line-height:1.4;}
+
 .fc-r{font-size:.95rem;color:#f5a623;margin-top:1rem;display:none;line-height:1.5;}
+
 .fc-hint{font-size:11px;color:#5ecfb1;margin-top:.8rem;}
+
 .btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem;}
+
 .btn{padding:8px 20px;border-radius:8px;border:1px solid #2a2a38;background:#1a1a24;color:#9090a8;font-size:12px;cursor:pointer;}
+
 .btn:hover{border-color:#f5a623;color:#f5a623;}
+
 .btn-ok{background:rgba(94,207,177,.15);border-color:#5ecfb1;color:#5ecfb1;}
+
 .btn-bad{background:rgba(232,122,122,.15);border-color:#e87a7a;color:#e87a7a;}
+
 .prog-bar{height:5px;background:#2a2a38;border-radius:3px;margin-bottom:.8rem;overflow:hidden;}
+
 .prog-fill{height:100%;background:#f5a623;border-radius:3px;transition:width .3s;}
+
 .session-stats{font-size:12px;color:#9090a8;text-align:center;margin-bottom:.8rem;}
+
 a.back{display:inline-block;margin-top:1rem;color:#5ecfb1;text-decoration:none;font-size:13px;}
+
 </style>
+
+
 
 <script src="proxy-client.js"></script>
 
-<script>
-const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
-function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
-function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
-function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
-function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
-function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
-function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
-function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
-function afficherBlocageEssaiExpire(){afficherOverlay();}
-function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
-function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
-window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
-</script>
-</head>
-<body>
-<div class="box">
-  <h1>ðŸŒ Flashcards Histoire-GÃ©o-EMC</h1>
-  <div class="sub">32 chapitres Â· 276 cartes Â· Histoire + GÃ©ographie + EMC</div>
-  <div class="nav">
-    <div>
-      <label>Chapitre</label>
-      <select id="chapSel"></select>
-    </div>
-    <button class="btn" id="btnReset" style="border-color:#e87a7a;color:#e87a7a">ðŸ”„ Reset chapitre</button>
-    <button class="btn" id="btnAll" style="border-color:#e87a7a;color:#e87a7a">âš  Reset tout</button>
-  </div>
-  <div class="stats" id="stats">ðŸ“Š Chargement...</div>
-  <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
-  <div class="session-stats" id="sesStats">Carte 0/0</div>
-  <div class="flashcard" id="card">
-    <div class="fc-theme" id="cardTheme"></div>
-    <div class="fc-q" id="cardQ">Chargement...</div>
-    <div class="fc-r" id="cardR"></div>
-    <div class="fc-hint">ðŸ‘† Cliquer pour voir la rÃ©ponse</div>
-  </div>
-  <div class="btn-row" id="btnJuger" style="display:none">
-    <button class="btn btn-ok" id="btnSais">âœ… Je sais</button>
-    <button class="btn btn-bad" id="btnSaisP">âŒ Je ne sais pas</button>
-  </div>
-  <a href="index.html" class="back">â† Retour au hub</a>
-</div>
+
 
 <script>
+
+const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
+
+function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
+
+function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
+
+function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
+
+function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
+
+function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
+
+function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
+
+function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
+
+function afficherBlocageEssaiExpire(){afficherOverlay();}
+
+function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
+
+function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
+
+window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
+
+</script>
+
+</head>
+
+<body>
+
+<div class="box">
+
+  <h1>🌍 Flashcards Histoire-Géo-EMC</h1>
+
+  <div class="sub">32 chapitres · 276 cartes · Histoire + Géographie + EMC</div>
+
+  <div class="nav">
+
+    <div>
+
+      <label>Chapitre</label>
+
+      <select id="chapSel"></select>
+
+    </div>
+
+    <button class="btn" id="btnReset" style="border-color:#e87a7a;color:#e87a7a">🔄 Reset chapitre</button>
+
+    <button class="btn" id="btnAll" style="border-color:#e87a7a;color:#e87a7a">âš  Reset tout</button>
+
+  </div>
+
+  <div class="stats" id="stats">📊 Chargement...</div>
+
+  <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+
+  <div class="session-stats" id="sesStats">Carte 0/0</div>
+
+  <div class="flashcard" id="card">
+
+    <div class="fc-theme" id="cardTheme"></div>
+
+    <div class="fc-q" id="cardQ">Chargement...</div>
+
+    <div class="fc-r" id="cardR"></div>
+
+    <div class="fc-hint">👆 Cliquer pour voir la réponse</div>
+
+  </div>
+
+  <div class="btn-row" id="btnJuger" style="display:none">
+
+    <button class="btn btn-ok" id="btnSais">✅ Je sais</button>
+
+    <button class="btn btn-bad" id="btnSaisP">❌ Je ne sais pas</button>
+
+  </div>
+
+  <a href="index.html" class="back">← Retour au hub</a>
+
+</div>
+
+
+
+<script>
+
 // ============================================================
-// DATA-HISTGEO.JS â€” Source unique 276 cartes Histoire-GÃ©o-EMC
-// UtilisÃ© par : flashcards-histgeo.html + revisions-histgeo.html + automatismes-histgeo.html
+
+// DATA-HISTGEO.JS — Source unique 276 cartes Histoire-Géo-EMC
+
+// Utilisé par : flashcards-histgeo.html + revisions-histgeo.html + automatismes-histgeo.html
+
 // Variable globale : CHAPITRES_HG
-// 32 chapitres : Histoire (1-10) + GÃ©ographie (11-22) + EMC (23-32)
+
+// 32 chapitres : Histoire (1-10) + Géographie (11-22) + EMC (23-32)
+
 // ============================================================
+
 const CHAPITRES_HG = {
-  1: { titre: "PremiÃ¨re Guerre mondiale (1914-1918)", cartes: [
-    { q: "Causes de la PremiÃ¨re Guerre mondiale ?", r: "RivalitÃ©s coloniales, nationalisme, alliances (Triple Entente/Triple Alliance), assassinat de FranÃ§ois-Ferdinand (28 juin 1914)." },
+
+  1: { titre: "Première Guerre mondiale (1914-1918)", cartes: [
+
+    { q: "Causes de la Première Guerre mondiale ?", r: "Rivalités coloniales, nationalisme, alliances (Triple Entente/Triple Alliance), assassinat de François-Ferdinand (28 juin 1914)." },
+
     { q: "Triple Entente vs Triple Alliance ?", r: "Entente : France, Royaume-Uni, Russie. Alliance : Allemagne, Autriche-Hongrie, Italie." },
-    { q: "Guerre des tranchÃ©es ?", r: "Guerre de position, soldats dans des tranchÃ©es boueuses sous les bombardements." },
-    { q: "Bataille de Verdun 1916 ?", r: "Symbole de la rÃ©sistance franÃ§aise. Ils ne passeront pas !" },
-    { q: "Bataille de la Somme 1916 ?", r: "1 million de pertes. PremiÃ¨re utilisation de chars." },
-    { q: "GÃ©nocide armÃ©nien 1915-1916 ?", r: "Extermination des ArmÃ©niens par l'Empire ottoman : 1,2 Ã  1,5 million de morts." },
-    { q: "Pourquoi les USA entrent en guerre en 1917 ?", r: "Guerre sous-marine allemande + dÃ©fense du droit international." },
-    { q: "Date de l'armistice de 1918 ?", r: "11 novembre 1918, dans le wagon du marÃ©chal Foch." },
-    { q: "Bilan humain de la 1Ã¨re Guerre mondiale ?", r: "10 millions de morts, 20 millions de blessÃ©s." },
-    { q: "Mutineries de 1917 ?", r: "RÃ©voltes de soldats franÃ§ais refusant les attaques suicidaires." }
+
+    { q: "Guerre des tranchées ?", r: "Guerre de position, soldats dans des tranchées boueuses sous les bombardements." },
+
+    { q: "Bataille de Verdun 1916 ?", r: "Symbole de la résistance française. Ils ne passeront pas !" },
+
+    { q: "Bataille de la Somme 1916 ?", r: "1 million de pertes. Première utilisation de chars." },
+
+    { q: "Génocide arménien 1915-1916 ?", r: "Extermination des Arméniens par l'Empire ottoman : 1,2 à 1,5 million de morts." },
+
+    { q: "Pourquoi les USA entrent en guerre en 1917 ?", r: "Guerre sous-marine allemande + défense du droit international." },
+
+    { q: "Date de l'armistice de 1918 ?", r: "11 novembre 1918, dans le wagon du maréchal Foch." },
+
+    { q: "Bilan humain de la 1ère Guerre mondiale ?", r: "10 millions de morts, 20 millions de blessés." },
+
+    { q: "Mutineries de 1917 ?", r: "Révoltes de soldats français refusant les attaques suicidaires." }
+
   ]},
-  2: { titre: "Sortie de guerre et traitÃ©s", cartes: [
-    { q: "Date et lieu du traitÃ© de Versailles ?", r: "28 juin 1919, galerie des Glaces." },
-    { q: "14 points de Wilson ?", r: "Programme de paix amÃ©ricain : libertÃ© des mers, SDN, droit des peuples." },
-    { q: "Qu'est-ce que la SDN ?", r: "SociÃ©tÃ© des Nations, ancÃªtre de l'ONU, crÃ©Ã©e en 1920." },
-    { q: "Clauses du traitÃ© de Versailles ?", r: "CulpabilitÃ© allemande, rÃ©parations, pertes territoriales, dÃ©militarisation." },
-    { q: "Pourquoi diktat pour l'Allemagne ?", r: "L'Allemagne n'a pas participÃ© aux nÃ©gociations, forcÃ©e de signer." },
-    { q: "Nouveaux Ã‰tats aprÃ¨s 1918 ?", r: "Pologne, TchÃ©coslovaquie, Yougoslavie, Hongrie, Autriche, Finlande, pays baltes." },
-    { q: "Pourquoi la SDN a-t-elle Ã©chouÃ© ?", r: "Pas d'armÃ©e, absence des USA, montÃ©e des totalitarismes." },
-    { q: "Traumatisme franÃ§ais aprÃ¨s 1918 ?", r: "Gueules cassÃ©es, peur de l'Allemagne, ligne Maginot." },
-    { q: "RÃ©parations allemandes ?", r: "132 milliards de marks-or Ã  payer aux vainqueurs." },
-    { q: "Ligne Maginot ?", r: "Ligne de fortifications franÃ§aise contre une invasion allemande." }
+
+  2: { titre: "Sortie de guerre et traités", cartes: [
+
+    { q: "Date et lieu du traité de Versailles ?", r: "28 juin 1919, galerie des Glaces." },
+
+    { q: "14 points de Wilson ?", r: "Programme de paix américain : liberté des mers, SDN, droit des peuples." },
+
+    { q: "Qu'est-ce que la SDN ?", r: "Société des Nations, ancêtre de l'ONU, créée en 1920." },
+
+    { q: "Clauses du traité de Versailles ?", r: "Culpabilité allemande, réparations, pertes territoriales, démilitarisation." },
+
+    { q: "Pourquoi diktat pour l'Allemagne ?", r: "L'Allemagne n'a pas participé aux négociations, forcée de signer." },
+
+    { q: "Nouveaux États après 1918 ?", r: "Pologne, Tchécoslovaquie, Yougoslavie, Hongrie, Autriche, Finlande, pays baltes." },
+
+    { q: "Pourquoi la SDN a-t-elle échoué ?", r: "Pas d'armée, absence des USA, montée des totalitarismes." },
+
+    { q: "Traumatisme français après 1918 ?", r: "Gueules cassées, peur de l'Allemagne, ligne Maginot." },
+
+    { q: "Réparations allemandes ?", r: "132 milliards de marks-or à payer aux vainqueurs." },
+
+    { q: "Ligne Maginot ?", r: "Ligne de fortifications française contre une invasion allemande." }
+
   ]},
-  3: { titre: "MontÃ©e des totalitarismes", cartes: [
-    { q: "RÃ©gime totalitaire : dÃ©finition ?", r: "Parti unique, culte du chef, police politique, propagande, contrÃ´le total." },
+
+  3: { titre: "Montée des totalitarismes", cartes: [
+
+    { q: "Régime totalitaire : définition ?", r: "Parti unique, culte du chef, police politique, propagande, contrôle total." },
+
     { q: "URSS de Staline ?", r: "Collectivisation, plans quinquennaux, Goulag (camps de travail)." },
-    { q: "Allemagne de Hitler ?", r: "Nazisme, antisÃ©mitisme, Lebensraum, FÃ¼hrerprinzip." },
+
+    { q: "Allemagne de Hitler ?", r: "Nazisme, antisémitisme, Lebensraum, Führerprinzip." },
+
     { q: "Italie de Mussolini ?", r: "Fascisme, marche sur Rome 1922, culte du Duce." },
-    { q: "Culte de la personnalitÃ© ?", r: "Mise en scÃ¨ne du dictateur, prÃ©sentÃ© comme guide infaillible." },
-    { q: "Propagande totalitaire ?", r: "ContrÃ´le des mÃ©dias, affiches, cinÃ©ma, meetings de masse." },
-    { q: "Instruments de la terreur totalitaire ?", r: "Police politique (NKVD, Gestapo), camps, dÃ©nonciation." },
-    { q: "Premiers camps nazis ?", r: "DÃ¨s 1933 (Dachau), pour les opposants politiques." },
-    { q: "Front populaire 1936 ?", r: "Gouvernement LÃ©on Blum : congÃ©s payÃ©s, semaine de 40h." },
-    { q: "JO de Berlin 1936 ?", r: "Hitler utilise les JO comme vitrine. Jesse Owens : 4 mÃ©dailles." }
+
+    { q: "Culte de la personnalité ?", r: "Mise en scène du dictateur, présenté comme guide infaillible." },
+
+    { q: "Propagande totalitaire ?", r: "Contrôle des médias, affiches, cinéma, meetings de masse." },
+
+    { q: "Instruments de la terreur totalitaire ?", r: "Police politique (NKVD, Gestapo), camps, dénonciation." },
+
+    { q: "Premiers camps nazis ?", r: "Dès 1933 (Dachau), pour les opposants politiques." },
+
+    { q: "Front populaire 1936 ?", r: "Gouvernement Léon Blum : congés payés, semaine de 40h." },
+
+    { q: "JO de Berlin 1936 ?", r: "Hitler utilise les JO comme vitrine. Jesse Owens : 4 médailles." }
+
   ]},
-  4: { titre: "Guerre-Ã©clair (1939-1941)", cartes: [
-    { q: "DÃ©but de la 2e Guerre mondiale ?", r: "1er septembre 1939 : invasion de la Pologne." },
-    { q: "DrÃ´le de guerre ?", r: "InactivitÃ© militaire : sept. 1939 â€“ mai 1940." },
-    { q: "Blitzkrieg ?", r: "Guerre-Ã©clair : avions + chars + infanterie motorisÃ©e." },
-    { q: "Invasion de la France ?", r: "Mai-juin 1940, percÃ©e dans les Ardennes." },
-    { q: "Armistice de juin 1940 ?", r: "22 juin 1940 Ã  Rethondes." },
-    { q: "France coupÃ©e en 1940 ?", r: "Zone occupÃ©e (Nord) par l'Allemagne / zone libre (Sud) par Vichy." },
+
+  4: { titre: "Guerre-éclair (1939-1941)", cartes: [
+
+    { q: "Début de la 2e Guerre mondiale ?", r: "1er septembre 1939 : invasion de la Pologne." },
+
+    { q: "Drôle de guerre ?", r: "Inactivité militaire : sept. 1939 – mai 1940." },
+
+    { q: "Blitzkrieg ?", r: "Guerre-éclair : avions + chars + infanterie motorisée." },
+
+    { q: "Invasion de la France ?", r: "Mai-juin 1940, percée dans les Ardennes." },
+
+    { q: "Armistice de juin 1940 ?", r: "22 juin 1940 à Rethondes." },
+
+    { q: "France coupée en 1940 ?", r: "Zone occupée (Nord) par l'Allemagne / zone libre (Sud) par Vichy." },
+
     { q: "Appel du 18 juin 1940 ?", r: "De Gaulle sur la BBC, naissance de la France libre." },
-    { q: "Bataille d'Angleterre 1940 ?", r: "Victoire britannique, Hitler renonce Ã  envahir l'Angleterre." },
-    { q: "Winston Churchill ?", r: "Premier ministre britannique, symbole de la rÃ©sistance." },
-    { q: "RÃ©gime de Vichy ?", r: "RÃ©gime collaborationniste dirigÃ© par PÃ©tain (1940-1944)." }
+
+    { q: "Bataille d'Angleterre 1940 ?", r: "Victoire britannique, Hitler renonce à envahir l'Angleterre." },
+
+    { q: "Winston Churchill ?", r: "Premier ministre britannique, symbole de la résistance." },
+
+    { q: "Régime de Vichy ?", r: "Régime collaborationniste dirigé par Pétain (1940-1944)." }
+
   ]},
-  5: { titre: "Guerre d'anÃ©antissement (1941-1945)", cartes: [
-    { q: "OpÃ©ration Barbarossa ?", r: "Invasion de l'URSS par l'Allemagne, 22 juin 1941." },
-    { q: "Pearl Harbor ?", r: "Attaque japonaise, 7 dÃ©c. 1941, entrÃ©e en guerre des USA." },
-    { q: "Guerre totale ?", r: "Mobilisation de toutes les ressources, civils ciblÃ©s." },
-    { q: "Tournant de Stalingrad 1942-1943 ?", r: "PremiÃ¨re grande dÃ©faite allemande, l'URSS repasse Ã  l'offensive." },
-    { q: "DÃ©barquement de Normandie ?", r: "6 juin 1944, opÃ©ration Overlord." },
-    { q: "LibÃ©ration de Paris ?", r: "AoÃ»t 1944, capitulation allemande le 25 aoÃ»t." },
+
+  5: { titre: "Guerre d'anéantissement (1941-1945)", cartes: [
+
+    { q: "Opération Barbarossa ?", r: "Invasion de l'URSS par l'Allemagne, 22 juin 1941." },
+
+    { q: "Pearl Harbor ?", r: "Attaque japonaise, 7 déc. 1941, entrée en guerre des USA." },
+
+    { q: "Guerre totale ?", r: "Mobilisation de toutes les ressources, civils ciblés." },
+
+    { q: "Tournant de Stalingrad 1942-1943 ?", r: "Première grande défaite allemande, l'URSS repasse à l'offensive." },
+
+    { q: "Débarquement de Normandie ?", r: "6 juin 1944, opération Overlord." },
+
+    { q: "Libération de Paris ?", r: "Août 1944, capitulation allemande le 25 août." },
+
     { q: "Shoah ?", r: "Extermination des Juifs par les nazis : 6 millions de morts." },
+
     { q: "Camps d'extermination ?", r: "Auschwitz-Birkenau, Treblinka, Sobibor, Belzec." },
-    { q: "ConfÃ©rence de Wannsee 1942 ?", r: "Organisation de la solution finale." },
-    { q: "Bombes atomiques ?", r: "Hiroshima 6 aoÃ»t 1945, Nagasaki 9 aoÃ»t 1945. Capitulation Allemagne : 8 mai 1945." }
+
+    { q: "Conférence de Wannsee 1942 ?", r: "Organisation de la solution finale." },
+
+    { q: "Bombes atomiques ?", r: "Hiroshima 6 août 1945, Nagasaki 9 août 1945. Capitulation Allemagne : 8 mai 1945." }
+
   ]},
-  6: { titre: "LibÃ©ration et bilan", cartes: [
+
+  6: { titre: "Libération et bilan", cartes: [
+
     { q: "Bilan humain de la 2e Guerre mondiale ?", r: "60 millions de morts (URSS : 27 millions)." },
-    { q: "ProcÃ¨s de Nuremberg 1945-1946 ?", r: "ProcÃ¨s des criminels nazis pour crimes contre l'humanitÃ©." },
-    { q: "Crime contre l'humanitÃ© ?", r: "Acte inhumain contre une population civile." },
-    { q: "CrÃ©ation de l'ONU ?", r: "1945, remplace la SDN." },
-    { q: "DUDH 1948 ?", r: "DÃ©claration universelle des droits de l'homme." },
-    { q: "Plan Marshall 1947 ?", r: "Aide amÃ©ricaine pour reconstruire l'Europe (13 milliards de dollars)." },
-    { q: "ProcÃ¨s de Tokyo ?", r: "Jugement des criminels de guerre japonais." },
-    { q: "GÃ©nocide : dÃ©finition ?", r: "Destruction d'un groupe national, ethnique, racial ou religieux." },
-    { q: "RÃ©sistance franÃ§aise ?", r: "Mouvements clandestins, maquis, rÃ©seaux d'Ã©vasion." },
-    { q: "RÃ´le des femmes pendant la guerre ?", r: "Main-d'Å“uvre, infirmiÃ¨res, rÃ©sistantes." }
+
+    { q: "Procès de Nuremberg 1945-1946 ?", r: "Procès des criminels nazis pour crimes contre l'humanité." },
+
+    { q: "Crime contre l'humanité ?", r: "Acte inhumain contre une population civile." },
+
+    { q: "Création de l'ONU ?", r: "1945, remplace la SDN." },
+
+    { q: "DUDH 1948 ?", r: "Déclaration universelle des droits de l'homme." },
+
+    { q: "Plan Marshall 1947 ?", r: "Aide américaine pour reconstruire l'Europe (13 milliards de dollars)." },
+
+    { q: "Procès de Tokyo ?", r: "Jugement des criminels de guerre japonais." },
+
+    { q: "Génocide : définition ?", r: "Destruction d'un groupe national, ethnique, racial ou religieux." },
+
+    { q: "Résistance française ?", r: "Mouvements clandestins, maquis, réseaux d'évasion." },
+
+    { q: "Rôle des femmes pendant la guerre ?", r: "Main-d'œuvre, infirmières, résistantes." }
+
   ]},
+
   7: { titre: "Guerre froide (1947-1991)", cartes: [
-    { q: "Rideau de fer ?", r: "FrontiÃ¨re idÃ©ologique Est/Ouest (discours Churchill 1946)." },
+
+    { q: "Rideau de fer ?", r: "Frontière idéologique Est/Ouest (discours Churchill 1946)." },
+
     { q: "Doctrine Truman ?", r: "Endiguement du communisme." },
-    { q: "Plan Marshall 1947 ?", r: "Aide amÃ©ricaine Ã  l'Europe de l'Ouest (refusÃ©e par l'URSS)." },
-    { q: "Allemagne coupÃ©e ?", r: "RFA (Ouest) et RDA (Est). Berlin divisÃ©e en 4 secteurs." },
-    { q: "Blocus de Berlin 1948-1949 ?", r: "URSS bloque Berlin-Ouest, pont aÃ©rien amÃ©ricain." },
+
+    { q: "Plan Marshall 1947 ?", r: "Aide américaine à l'Europe de l'Ouest (refusée par l'URSS)." },
+
+    { q: "Allemagne coupée ?", r: "RFA (Ouest) et RDA (Est). Berlin divisée en 4 secteurs." },
+
+    { q: "Blocus de Berlin 1948-1949 ?", r: "URSS bloque Berlin-Ouest, pont aérien américain." },
+
     { q: "OTAN 1949 ?", r: "Alliance militaire des pays capitalistes." },
+
     { q: "Pacte de Varsovie 1955 ?", r: "Alliance militaire des pays communistes." },
-    { q: "Crise de Cuba 1962 ?", r: "Missiles soviÃ©tiques Ã  Cuba, monde frÃ´le la guerre nuclÃ©aire." },
-    { q: "Guerre par procuration ?", r: "Superpuissances s'affrontent par pays interposÃ©s (Vietnam)." },
+
+    { q: "Crise de Cuba 1962 ?", r: "Missiles soviétiques à Cuba, monde frôle la guerre nucléaire." },
+
+    { q: "Guerre par procuration ?", r: "Superpuissances s'affrontent par pays interposés (Vietnam)." },
+
     { q: "Chute du mur de Berlin ?", r: "9 novembre 1989. Fin de l'URSS : 1991." }
+
   ]},
-  8: { titre: "Construction europÃ©enne", cartes: [
-    { q: "CECA 1951 ?", r: "CommunautÃ© europÃ©enne du charbon et de l'acier." },
-    { q: "CEE 1957 ?", r: "CommunautÃ© Ã©conomique europÃ©enne, traitÃ© de Rome." },
+
+  8: { titre: "Construction européenne", cartes: [
+
+    { q: "CECA 1951 ?", r: "Communauté européenne du charbon et de l'acier." },
+
+    { q: "CEE 1957 ?", r: "Communauté économique européenne, traité de Rome." },
+
     { q: "6 pays fondateurs ?", r: "France, Allemagne, Italie, Belgique, Pays-Bas, Luxembourg." },
-    { q: "TraitÃ© de Maastricht 1992 ?", r: "CrÃ©ation de l'UE, citoyennetÃ© europÃ©enne, prÃ©pare l'euro." },
+
+    { q: "Traité de Maastricht 1992 ?", r: "Création de l'UE, citoyenneté européenne, prépare l'euro." },
+
     { q: "Euro en circulation ?", r: "2002." },
+
     { q: "Espace Schengen ?", r: "Libre circulation des personnes." },
+
     { q: "Brexit 2020 ?", r: "Sortie du Royaume-Uni de l'UE." },
+
     { q: "PAC ?", r: "Politique agricole commune." },
-    { q: "Acte unique europÃ©en 1986 ?", r: "CrÃ©ation du marchÃ© unique." },
-    { q: "Programme Erasmus+ ?", r: "MobilitÃ© Ã©tudiante europÃ©enne." }
+
+    { q: "Acte unique européen 1986 ?", r: "Création du marché unique." },
+
+    { q: "Programme Erasmus+ ?", r: "Mobilité étudiante européenne." }
+
   ]},
-  9: { titre: "DÃ©colonisation (1945-1975)", cartes: [
-    { q: "ConfÃ©rence de Bandung 1955 ?", r: "ConfÃ©rence des non-alignÃ©s." },
-    { q: "Guerre d'Indochine 1946-1954 ?", r: "DÃ©faite franÃ§aise Ã  DiÃªn BiÃªn Phu." },
-    { q: "Guerre d'AlgÃ©rie 1954-1962 ?", r: "Accords d'Ã‰vian 1962." },
-    { q: "FLN ?", r: "Front de libÃ©ration nationale algÃ©rien." },
-    { q: "1960 en Afrique ?", r: "AnnÃ©e de l'Afrique : 17 indÃ©pendances." },
-    { q: "IndÃ©pendance de l'Inde 1947 ?", r: "Gandhi, partition avec le Pakistan." },
+
+  9: { titre: "Décolonisation (1945-1975)", cartes: [
+
+    { q: "Conférence de Bandung 1955 ?", r: "Conférence des non-alignés." },
+
+    { q: "Guerre d'Indochine 1946-1954 ?", r: "Défaite française à Diên Biên Phu." },
+
+    { q: "Guerre d'Algérie 1954-1962 ?", r: "Accords d'Évian 1962." },
+
+    { q: "FLN ?", r: "Front de libération nationale algérien." },
+
+    { q: "1960 en Afrique ?", r: "Année de l'Afrique : 17 indépendances." },
+
+    { q: "Indépendance de l'Inde 1947 ?", r: "Gandhi, partition avec le Pakistan." },
+
     { q: "Guerre du Vietnam 1955-1975 ?", r: "Victoire du Nord communiste." },
-    { q: "DÃ©colonisation portugaise ?", r: "1974-1975, rÃ©volution des Å’illets." },
-    { q: "FranÃ§afrique ?", r: "Influence de la France en Afrique post-indÃ©pendances." },
-    { q: "MÃ©moires douloureuses de la colonisation ?", r: "Reconnaissance des crimes coloniaux, restitution d'Å“uvres." }
+
+    { q: "Décolonisation portugaise ?", r: "1974-1975, révolution des Œillets." },
+
+    { q: "Françafrique ?", r: "Influence de la France en Afrique post-indépendances." },
+
+    { q: "Mémoires douloureuses de la colonisation ?", r: "Reconnaissance des crimes coloniaux, restitution d'œuvres." }
+
   ]},
-  10: { titre: "AprÃ¨s-guerre froide (1991 Ã  nos jours)", cartes: [
-    { q: "Guerre du Golfe 1990-1991 ?", r: "Intervention contre l'Irak aprÃ¨s l'invasion du KoweÃ¯t." },
+
+  10: { titre: "Après-guerre froide (1991 à nos jours)", cartes: [
+
+    { q: "Guerre du Golfe 1990-1991 ?", r: "Intervention contre l'Irak après l'invasion du Koweït." },
+
     { q: "Guerres de Yougoslavie 1991-2001 ?", r: "Guerres civiles, nettoyage ethnique (Bosnie, Kosovo)." },
-    { q: "GÃ©nocide au Rwanda 1994 ?", r: "Extermination des Tutsis, 800 000 morts." },
-    { q: "11 septembre 2001 ?", r: "Attentats d'Al-QaÃ¯da sur les tours jumelles." },
+
+    { q: "Génocide au Rwanda 1994 ?", r: "Extermination des Tutsis, 800 000 morts." },
+
+    { q: "11 septembre 2001 ?", r: "Attentats d'Al-Qaïda sur les tours jumelles." },
+
     { q: "Guerre contre le terrorisme ?", r: "Invasions de l'Afghanistan 2001 et de l'Irak 2003." },
-    { q: "BRICS ?", r: "BrÃ©sil, Russie, Inde, Chine, Afrique du Sud." },
-    { q: "Crise des migrants 2015 ?", r: "Guerres (Syrie), pauvretÃ©, changements climatiques." },
-    { q: "Accord de Paris 2015 ?", r: "Lutter contre le rÃ©chauffement climatique." },
-    { q: "PandÃ©mie Covid-19 2020 ?", r: "PandÃ©mie mondiale, confinements, vaccins." },
-    { q: "DÃ©fis actuels ?", r: "Climat, migrations, IA, montÃ©e des populismes." }
+
+    { q: "BRICS ?", r: "Brésil, Russie, Inde, Chine, Afrique du Sud." },
+
+    { q: "Crise des migrants 2015 ?", r: "Guerres (Syrie), pauvreté, changements climatiques." },
+
+    { q: "Accord de Paris 2015 ?", r: "Lutter contre le réchauffement climatique." },
+
+    { q: "Pandémie Covid-19 2020 ?", r: "Pandémie mondiale, confinements, vaccins." },
+
+    { q: "Défis actuels ?", r: "Climat, migrations, IA, montée des populismes." }
+
   ]},
-  11: { titre: "Aires urbaines franÃ§aises", cartes: [
-    { q: "MÃ©tropolisation ?", r: "Concentration des activitÃ©s et population dans les grandes mÃ©tropoles." },
-    { q: "Aire urbaine ?", r: "PÃ´le urbain + couronne pÃ©riurbaine." },
-    { q: "Principales mÃ©tropoles franÃ§aises ?", r: "Paris, Lyon, Marseille, Lille, Toulouse, Bordeaux, Nice, Nantes." },
-    { q: "SÃ©grÃ©gation socio-spatiale ?", r: "SÃ©paration des populations selon leurs revenus." },
-    { q: "Ã‰talement urbain ?", r: "Consommation d'espaces naturels par les villes." },
-    { q: "PÃ©riurbanisation ?", r: "Installation des citadins dans les communes pÃ©riurbaines." },
-    { q: "Sort des villes moyennes ?", r: "En difficultÃ© face aux mÃ©tropoles." },
-    { q: "Ã‰co-quartier ?", r: "Quartier durable (basse consommation, espaces verts)." },
-    { q: "Gentrification ?", r: "Remplacement des populations modestes par des classes aisÃ©es." },
+
+  11: { titre: "Aires urbaines françaises", cartes: [
+
+    { q: "Métropolisation ?", r: "Concentration des activités et population dans les grandes métropoles." },
+
+    { q: "Aire urbaine ?", r: "Pôle urbain + couronne périurbaine." },
+
+    { q: "Principales métropoles françaises ?", r: "Paris, Lyon, Marseille, Lille, Toulouse, Bordeaux, Nice, Nantes." },
+
+    { q: "Ségrégation socio-spatiale ?", r: "Séparation des populations selon leurs revenus." },
+
+    { q: "Étalement urbain ?", r: "Consommation d'espaces naturels par les villes." },
+
+    { q: "Périurbanisation ?", r: "Installation des citadins dans les communes périurbaines." },
+
+    { q: "Sort des villes moyennes ?", r: "En difficulté face aux métropoles." },
+
+    { q: "Éco-quartier ?", r: "Quartier durable (basse consommation, espaces verts)." },
+
+    { q: "Gentrification ?", r: "Remplacement des populations modestes par des classes aisées." },
+
     { q: "QPV ?", r: "Quartiers prioritaires de la politique de la ville." }
+
   ]},
-  12: { titre: "Les espaces productifs franÃ§ais", cartes: [
-    { q: "Espaces agricoles franÃ§ais ?", r: "CÃ©rÃ©ales (Bassin parisien), Ã©levage (Massif central), viticulture." },
-    { q: "DÃ©sindustrialisation ?", r: "Baisse emploi industriel, friches." },
+
+  12: { titre: "Les espaces productifs français", cartes: [
+
+    { q: "Espaces agricoles français ?", r: "Céréales (Bassin parisien), élevage (Massif central), viticulture." },
+
+    { q: "Désindustrialisation ?", r: "Baisse emploi industriel, friches." },
+
     { q: "Tertiarisation ?", r: "Augmentation de la part des services." },
-    { q: "PÃ´le de compÃ©titivitÃ© ?", r: "Regroupement d'entreprises, chercheurs et universitÃ©s pour innover." },
-    { q: "Zone industrialo-portuaire ?", r: "Zone industrielle liÃ©e Ã  un port (Le Havre, Fos-sur-Mer)." },
+
+    { q: "Pôle de compétitivité ?", r: "Regroupement d'entreprises, chercheurs et universités pour innover." },
+
+    { q: "Zone industrialo-portuaire ?", r: "Zone industrielle liée à un port (Le Havre, Fos-sur-Mer)." },
+
     { q: "Tourisme en France ?", r: "1er pays touristique mondial (86M de visiteurs)." },
-    { q: "Ã‰nergies renouvelables en France ?", r: "Parcs Ã©oliens, centrales solaires, barrages hydrauliques." },
-    { q: "Reconversion des friches industrielles ?", r: "Sites culturels, numÃ©riques ou logistiques." },
-    { q: "French Tech ?", r: "Ã‰cosystÃ¨me des startups franÃ§aises." },
-    { q: "Grand Paris ?", r: "Projet d'amÃ©nagement de la mÃ©tropole parisienne." }
+
+    { q: "Énergies renouvelables en France ?", r: "Parcs éoliens, centrales solaires, barrages hydrauliques." },
+
+    { q: "Reconversion des friches industrielles ?", r: "Sites culturels, numériques ou logistiques." },
+
+    { q: "French Tech ?", r: "Écosystème des startups françaises." },
+
+    { q: "Grand Paris ?", r: "Projet d'aménagement de la métropole parisienne." }
+
   ]},
-  13: { titre: "Les espaces de faible densitÃ© franÃ§ais", cartes: [
-    { q: "Atouts des espaces ruraux ?", r: "Cadre de vie, tourisme vert, agriculture, Ã©nergies renouvelables." },
-    { q: "FragilitÃ©s des espaces ruraux ?", r: "Vieillissement, enclavement, dÃ©sertification mÃ©dicale." },
-    { q: "NÃ©oruraux ?", r: "Citadins s'installant Ã  la campagne (tÃ©lÃ©travail)." },
+
+  13: { titre: "Les espaces de faible densité français", cartes: [
+
+    { q: "Atouts des espaces ruraux ?", r: "Cadre de vie, tourisme vert, agriculture, énergies renouvelables." },
+
+    { q: "Fragilités des espaces ruraux ?", r: "Vieillissement, enclavement, désertification médicale." },
+
+    { q: "Néoruraux ?", r: "Citadins s'installant à la campagne (télétravail)." },
+
     { q: "ZRR ?", r: "Zones de revitalisation rurale (aides fiscales)." },
-    { q: "TÃ©lÃ©travail et espaces ruraux ?", r: "Dynamise certains territoires." },
-    { q: "Espaces de montagne ?", r: "Contraintes (froid, pente) et atouts (tourisme, hydroÃ©lectricitÃ©)." },
+
+    { q: "Télétravail et espaces ruraux ?", r: "Dynamise certains territoires." },
+
+    { q: "Espaces de montagne ?", r: "Contraintes (froid, pente) et atouts (tourisme, hydroélectricité)." },
+
     { q: "Espaces littoraux ?", r: "Pression touristique, conflits d'usage, risques de submersion." },
-    { q: "Diagonale du vide ?", r: "Zone de faible densitÃ© traversant la France du nord-est au sud-ouest." },
-    { q: "HyperruralitÃ© ?", r: "Espaces trÃ¨s peu denses, Ã©loignÃ©s des services." },
-    { q: "Plan Action CÅ“ur de Ville ?", r: "Revitaliser les centres-villes des villes moyennes." }
+
+    { q: "Diagonale du vide ?", r: "Zone de faible densité traversant la France du nord-est au sud-ouest." },
+
+    { q: "Hyperruralité ?", r: "Espaces très peu denses, éloignés des services." },
+
+    { q: "Plan Action Cœur de Ville ?", r: "Revitaliser les centres-villes des villes moyennes." }
+
   ]},
-  14: { titre: "Les espaces transfrontaliers franÃ§ais", cartes: [
-    { q: "EurocitÃ© ?", r: "CoopÃ©ration transfrontaliÃ¨re entre villes de pays diffÃ©rents." },
-    { q: "Principaux espaces transfrontaliers franÃ§ais ?", r: "Avec Allemagne, Suisse, Italie, Espagne, Belgique." },
-    { q: "Tunnel du Mont-Blanc ?", r: "Infrastructure reliant la France Ã  l'Italie (1965)." },
-    { q: "Eurodistrict Strasbourg-Ortenau ?", r: "CoopÃ©ration entre Strasbourg et l'Allemagne." },
-    { q: "Corridor Rhin-RhÃ´ne ?", r: "Infrastructure de transport majeure." },
-    { q: "Avantages coopÃ©ration transfrontaliÃ¨re ?", r: "Ã‰changes Ã©conomiques, mobilitÃ© des travailleurs." },
-    { q: "DÃ©fis espaces transfrontaliers ?", r: "Harmonisation des lois, barriÃ¨res linguistiques." },
-    { q: "ZIP de Dunkerque ?", r: "Zone industrialo-portuaire transfrontaliÃ¨re avec la Belgique." },
-    { q: "FrontiÃ¨res naturelles de la France ?", r: "Rhin, Alpes, PyrÃ©nÃ©es, MÃ©diterranÃ©e, Atlantique, Manche." },
-    { q: "CoopÃ©ration France-Suisse ?", r: "Emploi frontalier, Arc lÃ©manique." }
+
+  14: { titre: "Les espaces transfrontaliers français", cartes: [
+
+    { q: "Eurocité ?", r: "Coopération transfrontalière entre villes de pays différents." },
+
+    { q: "Principaux espaces transfrontaliers français ?", r: "Avec Allemagne, Suisse, Italie, Espagne, Belgique." },
+
+    { q: "Tunnel du Mont-Blanc ?", r: "Infrastructure reliant la France à l'Italie (1965)." },
+
+    { q: "Eurodistrict Strasbourg-Ortenau ?", r: "Coopération entre Strasbourg et l'Allemagne." },
+
+    { q: "Corridor Rhin-Rhône ?", r: "Infrastructure de transport majeure." },
+
+    { q: "Avantages coopération transfrontalière ?", r: "Échanges économiques, mobilité des travailleurs." },
+
+    { q: "Défis espaces transfrontaliers ?", r: "Harmonisation des lois, barrières linguistiques." },
+
+    { q: "ZIP de Dunkerque ?", r: "Zone industrialo-portuaire transfrontalière avec la Belgique." },
+
+    { q: "Frontières naturelles de la France ?", r: "Rhin, Alpes, Pyrénées, Méditerranée, Atlantique, Manche." },
+
+    { q: "Coopération France-Suisse ?", r: "Emploi frontalier, Arc lémanique." }
+
   ]},
-  15: { titre: "Les rÃ©gions ultramarines franÃ§aises", cartes: [
-    { q: "DROM ?", r: "Guadeloupe, Martinique, Guyane, La RÃ©union, Mayotte." },
-    { q: "COM ?", r: "Saint-Pierre-et-Miquelon, Saint-BarthÃ©lemy, Wallis-et-Futuna, PolynÃ©sie." },
-    { q: "SpÃ©cificitÃ©s des DROM ?", r: "MÃªmes lois que la mÃ©tropole, rÃ©gions europÃ©ennes." },
-    { q: "DÃ©fis des rÃ©gions ultramarines ?", r: "Ã‰loignement, chÃ´mage Ã©levÃ©, dÃ©pendance Ã©conomique." },
-    { q: "Atouts des rÃ©gions ultramarines ?", r: "BiodiversitÃ©, tourisme, ZEE." },
-    { q: "ZEE ?", r: "Zone Ã©conomique exclusive (droits d'exploitation des ressources maritimes)." },
-    { q: "Guyane stratÃ©gique ?", r: "Base de lancement de fusÃ©es (Kourou)." },
-    { q: "Plan ChlordÃ©cone ?", r: "DÃ©pollution des sols en Guadeloupe et Martinique." },
-    { q: "La RÃ©union ?", r: "ÃŽle volcanique de l'ocÃ©an Indien, 900 000 habitants." },
-    { q: "Mayotte ?", r: "101e dÃ©partement franÃ§ais, Ã®le de l'ocÃ©an Indien." }
+
+  15: { titre: "Les régions ultramarines françaises", cartes: [
+
+    { q: "DROM ?", r: "Guadeloupe, Martinique, Guyane, La Réunion, Mayotte." },
+
+    { q: "COM ?", r: "Saint-Pierre-et-Miquelon, Saint-Barthélemy, Wallis-et-Futuna, Polynésie." },
+
+    { q: "Spécificités des DROM ?", r: "Mêmes lois que la métropole, régions européennes." },
+
+    { q: "Défis des régions ultramarines ?", r: "Éloignement, chômage élevé, dépendance économique." },
+
+    { q: "Atouts des régions ultramarines ?", r: "Biodiversité, tourisme, ZEE." },
+
+    { q: "ZEE ?", r: "Zone économique exclusive (droits d'exploitation des ressources maritimes)." },
+
+    { q: "Guyane stratégique ?", r: "Base de lancement de fusées (Kourou)." },
+
+    { q: "Plan Chlordécone ?", r: "Dépollution des sols en Guadeloupe et Martinique." },
+
+    { q: "La Réunion ?", r: "Île volcanique de l'océan Indien, 900 000 habitants." },
+
+    { q: "Mayotte ?", r: "101e département français, île de l'océan Indien." }
+
   ]},
-  16: { titre: "L'Union europÃ©enne", cartes: [
+
+  16: { titre: "L'Union européenne", cartes: [
+
     { q: "Nombre de pays dans l'UE ?", r: "27 (depuis le Brexit 2020)." },
+
     { q: "PAC ?", r: "Politique agricole commune." },
-    { q: "Fonds structurels de l'UE ?", r: "FEDER (dÃ©veloppement rÃ©gional), FSE (emploi)." },
+
+    { q: "Fonds structurels de l'UE ?", r: "FEDER (développement régional), FSE (emploi)." },
+
     { q: "Schengen ?", r: "Libre circulation des personnes." },
-    { q: "InÃ©galitÃ©s territoriales dans l'UE ?", r: "Opposition Est/Ouest (PIB)." },
-    { q: "Capitales europÃ©ennes ?", r: "Bruxelles (Commission), Strasbourg (Parlement), Luxembourg (Justice)." },
-    { q: "RÃ©gions ultrapÃ©riphÃ©riques ?", r: "Territoires europÃ©ens hors continent (Guadeloupe, Guyane, RÃ©union)." },
+
+    { q: "Inégalités territoriales dans l'UE ?", r: "Opposition Est/Ouest (PIB)." },
+
+    { q: "Capitales européennes ?", r: "Bruxelles (Commission), Strasbourg (Parlement), Luxembourg (Justice)." },
+
+    { q: "Régions ultrapériphériques ?", r: "Territoires européens hors continent (Guadeloupe, Guyane, Réunion)." },
+
     { q: "Zone euro ?", r: "20 pays utilisant l'euro." },
-    { q: "Parlement europÃ©en ?", r: "Ã‰lu au suffrage universel direct." },
-    { q: "Conseil de l'Europe vs Conseil de l'UE ?", r: "Europe : droits de l'homme (47 pays). UE : dÃ©cisions de l'Union." }
+
+    { q: "Parlement européen ?", r: "Élu au suffrage universel direct." },
+
+    { q: "Conseil de l'Europe vs Conseil de l'UE ?", r: "Europe : droits de l'homme (47 pays). UE : décisions de l'Union." }
+
   ]},
+
   17: { titre: "La France dans la mondialisation", cartes: [
-    { q: "Principales FMN franÃ§aises ?", r: "TotalEnergies, LVMH, AXA, Carrefour, Airbus." },
-    { q: "Hubs franÃ§ais ?", r: "Roissy-CDG, Le Havre, Marseille-Fos." },
-    { q: "Territoires gagnants de la mondialisation ?", r: "MÃ©tropoles (Paris, Lyon), pÃ´les de compÃ©titivitÃ©." },
-    { q: "Territoires perdants ?", r: "Campagnes isolÃ©es, villes moyennes dÃ©sindustrialisÃ©es." },
-    { q: "RÃ´le de Paris dans la mondialisation ?", r: "Ville mondiale (finance, mode, tourisme, culture)." },
-    { q: "Flux touristiques franÃ§ais ?", r: "1Ã¨re destination touristique mondiale (86M visiteurs)." },
-    { q: "PIB de la France ?", r: "Environ 2 800 milliards d'euros (7e Ã©conomie mondiale)." },
-    { q: "Secteurs d'excellence franÃ§ais ?", r: "AÃ©ronautique (Airbus), luxe (LVMH), nuclÃ©aire (EDF)." },
-    { q: "DÃ©fis Ã©conomiques de la France ?", r: "ChÃ´mage, dette publique, transitions Ã©cologique et numÃ©rique." },
-    { q: "IDH de la France ?", r: "0,903 (trÃ¨s Ã©levÃ©, top 30 mondial)." }
+
+    { q: "Principales FMN françaises ?", r: "TotalEnergies, LVMH, AXA, Carrefour, Airbus." },
+
+    { q: "Hubs français ?", r: "Roissy-CDG, Le Havre, Marseille-Fos." },
+
+    { q: "Territoires gagnants de la mondialisation ?", r: "Métropoles (Paris, Lyon), pôles de compétitivité." },
+
+    { q: "Territoires perdants ?", r: "Campagnes isolées, villes moyennes désindustrialisées." },
+
+    { q: "Rôle de Paris dans la mondialisation ?", r: "Ville mondiale (finance, mode, tourisme, culture)." },
+
+    { q: "Flux touristiques français ?", r: "1ère destination touristique mondiale (86M visiteurs)." },
+
+    { q: "PIB de la France ?", r: "Environ 2 800 milliards d'euros (7e économie mondiale)." },
+
+    { q: "Secteurs d'excellence français ?", r: "Aéronautique (Airbus), luxe (LVMH), nucléaire (EDF)." },
+
+    { q: "Défis économiques de la France ?", r: "Chômage, dette publique, transitions écologique et numérique." },
+
+    { q: "IDH de la France ?", r: "0,903 (très élevé, top 30 mondial)." }
+
   ]},
-  18: { titre: "Les inÃ©galitÃ©s en France", cartes: [
-    { q: "Principales inÃ©galitÃ©s territoriales ?", r: "Opposition Est/Ouest, Nord/Sud, mÃ©tropoles/pÃ©riphÃ©ries." },
-    { q: "ChÃ´mage en France ?", r: "Environ 7-8%." },
-    { q: "PauvretÃ© en France ?", r: "14% sous le seuil de pauvretÃ© (1 102 â‚¬/mois)." },
-    { q: "Fracture numÃ©rique ?", r: "InÃ©galitÃ© d'accÃ¨s Ã  Internet entre villes et campagnes." },
-    { q: "Politiques contre les inÃ©galitÃ©s ?", r: "Minima sociaux, allocations logement, services publics." },
+
+  18: { titre: "Les inégalités en France", cartes: [
+
+    { q: "Principales inégalités territoriales ?", r: "Opposition Est/Ouest, Nord/Sud, métropoles/périphéries." },
+
+    { q: "Chômage en France ?", r: "Environ 7-8%." },
+
+    { q: "Pauvreté en France ?", r: "14% sous le seuil de pauvreté (1 102 €/mois)." },
+
+    { q: "Fracture numérique ?", r: "Inégalité d'accès à Internet entre villes et campagnes." },
+
+    { q: "Politiques contre les inégalités ?", r: "Minima sociaux, allocations logement, services publics." },
+
     { q: "Zonage prioritaire ?", r: "QPV (quartiers prioritaires), ZRR (zones rurales)." },
-    { q: "Revenu mÃ©dian en France ?", r: "Environ 1 800 â‚¬ par mois." },
-    { q: "InÃ©galitÃ©s de genre ?", r: "Ã‰cart de salaire hommes/femmes (17%), plafond de verre." },
-    { q: "InÃ©galitÃ©s scolaires ?", r: "Reproduction sociale, effet d'Ã©tablissement." },
-    { q: "MixitÃ© sociale ?", r: "Politique de mÃ©lange des catÃ©gories sociales." }
+
+    { q: "Revenu médian en France ?", r: "Environ 1 800 € par mois." },
+
+    { q: "Inégalités de genre ?", r: "Écart de salaire hommes/femmes (17%), plafond de verre." },
+
+    { q: "Inégalités scolaires ?", r: "Reproduction sociale, effet d'établissement." },
+
+    { q: "Mixité sociale ?", r: "Politique de mélange des catégories sociales." }
+
   ]},
+
   19: { titre: "La mondialisation", cartes: [
-    { q: "Mondialisation ?", r: "Mise en relation des diffÃ©rentes parties du monde par les Ã©changes." },
-    { q: "FMN ?", r: "Firme multinationale (Apple, Total, NestlÃ©)." },
+
+    { q: "Mondialisation ?", r: "Mise en relation des différentes parties du monde par les échanges." },
+
+    { q: "FMN ?", r: "Firme multinationale (Apple, Total, Nestlé)." },
+
     { q: "3 piliers institutionnels ?", r: "OMC (commerce), FMI (finance), Banque mondiale." },
+
     { q: "Flux de la mondialisation ?", r: "Marchandises (conteneurs), capitaux, informations, personnes." },
-    { q: "Hub ?", r: "Plateforme oÃ¹ transitent les flux mondiaux." },
-    { q: "MÃ©galopole ?", r: "RÃ©gion urbaine trÃ¨s peuplÃ©e (Tokyo, NY, Londres, Shanghai, Paris)." },
-    { q: "Pays Ã©mergents ?", r: "Pays Ã  forte croissance (BRICS)." },
-    { q: "InÃ©galitÃ©s de la mondialisation ?", r: "MÃ©tropoles gagnantes / territoires perdants." },
-    { q: "DÃ©localisation ?", r: "Transfert d'activitÃ©s vers des pays Ã  bas coÃ»ts." },
-    { q: "Relocalisation ?", r: "Retour d'activitÃ©s dans le pays d'origine." }
+
+    { q: "Hub ?", r: "Plateforme où transitent les flux mondiaux." },
+
+    { q: "Mégalopole ?", r: "Région urbaine très peuplée (Tokyo, NY, Londres, Shanghai, Paris)." },
+
+    { q: "Pays émergents ?", r: "Pays à forte croissance (BRICS)." },
+
+    { q: "Inégalités de la mondialisation ?", r: "Métropoles gagnantes / territoires perdants." },
+
+    { q: "Délocalisation ?", r: "Transfert d'activités vers des pays à bas coûts." },
+
+    { q: "Relocalisation ?", r: "Retour d'activités dans le pays d'origine." }
+
   ]},
-  20: { titre: "Les inÃ©galitÃ©s de dÃ©veloppement", cartes: [
-    { q: "IDH ?", r: "Indice de dÃ©veloppement humain (PIB, santÃ©, Ã©ducation)." },
-    { q: "Distinction Nord/Sud ?", r: "Nord = pays dÃ©veloppÃ©s, Sud = pays en dÃ©veloppement." },
-    { q: "PMA ?", r: "Pays les moins avancÃ©s (Afrique subsaharienne, Afghanistan)." },
-    { q: "Taux d'alphabÃ©tisation ?", r: "Mesure l'accÃ¨s Ã  l'Ã©ducation." },
-    { q: "EspÃ©rance de vie ?", r: "DurÃ©e de vie moyenne, reflet de la santÃ©." },
-    { q: "OMD ?", r: "Objectifs du millÃ©naire pour le dÃ©veloppement (ONU 2000)." },
-    { q: "ODD ?", r: "Objectifs de dÃ©veloppement durable (ONU 2015, pour 2030)." },
-    { q: "Fracture numÃ©rique mondiale ?", r: "InÃ©galitÃ© d'accÃ¨s Ã  Internet entre pays." },
-    { q: "Aide publique au dÃ©veloppement ?", r: "0,7% du PIB des pays riches (objectif ONU)." },
-    { q: "Dette des pays du Sud ?", r: "Frein au dÃ©veloppement, dÃ©pendance envers les crÃ©anciers." }
+
+  20: { titre: "Les inégalités de développement", cartes: [
+
+    { q: "IDH ?", r: "Indice de développement humain (PIB, santé, éducation)." },
+
+    { q: "Distinction Nord/Sud ?", r: "Nord = pays développés, Sud = pays en développement." },
+
+    { q: "PMA ?", r: "Pays les moins avancés (Afrique subsaharienne, Afghanistan)." },
+
+    { q: "Taux d'alphabétisation ?", r: "Mesure l'accès à l'éducation." },
+
+    { q: "Espérance de vie ?", r: "Durée de vie moyenne, reflet de la santé." },
+
+    { q: "OMD ?", r: "Objectifs du millénaire pour le développement (ONU 2000)." },
+
+    { q: "ODD ?", r: "Objectifs de développement durable (ONU 2015, pour 2030)." },
+
+    { q: "Fracture numérique mondiale ?", r: "Inégalité d'accès à Internet entre pays." },
+
+    { q: "Aide publique au développement ?", r: "0,7% du PIB des pays riches (objectif ONU)." },
+
+    { q: "Dette des pays du Sud ?", r: "Frein au développement, dépendance envers les créanciers." }
+
   ]},
-  21: { titre: "Les dÃ©fis du XXIe siÃ¨cle", cartes: [
-    { q: "Changement climatique ?", r: "Augmentation de la tempÃ©rature due aux GES." },
-    { q: "Transition Ã©nergÃ©tique ?", r: "Passage des Ã©nergies fossiles aux renouvelables." },
-    { q: "Types de migrations ?", r: "Ã‰conomiques, politiques (rÃ©fugiÃ©s), climatiques." },
-    { q: "Conflit asymÃ©trique ?", r: "ArmÃ©e rÃ©guliÃ¨re contre groupes non Ã©tatiques." },
-    { q: "DÃ©veloppement durable ?", r: "RÃ©pondre aux besoins actuels sans compromettre l'avenir." },
-    { q: "Ã‰conomie circulaire ?", r: "Recycler, rÃ©parer, rÃ©utiliser." },
-    { q: "DÃ©fis de l'IA ?", r: "Ã‰thique, emplois, dÃ©sinformation." },
-    { q: "DÃ©sinformation ?", r: "Fausses informations diffusÃ©es pour manipuler." },
-    { q: "Accord de Paris 2015 ?", r: "Lutter contre le rÃ©chauffement, limiter Ã  +1,5Â°C." },
-    { q: "COP ?", r: "ConfÃ©rence des Parties, nÃ©gociations climatiques." }
+
+  21: { titre: "Les défis du XXIe siècle", cartes: [
+
+    { q: "Changement climatique ?", r: "Augmentation de la température due aux GES." },
+
+    { q: "Transition énergétique ?", r: "Passage des énergies fossiles aux renouvelables." },
+
+    { q: "Types de migrations ?", r: "Économiques, politiques (réfugiés), climatiques." },
+
+    { q: "Conflit asymétrique ?", r: "Armée régulière contre groupes non étatiques." },
+
+    { q: "Développement durable ?", r: "Répondre aux besoins actuels sans compromettre l'avenir." },
+
+    { q: "Économie circulaire ?", r: "Recycler, réparer, réutiliser." },
+
+    { q: "Défis de l'IA ?", r: "Éthique, emplois, désinformation." },
+
+    { q: "Désinformation ?", r: "Fausses informations diffusées pour manipuler." },
+
+    { q: "Accord de Paris 2015 ?", r: "Lutter contre le réchauffement, limiter à +1,5°C." },
+
+    { q: "COP ?", r: "Conférence des Parties, négociations climatiques." }
+
   ]},
+
   22: { titre: "Les aires urbaines mondiales", cartes: [
-    { q: "MÃ©galopole ?", r: "RÃ©gion urbaine de plusieurs millions d'habitants." },
+
+    { q: "Mégalopole ?", r: "Région urbaine de plusieurs millions d'habitants." },
+
     { q: "Ville mondiale ?", r: "Ville concentrant les fonctions de commandement mondial." },
+
     { q: "Principales villes mondiales ?", r: "New York, Londres, Tokyo, Paris, Singapour." },
+
     { q: "Urbanisation mondiale ?", r: "55% de la population mondiale vit en ville." },
-    { q: "ProblÃ¨mes des mÃ©gapoles du Sud ?", r: "Bidonvilles, transports saturÃ©s, pollution." },
-    { q: "Ã‰talement urbain mondial ?", r: "Consommation d'espaces naturels par les villes." },
-    { q: "Gentrification ?", r: "Remplacement des populations modestes par des classes aisÃ©es." },
-    { q: "DÃ©veloppement urbain durable ?", r: "Ã‰co-quartiers, transports en commun, vÃ©gÃ©talisation." },
-    { q: "Bidonville ?", r: "Quartier informel sans Ã©quipements (favelas, shanty towns)." },
-    { q: "Smart city ?", r: "Ville intelligente utilisant les donnÃ©es numÃ©riques." }
+
+    { q: "Problèmes des mégapoles du Sud ?", r: "Bidonvilles, transports saturés, pollution." },
+
+    { q: "Étalement urbain mondial ?", r: "Consommation d'espaces naturels par les villes." },
+
+    { q: "Gentrification ?", r: "Remplacement des populations modestes par des classes aisées." },
+
+    { q: "Développement urbain durable ?", r: "Éco-quartiers, transports en commun, végétalisation." },
+
+    { q: "Bidonville ?", r: "Quartier informel sans équipements (favelas, shanty towns)." },
+
+    { q: "Smart city ?", r: "Ville intelligente utilisant les données numériques." }
+
   ]},
-  23: { titre: "Valeurs de la RÃ©publique (EMC)", cartes: [
-    { q: "LibertÃ© (valeur rÃ©publicaine) ?", r: "LibertÃ© d'expression, de presse, de conscience." },
-    { q: "Ã‰galitÃ© (valeur rÃ©publicaine) ?", r: "Ã‰galitÃ© des droits, lutte contre les discriminations." },
-    { q: "FraternitÃ© (valeur rÃ©publicaine) ?", r: "SolidaritÃ©, sÃ©curitÃ© sociale." },
-    { q: "LaÃ¯citÃ© ?", r: "NeutralitÃ© de l'Ã‰tat, sÃ©paration Ã‰glises/Ã‰tat (loi 1905)." },
-    { q: "Devise de la RÃ©publique ?", r: "LibertÃ©, Ã‰galitÃ©, FraternitÃ©." },
-    { q: "NeutralitÃ© des agents publics ?", r: "Les fonctionnaires ne manifestent pas leurs opinions religieuses." },
-    { q: "Charte de la laÃ¯citÃ© 2013 ?", r: "Texte sur la laÃ¯citÃ© Ã  l'Ã©cole." },
-    { q: "Limites Ã  la libertÃ© d'expression ?", r: "Diffamation, incitation Ã  la haine, nÃ©gationnisme." },
-    { q: "Loi 1905 ?", r: "SÃ©paration des Ã‰glises et de l'Ã‰tat." },
-    { q: "Principes constitutionnels franÃ§ais ?", r: "RÃ©publique indivisible, laÃ¯que, dÃ©mocratique et sociale." }
+
+  23: { titre: "Valeurs de la République (EMC)", cartes: [
+
+    { q: "Liberté (valeur républicaine) ?", r: "Liberté d'expression, de presse, de conscience." },
+
+    { q: "Égalité (valeur républicaine) ?", r: "Égalité des droits, lutte contre les discriminations." },
+
+    { q: "Fraternité (valeur républicaine) ?", r: "Solidarité, sécurité sociale." },
+
+    { q: "Laïcité ?", r: "Neutralité de l'État, séparation Églises/État (loi 1905)." },
+
+    { q: "Devise de la République ?", r: "Liberté, Égalité, Fraternité." },
+
+    { q: "Neutralité des agents publics ?", r: "Les fonctionnaires ne manifestent pas leurs opinions religieuses." },
+
+    { q: "Charte de la laïcité 2013 ?", r: "Texte sur la laïcité à l'école." },
+
+    { q: "Limites à la liberté d'expression ?", r: "Diffamation, incitation à la haine, négationnisme." },
+
+    { q: "Loi 1905 ?", r: "Séparation des Églises et de l'État." },
+
+    { q: "Principes constitutionnels français ?", r: "République indivisible, laïque, démocratique et sociale." }
+
   ]},
-  24: { titre: "CitoyennetÃ© franÃ§aise (EMC)", cartes: [
-    { q: "Droit du sol ?", r: "NationalitÃ© par naissance en France." },
-    { q: "Droit du sang ?", r: "NationalitÃ© par filiation (parents franÃ§ais)." },
-    { q: "Naturalisation ?", r: "ProcÃ©dure pour devenir franÃ§ais." },
-    { q: "Conditions pour voter ?", r: "ÃŠtre majeur (18 ans), franÃ§ais, jouir de ses droits civils." },
-    { q: "Devoir de dÃ©fense ?", r: "JDC (journÃ©e dÃ©fense citoyennetÃ©)." },
+
+  24: { titre: "Citoyenneté française (EMC)", cartes: [
+
+    { q: "Droit du sol ?", r: "Nationalité par naissance en France." },
+
+    { q: "Droit du sang ?", r: "Nationalité par filiation (parents français)." },
+
+    { q: "Naturalisation ?", r: "Procédure pour devenir français." },
+
+    { q: "Conditions pour voter ?", r: "Être majeur (18 ans), français, jouir de ses droits civils." },
+
+    { q: "Devoir de défense ?", r: "JDC (journée défense citoyenneté)." },
+
     { q: "SNU ?", r: "Service national universel (12 jours)." },
+
     { q: "Service civique ?", r: "Engagement volontaire dans une association." },
-    { q: "3 niveaux des institutions franÃ§aises ?", r: "Communes, dÃ©partements, rÃ©gions. Ã‰tat (PrÃ©sident, Parlement)." },
+
+    { q: "3 niveaux des institutions françaises ?", r: "Communes, départements, régions. État (Président, Parlement)." },
+
     { q: "Suffrage universel ?", r: "Droit de vote pour tous les citoyens majeurs." },
-    { q: "RÃ´le du Conseil constitutionnel ?", r: "VÃ©rifier la conformitÃ© des lois Ã  la Constitution." }
+
+    { q: "Rôle du Conseil constitutionnel ?", r: "Vérifier la conformité des lois à la Constitution." }
+
   ]},
+
   25: { titre: "Justice en France (EMC)", cartes: [
-    { q: "3 grands principes de la justice ?", r: "IndÃ©pendance, Ã©galitÃ© devant la loi, prÃ©somption d'innocence." },
-    { q: "PrÃ©somption d'innocence ?", r: "Innocent tant qu'il n'est pas jugÃ© coupable." },
-    { q: "Justice civile vs pÃ©nale ?", r: "Civile : litiges entre personnes. PÃ©nale : infractions." },
+
+    { q: "3 grands principes de la justice ?", r: "Indépendance, égalité devant la loi, présomption d'innocence." },
+
+    { q: "Présomption d'innocence ?", r: "Innocent tant qu'il n'est pas jugé coupable." },
+
+    { q: "Justice civile vs pénale ?", r: "Civile : litiges entre personnes. Pénale : infractions." },
+
     { q: "Cour d'assises ?", r: "Juge les crimes (juges + jury populaire)." },
-    { q: "TIG ?", r: "Travail d'intÃ©rÃªt gÃ©nÃ©ral (peine alternative)." },
-    { q: "Juge des enfants ?", r: "Magistrat spÃ©cialisÃ© dans la protection des mineurs." },
+
+    { q: "TIG ?", r: "Travail d'intérêt général (peine alternative)." },
+
+    { q: "Juge des enfants ?", r: "Magistrat spécialisé dans la protection des mineurs." },
+
     { q: "Aide juridictionnelle ?", r: "Prise en charge des frais de justice pour les revenus modestes." },
-    { q: "Tribunal correctionnel ?", r: "Juge les dÃ©lits." },
-    { q: "Cour de cassation ?", r: "Plus haute juridiction civile et pÃ©nale." },
-    { q: "Conseil d'Ã‰tat ?", r: "Plus haute juridiction administrative." }
+
+    { q: "Tribunal correctionnel ?", r: "Juge les délits." },
+
+    { q: "Cour de cassation ?", r: "Plus haute juridiction civile et pénale." },
+
+    { q: "Conseil d'État ?", r: "Plus haute juridiction administrative." }
+
   ]},
-  26: { titre: "DÃ©bat dÃ©mocratique et mÃ©dias (EMC)", cartes: [
-    { q: "3 rÃ´les des mÃ©dias ?", r: "Informer, permettre le dÃ©bat, contrÃ´ler le pouvoir." },
-    { q: "LibertÃ© de la presse ?", r: "Droit d'informer sans censure (loi 1881)." },
-    { q: "Fake news ?", r: "Fausses informations diffusÃ©es pour manipuler." },
-    { q: "Fact-checking ?", r: "VÃ©rification des faits par les journalistes." },
-    { q: "Dangers des rÃ©seaux sociaux ?", r: "Bulles de filtre, harcÃ¨lement, fake news." },
-    { q: "Loi de 1881 ?", r: "Loi sur la libertÃ© de la presse." },
-    { q: "Droit de grÃ¨ve ?", r: "Droit des salariÃ©s de cesser le travail." },
-    { q: "Associations loi 1901 ?", r: "Associations Ã  but non lucratif." },
+
+  26: { titre: "Débat démocratique et médias (EMC)", cartes: [
+
+    { q: "3 rôles des médias ?", r: "Informer, permettre le débat, contrôler le pouvoir." },
+
+    { q: "Liberté de la presse ?", r: "Droit d'informer sans censure (loi 1881)." },
+
+    { q: "Fake news ?", r: "Fausses informations diffusées pour manipuler." },
+
+    { q: "Fact-checking ?", r: "Vérification des faits par les journalistes." },
+
+    { q: "Dangers des réseaux sociaux ?", r: "Bulles de filtre, harcèlement, fake news." },
+
+    { q: "Loi de 1881 ?", r: "Loi sur la liberté de la presse." },
+
+    { q: "Droit de grève ?", r: "Droit des salariés de cesser le travail." },
+
+    { q: "Associations loi 1901 ?", r: "Associations à but non lucratif." },
+
     { q: "Bulle de filtre ?", r: "Enfermement dans des informations qui confirment nos opinions." },
-    { q: "Pluralisme mÃ©diatique ?", r: "DiversitÃ© des mÃ©dias et des opinions." }
+
+    { q: "Pluralisme médiatique ?", r: "Diversité des médias et des opinions." }
+
   ]},
+
   27: { titre: "La France et l'Europe", cartes: [
-    { q: "Poids dÃ©mographique de la France ?", r: "2e pays le plus peuplÃ© de l'UE (68M)." },
-    { q: "RÃ´le de la France dans l'UE ?", r: "Pays fondateur, membre du Conseil." },
-    { q: "1Ã¨re puissance agricole de l'UE ?", r: "France (blÃ©, maÃ¯s, Ã©levage)." },
-    { q: "Secteurs d'excellence franÃ§ais ?", r: "AÃ©ronautique (Airbus), luxe (LVMH), nuclÃ©aire (EDF)." },
-    { q: "DÃ©fis de la France ?", r: "ChÃ´mage, dette publique, transitions Ã©cologique/numÃ©rique." },
-    { q: "CoopÃ©ration transfrontaliÃ¨re ?", r: "Projets communs avec les pays voisins." },
-    { q: "France et OTAN ?", r: "Membre fondateur, retour dans le commandement intÃ©grÃ© en 2009." },
-    { q: "Langue franÃ§aise dans le monde ?", r: "Langue officielle dans 29 pays, 300M locuteurs." },
+
+    { q: "Poids démographique de la France ?", r: "2e pays le plus peuplé de l'UE (68M)." },
+
+    { q: "Rôle de la France dans l'UE ?", r: "Pays fondateur, membre du Conseil." },
+
+    { q: "1ère puissance agricole de l'UE ?", r: "France (blé, maïs, élevage)." },
+
+    { q: "Secteurs d'excellence français ?", r: "Aéronautique (Airbus), luxe (LVMH), nucléaire (EDF)." },
+
+    { q: "Défis de la France ?", r: "Chômage, dette publique, transitions écologique/numérique." },
+
+    { q: "Coopération transfrontalière ?", r: "Projets communs avec les pays voisins." },
+
+    { q: "France et OTAN ?", r: "Membre fondateur, retour dans le commandement intégré en 2009." },
+
+    { q: "Langue française dans le monde ?", r: "Langue officielle dans 29 pays, 300M locuteurs." },
+
     { q: "Francophonie ?", r: "Organisation internationale de la francophonie (OIF)." },
-    { q: "Soft power franÃ§ais ?", r: "Influence culturelle (cinÃ©ma, gastronomie, mode)." }
+
+    { q: "Soft power français ?", r: "Influence culturelle (cinéma, gastronomie, mode)." }
+
   ]},
-  28: { titre: "DÃ©fense et sÃ©curitÃ© en France", cartes: [
-    { q: "Missions de l'armÃ©e franÃ§aise ?", r: "DÃ©fense du territoire, OPEX, sÃ©curitÃ©." },
+
+  28: { titre: "Défense et sécurité en France", cartes: [
+
+    { q: "Missions de l'armée française ?", r: "Défense du territoire, OPEX, sécurité." },
+
     { q: "OTAN ?", r: "Alliance militaire des pays occidentaux." },
-    { q: "Dissuasion nuclÃ©aire ?", r: "StratÃ©gie de dÃ©fense basÃ©e sur l'arme atomique." },
-    { q: "JDC ?", r: "JournÃ©e dÃ©fense et citoyennetÃ©." },
-    { q: "OPEX rÃ©centes ?", r: "Mali (Serval/Barkhane), Sahel, Liban." },
-    { q: "Gendarmerie nationale ?", r: "SÃ©curitÃ© publique en zones rurales." },
-    { q: "Police nationale ?", r: "SÃ©curitÃ© publique en zones urbaines." },
-    { q: "Renseignement franÃ§ais ?", r: "DGSI (intÃ©rieur), DGSE (extÃ©rieur)." },
-    { q: "Budget de la dÃ©fense franÃ§aise ?", r: "Objectif 2% du PIB (engagement OTAN)." },
-    { q: "Menaces actuelles pour la France ?", r: "Terrorisme, cyberattaques, dÃ©sinformation." }
+
+    { q: "Dissuasion nucléaire ?", r: "Stratégie de défense basée sur l'arme atomique." },
+
+    { q: "JDC ?", r: "Journée défense et citoyenneté." },
+
+    { q: "OPEX récentes ?", r: "Mali (Serval/Barkhane), Sahel, Liban." },
+
+    { q: "Gendarmerie nationale ?", r: "Sécurité publique en zones rurales." },
+
+    { q: "Police nationale ?", r: "Sécurité publique en zones urbaines." },
+
+    { q: "Renseignement français ?", r: "DGSI (intérieur), DGSE (extérieur)." },
+
+    { q: "Budget de la défense française ?", r: "Objectif 2% du PIB (engagement OTAN)." },
+
+    { q: "Menaces actuelles pour la France ?", r: "Terrorisme, cyberattaques, désinformation." }
+
   ]},
-  29: { titre: "Environnement et dÃ©veloppement durable", cartes: [
-    { q: "Transition Ã©cologique ?", r: "Transformer l'Ã©conomie pour rÃ©duire l'impact environnemental." },
-    { q: "Empreinte carbone ?", r: "QuantitÃ© de CO2 Ã©mise par une activitÃ©." },
-    { q: "Loi Grenelle 2009 ?", r: "Loi franÃ§aise sur l'environnement." },
-    { q: "ZAN ?", r: "ZÃ©ro artificialisation nette d'ici 2050." },
-    { q: "Convention citoyenne pour le climat ?", r: "Citoyens tirÃ©s au sort proposant des mesures." },
-    { q: "Accord de Paris 2015 ?", r: "Accord international limitant le rÃ©chauffement Ã  +1,5Â°C." },
-    { q: "COP ?", r: "ConfÃ©rence des Parties, nÃ©gociations climatiques annuelles." },
-    { q: "GES ?", r: "Gaz Ã  effet de serre (CO2, mÃ©thane)." },
-    { q: "BiodiversitÃ© ?", r: "DiversitÃ© des espÃ¨ces vivantes." },
-    { q: "Ã‰conomie circulaire ?", r: "Recycler, rÃ©parer, rÃ©utiliser." }
+
+  29: { titre: "Environnement et développement durable", cartes: [
+
+    { q: "Transition écologique ?", r: "Transformer l'économie pour réduire l'impact environnemental." },
+
+    { q: "Empreinte carbone ?", r: "Quantité de CO2 émise par une activité." },
+
+    { q: "Loi Grenelle 2009 ?", r: "Loi française sur l'environnement." },
+
+    { q: "ZAN ?", r: "Zéro artificialisation nette d'ici 2050." },
+
+    { q: "Convention citoyenne pour le climat ?", r: "Citoyens tirés au sort proposant des mesures." },
+
+    { q: "Accord de Paris 2015 ?", r: "Accord international limitant le réchauffement à +1,5°C." },
+
+    { q: "COP ?", r: "Conférence des Parties, négociations climatiques annuelles." },
+
+    { q: "GES ?", r: "Gaz à effet de serre (CO2, méthane)." },
+
+    { q: "Biodiversité ?", r: "Diversité des espèces vivantes." },
+
+    { q: "Économie circulaire ?", r: "Recycler, réparer, réutiliser." }
+
   ]},
+
   30: { titre: "Les espaces productifs mondiaux", cartes: [
-    { q: "Silicon Valley ?", r: "PÃ´le technologique mondial en Californie." },
-    { q: "ZES ?", r: "Zone Ã©conomique spÃ©ciale (avantages fiscaux)." },
-    { q: "Grands espaces agricoles mondiaux ?", r: "Corn Belt (USA), soja (BrÃ©sil), riziÃ¨res (Asie)." },
-    { q: "Grands espaces industriels mondiaux ?", r: "Chine (usine du monde), Europe, AmÃ©rique du Nord." },
-    { q: "DÃ©localisation ?", r: "Transfert d'activitÃ©s vers des pays Ã  bas coÃ»ts." },
-    { q: "Relocalisation ?", r: "Retour d'activitÃ©s dans le pays d'origine." },
-    { q: "Principaux hubs mondiaux ?", r: "Atlanta, DubaÃ¯, Londres, Tokyo, Paris CDG." },
+
+    { q: "Silicon Valley ?", r: "Pôle technologique mondial en Californie." },
+
+    { q: "ZES ?", r: "Zone économique spéciale (avantages fiscaux)." },
+
+    { q: "Grands espaces agricoles mondiaux ?", r: "Corn Belt (USA), soja (Brésil), rizières (Asie)." },
+
+    { q: "Grands espaces industriels mondiaux ?", r: "Chine (usine du monde), Europe, Amérique du Nord." },
+
+    { q: "Délocalisation ?", r: "Transfert d'activités vers des pays à bas coûts." },
+
+    { q: "Relocalisation ?", r: "Retour d'activités dans le pays d'origine." },
+
+    { q: "Principaux hubs mondiaux ?", r: "Atlanta, Dubaï, Londres, Tokyo, Paris CDG." },
+
     { q: "Principaux ports mondiaux ?", r: "Shanghai, Singapour, Rotterdam, Anvers." },
-    { q: "Shenzhen (Chine) ?", r: "PremiÃ¨re ZES chinoise, symbole de la croissance." },
-    { q: "Maquiladoras ?", r: "Usines d'assemblage Ã  la frontiÃ¨re Mexique/USA." }
+
+    { q: "Shenzhen (Chine) ?", r: "Première ZES chinoise, symbole de la croissance." },
+
+    { q: "Maquiladoras ?", r: "Usines d'assemblage à la frontière Mexique/USA." }
+
   ]},
-  31: { titre: "Les mobilitÃ©s humaines mondiales", cartes: [
-    { q: "Types de migrations ?", r: "Ã‰conomiques, politiques (rÃ©fugiÃ©s), climatiques." },
-    { q: "RÃ©fugiÃ© ?", r: "Personne fuyant la guerre ou les persÃ©cutions." },
-    { q: "Migrant Ã©conomique ?", r: "Personne cherchant Ã  amÃ©liorer ses conditions de vie." },
-    { q: "Principales routes migratoires ?", r: "Afrique/Asie vers Europe, AmÃ©rique latine vers USA." },
+
+  31: { titre: "Les mobilités humaines mondiales", cartes: [
+
+    { q: "Types de migrations ?", r: "Économiques, politiques (réfugiés), climatiques." },
+
+    { q: "Réfugié ?", r: "Personne fuyant la guerre ou les persécutions." },
+
+    { q: "Migrant économique ?", r: "Personne cherchant à améliorer ses conditions de vie." },
+
+    { q: "Principales routes migratoires ?", r: "Afrique/Asie vers Europe, Amérique latine vers USA." },
+
     { q: "Effets sur les pays d'accueil ?", r: "Main-d'oeuvre, enrichissement culturel, tensions sociales." },
-    { q: "Effets sur les pays de dÃ©part ?", r: "Envois d'argent, fuite des cerveaux." },
-    { q: "Droit d'asile ?", r: "Droit d'Ãªtre protÃ©gÃ© pour une personne persÃ©cutÃ©e." },
-    { q: "Tourisme de masse ?", r: "DÃ©placements touristiques nombreux, impacts environnementaux." },
-    { q: "Migrations climatiques ?", r: "DÃ©placements dus aux catastrophes ou Ã  la montÃ©e des eaux." },
-    { q: "HCR ?", r: "Haut-Commissariat aux rÃ©fugiÃ©s de l'ONU." }
+
+    { q: "Effets sur les pays de départ ?", r: "Envois d'argent, fuite des cerveaux." },
+
+    { q: "Droit d'asile ?", r: "Droit d'être protégé pour une personne persécutée." },
+
+    { q: "Tourisme de masse ?", r: "Déplacements touristiques nombreux, impacts environnementaux." },
+
+    { q: "Migrations climatiques ?", r: "Déplacements dus aux catastrophes ou à la montée des eaux." },
+
+    { q: "HCR ?", r: "Haut-Commissariat aux réfugiés de l'ONU." }
+
   ]},
+
   32: { titre: "Les ressources mondiales", cartes: [
-    { q: "Ressources Ã©nergÃ©tiques mondiales ?", r: "PÃ©trole, gaz, charbon, uranium, solaire, Ã©olien." },
-    { q: "Principaux producteurs de pÃ©trole ?", r: "Ã‰tats-Unis, Arabie saoudite, Russie." },
-    { q: "Eau bleue ?", r: "Eau des riviÃ¨res, lacs et nappes souterraines." },
-    { q: "Eau virtuelle ?", r: "Eau utilisÃ©e pour produire un bien." },
-    { q: "Minerais stratÃ©giques ?", r: "Lithium, cobalt, terres rares (batteries, Ã©lectronique)." },
-    { q: "OPEP ?", r: "Organisation des pays exportateurs de pÃ©trole." },
-    { q: "Enjeux gÃ©opolitiques des ressources ?", r: "Conflits, dÃ©pendance, tensions." },
-    { q: "Transition Ã©nergÃ©tique ?", r: "Passage aux Ã©nergies renouvelables." },
+
+    { q: "Ressources énergétiques mondiales ?", r: "Pétrole, gaz, charbon, uranium, solaire, éolien." },
+
+    { q: "Principaux producteurs de pétrole ?", r: "États-Unis, Arabie saoudite, Russie." },
+
+    { q: "Eau bleue ?", r: "Eau des rivières, lacs et nappes souterraines." },
+
+    { q: "Eau virtuelle ?", r: "Eau utilisée pour produire un bien." },
+
+    { q: "Minerais stratégiques ?", r: "Lithium, cobalt, terres rares (batteries, électronique)." },
+
+    { q: "OPEP ?", r: "Organisation des pays exportateurs de pétrole." },
+
+    { q: "Enjeux géopolitiques des ressources ?", r: "Conflits, dépendance, tensions." },
+
+    { q: "Transition énergétique ?", r: "Passage aux énergies renouvelables." },
+
     { q: "Stress hydrique ?", r: "Manque d'eau disponible par rapport aux besoins." },
-    { q: "Terres rares ?", r: "MÃ©taux essentiels aux technologies (monopole chinois)." }
+
+    { q: "Terres rares ?", r: "Métaux essentiels aux technologies (monopole chinois)." }
+
   ]}
+
 };
+
+
+
 
 
 var currentCh=1, cartes=[], idx=0, revealed=false, progression={};
-var PARTIES={1:'Histoire',2:'Histoire',3:'Histoire',4:'Histoire',5:'Histoire',6:'Histoire',7:'Histoire',8:'Histoire',9:'Histoire',10:'Histoire',11:'GÃ©ographie',12:'GÃ©ographie',13:'GÃ©ographie',14:'GÃ©ographie',15:'GÃ©ographie',16:'GÃ©ographie',17:'GÃ©ographie',18:'GÃ©ographie',19:'GÃ©ographie',20:'GÃ©ographie',21:'GÃ©ographie',22:'GÃ©ographie',23:'EMC',24:'EMC',25:'EMC',26:'EMC',27:'EMC',28:'EMC',29:'EMC',30:'EMC',31:'EMC',32:'EMC'};
+
+var PARTIES={1:'Histoire',2:'Histoire',3:'Histoire',4:'Histoire',5:'Histoire',6:'Histoire',7:'Histoire',8:'Histoire',9:'Histoire',10:'Histoire',11:'Géographie',12:'Géographie',13:'Géographie',14:'Géographie',15:'Géographie',16:'Géographie',17:'Géographie',18:'Géographie',19:'Géographie',20:'Géographie',21:'Géographie',22:'Géographie',23:'EMC',24:'EMC',25:'EMC',26:'EMC',27:'EMC',28:'EMC',29:'EMC',30:'EMC',31:'EMC',32:'EMC'};
+
+
 
 function kProg(){return 'fc_hg_ch'+currentCh;}
+
 function saveProg(){localStorage.setItem(kProg(),JSON.stringify(progression));}
+
 function loadProg(){try{progression=JSON.parse(localStorage.getItem(kProg())||'{}');}catch(e){progression={};}}
+
 function getScore(q){return (progression[q.substring(0,30)]||{score:0}).score;}
+
 function setScore(q,v){progression[q.substring(0,30)]={score:Math.min(3,Math.max(0,v))};saveProg();}
+
 function melanger(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
 
+
+
 function selectCartes(){
+
   var ch=CHAPITRES_HG[currentCh]; if(!ch)return[];
+
   var all=ch.cartes.slice();
+
   var nouv=all.filter(function(c){return getScore(c.q)===0;});
+
   var enc=all.filter(function(c){return getScore(c.q)>0&&getScore(c.q)<3;});
+
   var mait=all.filter(function(c){return getScore(c.q)>=3;});
+
   return melanger(nouv).concat(melanger(enc)).concat(melanger(mait));
+
 }
+
+
 
 function updateStats(){
+
   var ch=CHAPITRES_HG[currentCh]; if(!ch)return;
+
   var total=ch.cartes.length;
+
   var mait=ch.cartes.filter(function(c){return getScore(c.q)>=3;}).length;
+
   var pct=Math.round(mait/total*100);
-  document.getElementById('stats').innerHTML='ðŸŒ Ch.'+currentCh+' : '+ch.titre+' &nbsp;|&nbsp; âœ… '+mait+'/'+total+' ('+pct+'%) &nbsp;|&nbsp; '+PARTIES[currentCh];
+
+  document.getElementById('stats').innerHTML='🌍 Ch.'+currentCh+' : '+ch.titre+' &nbsp;|&nbsp; ✅ '+mait+'/'+total+' ('+pct+'%) &nbsp;|&nbsp; '+PARTIES[currentCh];
+
   document.getElementById('progFill').style.width=pct+'%';
+
 }
+
+
 
 function afficherCarte(){
+
   if(idx>=cartes.length){
-    document.getElementById('card').innerHTML='<div style="font-size:1.2rem;color:#f5a623">ðŸŽ‰ Chapitre terminÃ© !</div>';
+
+    document.getElementById('card').innerHTML='<div style="font-size:1.2rem;color:#f5a623">🎉 Chapitre terminé !</div>';
+
     document.getElementById('btnJuger').style.display='none';
-    document.getElementById('sesStats').textContent='Session terminÃ©e â€” '+cartes.length+' cartes.';
+
+    document.getElementById('sesStats').textContent='Session terminée — '+cartes.length+' cartes.';
+
     return;
+
   }
+
   revealed=false;
+
   var c=cartes[idx];
-  document.getElementById('cardTheme').textContent='Ch.'+currentCh+' â€” '+PARTIES[currentCh]+' â€” Score: '+getScore(c.q)+'/3';
+
+  document.getElementById('cardTheme').textContent='Ch.'+currentCh+' — '+PARTIES[currentCh]+' — Score: '+getScore(c.q)+'/3';
+
   document.getElementById('cardQ').textContent=c.q;
+
   document.getElementById('cardR').textContent=c.r;
+
   document.getElementById('cardR').style.display='none';
+
   document.getElementById('card').querySelector('.fc-hint').style.display='block';
+
   document.getElementById('btnJuger').style.display='none';
+
   document.getElementById('sesStats').textContent='Carte '+(idx+1)+'/'+cartes.length;
+
   updateStats();
+
 }
+
+
 
 function reveler(){
+
   if(revealed)return; revealed=true;
+
   document.getElementById('cardR').style.display='block';
+
   document.getElementById('card').querySelector('.fc-hint').style.display='none';
+
   document.getElementById('btnJuger').style.display='flex';
+
 }
+
+
 
 function repondre(ok){
+
   var c=cartes[idx]; var s=getScore(c.q);
+
   setScore(c.q,ok?Math.min(s+1,3):0); idx++; afficherCarte();
+
 }
+
+
 
 function buildSelect(){
+
   var sel=document.getElementById('chapSel'); sel.innerHTML='';
+
   Object.keys(CHAPITRES_HG).forEach(function(n){
+
     var opt=document.createElement('option');
+
     opt.value=n;
+
     opt.textContent=n+'. ['+PARTIES[parseInt(n)]+'] '+CHAPITRES_HG[n].titre;
+
     sel.appendChild(opt);
+
   });
+
 }
+
+
 
 function chargerChapitre(){
+
   currentCh=parseInt(document.getElementById('chapSel').value);
+
   loadProg(); cartes=selectCartes(); idx=0; afficherCarte();
+
 }
 
+
+
 window.onload=function(){
+
   buildSelect(); loadProg(); cartes=selectCartes(); afficherCarte();
+
   document.getElementById('chapSel').addEventListener('change',chargerChapitre);
+
   document.getElementById('card').addEventListener('click',reveler);
+
   document.getElementById('btnSais').addEventListener('click',function(){repondre(true);});
+
   document.getElementById('btnSaisP').addEventListener('click',function(){repondre(false);});
+
   document.getElementById('btnReset').addEventListener('click',function(){if(confirm('Reset ch.'+currentCh+' ?')){localStorage.removeItem(kProg());loadProg();cartes=selectCartes();idx=0;afficherCarte();}});
+
   document.getElementById('btnAll').addEventListener('click',function(){if(confirm('Reset tout HG ?')){for(var i=1;i<=32;i++)localStorage.removeItem('fc_hg_ch'+i);loadProg();cartes=selectCartes();idx=0;afficherCarte();}});
+
 };
+
 </script>
+
 </body>
+
 </html>
+

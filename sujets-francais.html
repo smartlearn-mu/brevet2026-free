@@ -1,628 +1,1255 @@
 <!DOCTYPE html>
+
 <html lang="fr">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FranÃ§ais â€” 10 sujets DNB avec correction IA</title>
+
+<title>Français — 10 sujets DNB avec correction IA</title>
+
 <style>
+
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{background:#09090f;color:#e8e8f0;font-family:Arial,sans-serif;min-height:100vh;}
 
+
+
 /* LANDING */
+
 #landing{max-width:1000px;margin:0 auto;padding:1.5rem;}
+
 .header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+
 .header h1{font-size:1.4rem;color:#c97de8;}
+
 .header p{font-size:12px;color:#9090a8;margin-top:3px;}
+
 a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
+
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+
 .card{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem;cursor:pointer;transition:border-color .2s;}
+
 .card:hover{border-color:#c97de8;}
+
 .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+
 .card-num{font-size:11px;color:#5a5a72;font-family:monospace;}
+
 .badge{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(201,125,232,.12);color:#c97de8;border:1px solid rgba(201,125,232,.25);}
+
 .card-titre{font-size:13px;color:#e8e8f0;margin-bottom:6px;line-height:1.4;}
+
 .card-meta{font-size:11px;color:#5a5a72;}
+
 .card-pdf{display:inline-block;margin-top:8px;font-size:11px;color:#5ecfb1;text-decoration:none;}
+
 .card-pdf:hover{text-decoration:underline;}
 
+
+
 /* SUJET VIEW */
+
 #sujetView{display:none;max-width:900px;margin:0 auto;padding:1.5rem;}
+
 #sujetView.active{display:block;}
+
 .sv-header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.2rem;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+
 .sv-titre{font-size:1.1rem;font-weight:700;color:#c97de8;}
+
 .sv-sub{font-size:12px;color:#9090a8;margin-top:3px;}
+
 .sv-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
 .btn-retour{color:#5ecfb1;font-size:13px;cursor:pointer;background:none;border:none;}
+
 .sv-dl{color:#c97de8;font-size:12px;padding:5px 12px;border-radius:6px;background:rgba(201,125,232,.1);border:1px solid rgba(201,125,232,.3);text-decoration:none;}
+
 .sv-dl:hover{background:rgba(201,125,232,.2);}
+
 .btn-dl{color:#5ecfb1;font-size:12px;padding:5px 12px;border-radius:6px;background:rgba(94,207,177,.08);border:1px solid rgba(94,207,177,.25);cursor:pointer;}
 
+
+
 /* SECTIONS */
+
 .section-box{background:#111118;border:1px solid #2a2a38;border-radius:12px;margin-bottom:1.2rem;overflow:hidden;}
+
 .section-head{padding:10px 16px;border-bottom:1px solid #2a2a38;display:flex;align-items:center;gap:10px;}
+
 .sec-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;text-transform:uppercase;}
+
 .badge-red{background:rgba(201,125,232,.15);color:#c97de8;border:1px solid rgba(201,125,232,.25);}
+
 .badge-dict{background:rgba(94,207,177,.15);color:#5ecfb1;border:1px solid rgba(94,207,177,.25);}
+
 .badge-redac{background:rgba(245,166,35,.15);color:#f5a623;border:1px solid rgba(245,166,35,.25);}
+
 .section-body{padding:14px 16px;}
+
 .dictee-consigne{font-size:12px;color:#5a5a72;margin-bottom:8px;}
+
 .redac-sujet{background:#0d0d14;border:1px solid #2a2a38;border-radius:8px;padding:12px;font-size:13px;line-height:1.6;margin-bottom:10px;}
+
 .question{padding:14px 0;border-bottom:1px solid #1a1a24;}
+
 .question:last-child{border-bottom:none;}
+
 .q-texte{font-size:13px;line-height:1.6;margin-bottom:10px;color:#e8e8f0;white-space:pre-wrap;}
+
 .q-badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:3px;margin-bottom:6px;font-weight:600;}
+
 .qb-comp{background:rgba(201,125,232,.1);color:#c97de8;}
+
 .qb-gram{background:rgba(94,170,207,.1);color:#5eaacf;}
+
 .answer-area{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:8px;color:#e8e8f0;font-size:13px;padding:10px;font-family:inherit;resize:vertical;min-height:80px;outline:none;}
+
 .answer-area:focus{border-color:#c97de8;}
+
 .dictee-area{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:8px;color:#e8e8f0;font-size:13px;padding:10px;font-family:inherit;resize:vertical;min-height:100px;outline:none;}
+
 .dictee-area:focus{border-color:#5ecfb1;}
+
 .btn-corriger{margin-top:8px;padding:7px 16px;border-radius:7px;border:1px solid rgba(201,125,232,.4);background:rgba(201,125,232,.08);color:#c97de8;font-size:12px;cursor:pointer;}
+
 .btn-corriger:hover{background:rgba(201,125,232,.15);}
+
 .btn-corriger:disabled{opacity:.4;cursor:not-allowed;}
+
 .btn-corriger-dict{margin-top:8px;padding:7px 16px;border-radius:7px;border:1px solid rgba(94,207,177,.4);background:rgba(94,207,177,.08);color:#5ecfb1;font-size:12px;cursor:pointer;}
+
 .btn-corriger-dict:hover{background:rgba(94,207,177,.15);}
+
 .panel{display:none;margin-top:10px;background:#0d0d14;border-radius:8px;border:1px solid #2a2a38;padding:14px;font-size:13px;}
+
 .panel.show{display:block;}
+
 .loading{display:flex;align-items:center;gap:8px;color:#9090a8;}
+
 .dot{width:8px;height:8px;border-radius:50%;background:#c97de8;animation:pulse 1s infinite;}
+
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
 .corr-note{font-size:1.1rem;font-weight:800;color:#5ecfb1;margin-bottom:8px;}
+
 .corr-conseil{background:#1a1a24;border-radius:6px;padding:8px 12px;margin-bottom:6px;font-size:12px;line-height:1.5;}
+
 .corr-txt{font-size:13px;line-height:1.6;color:#e8e8f0;margin-bottom:8px;}
+
 .corr-off{margin-top:12px;padding-top:12px;border-top:1px solid #2a2a38;font-size:12px;color:#9090a8;}
+
 .corr-off strong{color:#5ecfb1;display:block;margin-bottom:4px;}
+
 .btn-copy{margin-top:8px;padding:5px 12px;border-radius:6px;border:1px solid #2a2a38;background:#1a1a24;color:#9090a8;font-size:11px;cursor:pointer;}
+
 </style>
+
 <script>
+
 const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
+
 function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
+
 function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
+
 function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
+
 function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
+
 function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
+
 function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxzUhsZ4ewxV_zGsu5h_L2eryTJiW2E-gZLvihC-vPl2DimCJxAeTF2dhbDF8no-ocG/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
+
 function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
+
 function afficherBlocageEssaiExpire(){afficherOverlay();}
+
 function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
+
 function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
+
 window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
+
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
+
 </script>
+
 </head>
+
 <body>
 
+
+
 <!-- LANDING -->
+
 <div id="landing">
+
   <div class="header">
+
     <div>
-      <h1>ðŸ“– Sujets FranÃ§ais â€” Brevet DNB</h1>
-      <p>10 vrais sujets officiels Â· ComprÃ©hension Â· Grammaire Â· DictÃ©e Â· RÃ©daction Â· 2019â†’2025</p>
+
+      <h1>📖 Sujets Français — Brevet DNB</h1>
+
+      <p>10 vrais sujets officiels · Compréhension · Grammaire · Dictée · Rédaction · 2019→2025</p>
+
     </div>
-    <a href="index.html" class="back">â† Hub</a>
+
+    <a href="index.html" class="back">← Hub</a>
+
   </div>
+
   <div class="grid" id="grid"></div>
+
 </div>
+
+
 
 <!-- SUJET VIEW -->
+
 <div id="sujetView">
+
   <div class="sv-header">
+
     <div>
+
       <div class="sv-titre" id="svTitre"></div>
+
       <div class="sv-sub" id="svSub"></div>
+
     </div>
+
     <div class="sv-actions">
-      <a class="sv-dl" id="svDl" href="#" target="_blank">â¬‡ PDF officiel</a>
-      <button class="btn-dl" id="btnDl">ðŸ“¥ TÃ©lÃ©charger mes corrections</button>
-      <button class="btn-retour" onclick="retour()">â† Retour</button>
+
+      <a class="sv-dl" id="svDl" href="#" target="_blank">⬇ PDF officiel</a>
+
+      <button class="btn-dl" id="btnDl">📥 Télécharger mes corrections</button>
+
+      <button class="btn-retour" onclick="retour()">← Retour</button>
+
     </div>
+
   </div>
+
   <div id="svContent"></div>
+
 </div>
 
+
+
 <!-- ============================================================ -->
-<!-- CHARGEMENT DES FICHIERS EXTERNES (monÃ©tisation + IA + tracker) -->
+
+<!-- CHARGEMENT DES FICHIERS EXTERNES (monétisation + IA + tracker) -->
+
 <!-- ============================================================ -->
+
+
 
 <script src="proxy-client.js"></script>
+
 <script src="tracker_gs.js"></script>
 
+
+
 <script>
+
 // ============================================================
-// DONNÃ‰ES DES 10 SUJETS (contenu pÃ©dagogique intact)
+
+// DONNÉES DES 10 SUJETS (contenu pédagogique intact)
+
 // ============================================================
+
+
 
 const STORAGE_CORRECTIONS_KEY = 'fr_corrections_ia';
+
 const STORE = {};
 
-// Charger les corrections sauvegardÃ©es
+
+
+// Charger les corrections sauvegardées
+
 try {
+
   const saved = JSON.parse(localStorage.getItem(STORAGE_CORRECTIONS_KEY) || '{}');
+
   Object.assign(STORE, saved);
+
 } catch(e) {}
 
+
+
 function saveCorrections() {
+
   try {
+
     localStorage.setItem(STORAGE_CORRECTIONS_KEY, JSON.stringify(STORE));
+
   } catch(e) {}
+
 }
+
+
 
 const SUJETS = [
+
   {
-    id:1, annee:'2025', session:'MÃ©tropole (juin)',
-    titre:'25GENFRQGME1 â€” Simone de Beauvoir, La Force de l\'Ã¢ge (1960) â€” ArrivÃ©e Ã  Marseille',
+
+    id:1, annee:'2025', session:'Métropole (juin)',
+
+    titre:'25GENFRQGME1 — Simone de Beauvoir, La Force de l\'âge (1960) — Arrivée à Marseille',
+
     pdf:'https://www.education.gouv.fr/media/228009/download',
-    dictee_auteur:'Simone de Beauvoir, La Force de l\'Ã¢ge, 1960',
-    dictee_texte:'J\'avais laissÃ© ma valise Ã  la consigne et je m\'immobilisai en haut du grand escalier. Â« Marseille Â», me dis-je. Sous le ciel bleu, des tuiles ensoleillÃ©es, des trous d\'ombre, des platanes couleur d\'automne ; au loin des collines et le bleu de la mer.',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Quelque temps plus tard, la narratrice Ã©crit une lettre Ã  ses parents dans laquelle elle raconte les jours qui ont suivi son arrivÃ©e dans la ville.',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” Pensez-vous que la littÃ©rature et les arts permettent aux lecteurs de dÃ©couvrir des lieux comme s\'ils y Ã©taient ?',
-    texte_sujet:'1   Dans toute mon existence, je n\'ai connu aucun instant que je puisse qualifier de\n2   dÃ©cisif ; mais certains se sont rÃ©trospectivement chargÃ©s d\'un sens si lourd qu\'ils\n3   Ã©mergent de mon passÃ© avec l\'Ã©clat des grands Ã©vÃ©nements. Je me rappelle mon arrivÃ©e\n4   Ã  Marseille comme si elle avait marquÃ© dans mon histoire un tournant absolument neuf.\n5   J\'avais laissÃ© ma valise Ã  la consigne et je m\'immobilisai en haut du grand escalier.\n6   Â« Marseille Â», me dis-je. Sous le ciel bleu, des tuiles ensoleillÃ©es, des trous d\'ombre, des\n7   platanes couleur d\'automne ; au loin des collines et le bleu de la mer ; une rumeur montait\n8   de la ville avec une odeur d\'herbes brÃ»lÃ©es et des gens allaient, venaient au creux des\n9   rues noires. Marseille. J\'Ã©tais lÃ , seule, les mains vides, sÃ©parÃ©e de mon passÃ© et de tout\n10  ce que j\'aimais, et je regardais la grande citÃ© inconnue oÃ¹ j\'allais sans secours tailler au\n11  jour le jour ma vie.\n    Simone de Beauvoir, La Force de l\'Ã¢ge, 1960',
+
+    dictee_auteur:'Simone de Beauvoir, La Force de l\'âge, 1960',
+
+    dictee_texte:'J\'avais laissé ma valise à la consigne et je m\'immobilisai en haut du grand escalier. « Marseille », me dis-je. Sous le ciel bleu, des tuiles ensoleillées, des trous d\'ombre, des platanes couleur d\'automne ; au loin des collines et le bleu de la mer.',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Quelque temps plus tard, la narratrice écrit une lettre à ses parents dans laquelle elle raconte les jours qui ont suivi son arrivée dans la ville.',
+
+    redaction_s2:'SUJET DE RÉFLEXION — Pensez-vous que la littérature et les arts permettent aux lecteurs de découvrir des lieux comme s\'ils y étaient ?',
+
+    texte_sujet:'1   Dans toute mon existence, je n\'ai connu aucun instant que je puisse qualifier de\n2   décisif ; mais certains se sont rétrospectivement chargés d\'un sens si lourd qu\'ils\n3   émergent de mon passé avec l\'éclat des grands événements. Je me rappelle mon arrivée\n4   à Marseille comme si elle avait marqué dans mon histoire un tournant absolument neuf.\n5   J\'avais laissé ma valise à la consigne et je m\'immobilisai en haut du grand escalier.\n6   « Marseille », me dis-je. Sous le ciel bleu, des tuiles ensoleillées, des trous d\'ombre, des\n7   platanes couleur d\'automne ; au loin des collines et le bleu de la mer ; une rumeur montait\n8   de la ville avec une odeur d\'herbes brûlées et des gens allaient, venaient au creux des\n9   rues noires. Marseille. J\'étais là, seule, les mains vides, séparée de mon passé et de tout\n10  ce que j\'aimais, et je regardais la grande cité inconnue où j\'allais sans secours tailler au\n11  jour le jour ma vie.\n    Simone de Beauvoir, La Force de l\'âge, 1960',
+
     questions:[
-      {type:'comprehension',pts:4,texte:'Q1 â€” Que vient faire la narratrice Ã  Marseille ? Justifiez par deux citations.',rep:'Elle vient enseigner au lycÃ©e : Â« j\'avais rendu visite Ã  la directrice du lycÃ©e Â». Elle commence une vie indÃ©pendante.'},
-      {type:'comprehension',pts:4,texte:'Q2 â€” Lignes 1 Ã  4 : Ã€ quoi voit-on que c\'est un moment important ? Deux citations.',rep:'1) Rupture : Â« sÃ©parÃ©e de mon passÃ© Â». 2) Solitude : Â« seule, les mains vides Â».'},
-      {type:'grammaire',pts:2,texte:'Q3 â€” Â« seule Â» : classe grammaticale et justification de la terminaison.',rep:'Adjectif qualificatif attribut. -e car accord fÃ©minin singulier.'},
-      {type:'grammaire',pts:10,texte:'Q4 â€” RÃ©Ã©crivez en remplaÃ§ant Â« je Â» par Â« nous Â» (narratrice + amie).',rep:'Accord fÃ©minin pluriel : Â« nous Ã©tions lÃ , seules... Â»'}
+
+      {type:'comprehension',pts:4,texte:'Q1 — Que vient faire la narratrice à Marseille ? Justifiez par deux citations.',rep:'Elle vient enseigner au lycée : « j\'avais rendu visite à la directrice du lycée ». Elle commence une vie indépendante.'},
+
+      {type:'comprehension',pts:4,texte:'Q2 — Lignes 1 à 4 : À quoi voit-on que c\'est un moment important ? Deux citations.',rep:'1) Rupture : « séparée de mon passé ». 2) Solitude : « seule, les mains vides ».'},
+
+      {type:'grammaire',pts:2,texte:'Q3 — « seule » : classe grammaticale et justification de la terminaison.',rep:'Adjectif qualificatif attribut. -e car accord féminin singulier.'},
+
+      {type:'grammaire',pts:10,texte:'Q4 — Réécrivez en remplaçant « je » par « nous » (narratrice + amie).',rep:'Accord féminin pluriel : « nous étions là, seules... »'}
+
     ]
+
   },
+
   {
-    id:2, annee:'2025', session:'AmÃ©rique du Nord',
-    titre:'25GENFRQGCAN1 â€” GaÃ«l Faye, Jacaranda (2024) â€” Rwanda, mÃ©moire, exil',
+
+    id:2, annee:'2025', session:'Amérique du Nord',
+
+    titre:'25GENFRQGCAN1 — Gaël Faye, Jacaranda (2024) — Rwanda, mémoire, exil',
+
     pdf:'https://www.education.gouv.fr/media/227581/download',
-    dictee_auteur:'GaÃ«l Faye, Jacaranda, 2024',
-    dictee_texte:'Comme elle taisait totalement ses origines, j\'en arrivais presque Ã  oublier qu\'elle Ã©tait nÃ©e et avait grandi sous d\'autres cieux.',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Le narrateur Ã©crit une lettre Ã  sa mÃ¨re aprÃ¨s avoir vu des images du Rwanda.',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” Les Å“uvres d\'art doivent-elles montrer la rÃ©alitÃ© violente ?',
-    texte_sujet:'1   Comme elle taisait totalement ses origines, j\'en arrivais presque Ã  oublier qu\'elle Ã©tait\n2   nÃ©e et avait grandi sous d\'autres cieux. Si bien que lorsque je la surprenais en train de parler\n3   kinyarwanda lors d\'une conversation tÃ©lÃ©phonique et l\'entendais s\'exprimer couramment\n4   dans cette langue inconnue, je m\'arrÃªtais, stupÃ©fait.\n    GaÃ«l Faye, Jacaranda, 2024',
+
+    dictee_auteur:'Gaël Faye, Jacaranda, 2024',
+
+    dictee_texte:'Comme elle taisait totalement ses origines, j\'en arrivais presque à oublier qu\'elle était née et avait grandi sous d\'autres cieux.',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Le narrateur écrit une lettre à sa mère après avoir vu des images du Rwanda.',
+
+    redaction_s2:'SUJET DE RÉFLEXION — Les œuvres d\'art doivent-elles montrer la réalité violente ?',
+
+    texte_sujet:'1   Comme elle taisait totalement ses origines, j\'en arrivais presque à oublier qu\'elle était\n2   née et avait grandi sous d\'autres cieux. Si bien que lorsque je la surprenais en train de parler\n3   kinyarwanda lors d\'une conversation téléphonique et l\'entendais s\'exprimer couramment\n4   dans cette langue inconnue, je m\'arrêtais, stupéfait.\n    Gaël Faye, Jacaranda, 2024',
+
     questions:[
-      {type:'comprehension',pts:3,texte:'Q1 â€” Quels personnages ? Que sait-on de la mÃ¨re ?',rep:'Narrateur (enfant), mÃ¨re, pÃ¨re. La mÃ¨re est d\'origine rwandaise.'},
-      {type:'comprehension',pts:4,texte:'Q2 â€” Pourquoi le narrateur observe-t-il sa mÃ¨re ? Deux citations.',rep:'Elle tÃ©lÃ©phone en secret, parle une langue inconnue.'},
-      {type:'grammaire',pts:2,texte:'Q3 â€” Â« Nous restions silencieux Â» : temps, mode et valeur.',rep:'Imparfait de l\'indicatif. Habitude dans le passÃ©.'},
-      {type:'grammaire',pts:10,texte:'Q4 â€” RÃ©Ã©crivez en remplaÃ§ant Â« la Â» par Â« les Â» au masculin pluriel.',rep:'Masculin pluriel : Â« les surprenais... les entendais... Â»'}
+
+      {type:'comprehension',pts:3,texte:'Q1 — Quels personnages ? Que sait-on de la mère ?',rep:'Narrateur (enfant), mère, père. La mère est d\'origine rwandaise.'},
+
+      {type:'comprehension',pts:4,texte:'Q2 — Pourquoi le narrateur observe-t-il sa mère ? Deux citations.',rep:'Elle téléphone en secret, parle une langue inconnue.'},
+
+      {type:'grammaire',pts:2,texte:'Q3 — « Nous restions silencieux » : temps, mode et valeur.',rep:'Imparfait de l\'indicatif. Habitude dans le passé.'},
+
+      {type:'grammaire',pts:10,texte:'Q4 — Réécrivez en remplaçant « la » par « les » au masculin pluriel.',rep:'Masculin pluriel : « les surprenais... les entendais... »'}
+
     ]
+
   },
+
   {
+
     id:3, annee:'2025', session:'Asie',
-    titre:'25GENFRQGAS1 â€” Salma Kojoc, Noir Liban â€” broche, Beyrouth, exil',
+
+    titre:'25GENFRQGAS1 — Salma Kojoc, Noir Liban — broche, Beyrouth, exil',
+
     pdf:'https://www.education.gouv.fr/media/228039/download',
+
     dictee_auteur:'Salma Kojoc, Noir Liban, 2023',
-    dictee_texte:'Au dÃ©cÃ¨s de ma grand-mÃ¨re, vingt ans plus tard, j\'ai retrouvÃ© le bijou dans sa chambre. Tout prÃ¨s, il y avait la boÃ®te Ã  chaussure.',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Racontez l\'histoire qui vous lie Ã  un objet retrouvÃ©.',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” Pourquoi les Å“uvres qui Ã©voquent des souvenirs personnels nous plaisent-elles ?',
-    texte_sujet:'1   Au dÃ©cÃ¨s de ma grand-mÃ¨re, vingt ans plus tard, j\'ai retrouvÃ© le bijou dans sa chambre.\n2   Tout prÃ¨s, il y avait la boÃ®te Ã  chaussure. Je l\'ouvris, m\'arrÃªtai sur une image.\n3   C\'est Ã  l\'aÃ©roport d\'Abidjan, le jour du dÃ©part. Juillet 1995, j\'ai neuf ans, mon premier\n4   voyage vers le Liban.\n    Salma Kojok, Noir Liban, 2023',
+
+    dictee_texte:'Au décès de ma grand-mère, vingt ans plus tard, j\'ai retrouvé le bijou dans sa chambre. Tout près, il y avait la boîte à chaussure.',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Racontez l\'histoire qui vous lie à un objet retrouvé.',
+
+    redaction_s2:'SUJET DE RÉFLEXION — Pourquoi les œuvres qui évoquent des souvenirs personnels nous plaisent-elles ?',
+
+    texte_sujet:'1   Au décès de ma grand-mère, vingt ans plus tard, j\'ai retrouvé le bijou dans sa chambre.\n2   Tout près, il y avait la boîte à chaussure. Je l\'ouvris, m\'arrêtai sur une image.\n3   C\'est à l\'aéroport d\'Abidjan, le jour du départ. Juillet 1995, j\'ai neuf ans, mon premier\n4   voyage vers le Liban.\n    Salma Kojok, Noir Liban, 2023',
+
     questions:[
-      {type:'comprehension',pts:6,texte:'Q1 â€” Quel titre donneriez-vous ? Justifiez.',rep:'Ex : Â« La broche Â». Justification sur 2 Ã©lÃ©ments.'},
-      {type:'comprehension',pts:4,texte:'Q2 â€” Â« la grande rupture Â» : expliquez.',rep:'DÃ©part dÃ©finitif du pays natal, exil.'},
-      {type:'grammaire',pts:3,texte:'Q3 â€” Fonction de Â« vingt ans plus tard Â».',rep:'ComplÃ©ment circonstanciel de temps.'},
-      {type:'grammaire',pts:10,texte:'Q4 â€” RÃ©Ã©crivez en remplaÃ§ant Â« je suis arrivÃ©e Â» par Â« nous sommes arrivÃ©es Â».',rep:'FÃ©minin pluriel : Â« nous sommes arrivÃ©es... nous nous en sommes souvenues Â».'}
+
+      {type:'comprehension',pts:6,texte:'Q1 — Quel titre donneriez-vous ? Justifiez.',rep:'Ex : « La broche ». Justification sur 2 éléments.'},
+
+      {type:'comprehension',pts:4,texte:'Q2 — « la grande rupture » : expliquez.',rep:'Départ définitif du pays natal, exil.'},
+
+      {type:'grammaire',pts:3,texte:'Q3 — Fonction de « vingt ans plus tard ».',rep:'Complément circonstanciel de temps.'},
+
+      {type:'grammaire',pts:10,texte:'Q4 — Réécrivez en remplaçant « je suis arrivée » par « nous sommes arrivées ».',rep:'Féminin pluriel : « nous sommes arrivées... nous nous en sommes souvenues ».'}
+
     ]
+
   },
+
   {
-    id:4, annee:'2024', session:'MÃ©tropole (juin)',
-    titre:'24GENFRQGME1 â€” Jorge Semprun, L\'Ã‰criture ou la Vie â€” WW2, La Paloma',
+
+    id:4, annee:'2024', session:'Métropole (juin)',
+
+    titre:'24GENFRQGME1 — Jorge Semprun, L\'Écriture ou la Vie — WW2, La Paloma',
+
     pdf:'https://www.education.gouv.fr/media/195328/download',
-    dictee_auteur:'Jorge Semprun, L\'Ã‰criture ou la Vie, 1994',
-    dictee_texte:'L\'Allemand Ã©tait apparu sur la crÃªte du rivage, Ã  motocyclette. Le moteur de son engin ronronnait doucement.',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Racontez une expÃ©rience oÃ¹ une musique vous transporte dans un souvenir.',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” En quoi l\'art permet-il aux humains de mieux se comprendre ?',
-    texte_sujet:'1   L\'Allemand Ã©tait apparu sur la crÃªte du rivage, Ã  motocyclette. Le moteur de son engin\n2   ronronnait doucement. Il s\'Ã©tait engagÃ© sur le sentier qui descendait vers le plan d\'eau.\n3   Nous l\'attendions, Julien et moi.\n    Jorge Semprun, L\'Ã‰criture ou la Vie, 1994',
+
+    dictee_auteur:'Jorge Semprun, L\'Écriture ou la Vie, 1994',
+
+    dictee_texte:'L\'Allemand était apparu sur la crête du rivage, à motocyclette. Le moteur de son engin ronronnait doucement.',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Racontez une expérience où une musique vous transporte dans un souvenir.',
+
+    redaction_s2:'SUJET DE RÉFLEXION — En quoi l\'art permet-il aux humains de mieux se comprendre ?',
+
+    texte_sujet:'1   L\'Allemand était apparu sur la crête du rivage, à motocyclette. Le moteur de son engin\n2   ronronnait doucement. Il s\'était engagé sur le sentier qui descendait vers le plan d\'eau.\n3   Nous l\'attendions, Julien et moi.\n    Jorge Semprun, L\'Écriture ou la Vie, 1994',
+
     questions:[
-      {type:'comprehension',pts:4,texte:'Q1 â€” Identifiez les personnages et leurs liens.',rep:'Narrateur (rÃ©sistant), Julien (compagnon), soldat allemand (ennemi).'},
-      {type:'comprehension',pts:6,texte:'Q2 â€” Pourquoi La Paloma rend l\'Allemand Â« subitement innocent Â» ?',rep:'La musique humanise ; chanson partagÃ©e transcende les frontiÃ¨res.'},
-      {type:'grammaire',pts:3,texte:'Q3 â€” Fonction de Â« d\'une belle voix blonde Â».',rep:'ComplÃ©ment circonstanciel de maniÃ¨re.'},
-      {type:'grammaire',pts:10,texte:'Q4 â€” RÃ©Ã©crivez en remplaÃ§ant Â« il Â» par Â« ils Â».',rep:'Masculin pluriel : Â« ils Ã©taient dÃ©tendus... leur mitraillette... Â»'}
+
+      {type:'comprehension',pts:4,texte:'Q1 — Identifiez les personnages et leurs liens.',rep:'Narrateur (résistant), Julien (compagnon), soldat allemand (ennemi).'},
+
+      {type:'comprehension',pts:6,texte:'Q2 — Pourquoi La Paloma rend l\'Allemand « subitement innocent » ?',rep:'La musique humanise ; chanson partagée transcende les frontières.'},
+
+      {type:'grammaire',pts:3,texte:'Q3 — Fonction de « d\'une belle voix blonde ».',rep:'Complément circonstanciel de manière.'},
+
+      {type:'grammaire',pts:10,texte:'Q4 — Réécrivez en remplaçant « il » par « ils ».',rep:'Masculin pluriel : « ils étaient détendus... leur mitraillette... »'}
+
     ]
+
   },
+
   {
-    id:5, annee:'2024', session:'AmÃ©rique du Nord',
-    titre:'24GENFRQGCAN1 â€” Alphonse Daudet, Wood\'stown (1873) â€” forÃªt vs ville',
+
+    id:5, annee:'2024', session:'Amérique du Nord',
+
+    titre:'24GENFRQGCAN1 — Alphonse Daudet, Wood\'stown (1873) — forêt vs ville',
+
     pdf:'https://www.education.gouv.fr/media/195330/download',
+
     dictee_auteur:'Alphonse Daudet, Wood\'stown, 1873',
-    dictee_texte:'L\'emplacement Ã©tait superbe pour bÃ¢tir une ville. Il n\'y avait qu\'Ã  dÃ©blayer les bords du fleuve, en abattant une partie de la forÃªt.',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Imaginez une suite mettant en valeur le rÃ´le de la forÃªt.',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” L\'art peut-il nous rapprocher de la nature ?',
-    texte_sujet:'1   L\'emplacement Ã©tait superbe pour bÃ¢tir une ville. Il n\'y avait qu\'Ã  dÃ©blayer les bords du\n2   fleuve, en abattant une partie de la forÃªt, de l\'immense forÃªt vierge enracinÃ©e lÃ  depuis\n3   la naissance du monde.\n    Alphonse Daudet, Wood\'stown, 1873',
+
+    dictee_texte:'L\'emplacement était superbe pour bâtir une ville. Il n\'y avait qu\'à déblayer les bords du fleuve, en abattant une partie de la forêt.',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Imaginez une suite mettant en valeur le rôle de la forêt.',
+
+    redaction_s2:'SUJET DE RÉFLEXION — L\'art peut-il nous rapprocher de la nature ?',
+
+    texte_sujet:'1   L\'emplacement était superbe pour bâtir une ville. Il n\'y avait qu\'à déblayer les bords du\n2   fleuve, en abattant une partie de la forêt, de l\'immense forêt vierge enracinée là depuis\n3   la naissance du monde.\n    Alphonse Daudet, Wood\'stown, 1873',
+
     questions:[
-      {type:'comprehension',pts:5,texte:'Q1 â€” Quel titre donneriez-vous ? Justifiez.',rep:'Ex : Â« La revanche de la forÃªt Â». Justification.'},
-      {type:'comprehension',pts:6,texte:'Q2 â€” Pourquoi la ville est-elle Â« insolente Â» ?',rep:'Arrogante, a osÃ© s\'installer Ã  la place de la forÃªt.'},
-      {type:'grammaire',pts:3,texte:'Q3 â€” Verbes et temps dans Â« Elle regardait... avait pris Â».',rep:'Â« regardait Â» imparfait (durÃ©e), Â« avait pris Â» plus-que-parfait (antÃ©rioritÃ©).'},
-      {type:'grammaire',pts:10,texte:'Q4 â€” RÃ©Ã©crivez au futur de l\'indicatif.',rep:'Futur : Â« sera, aura, fera, ira... Â»'}
+
+      {type:'comprehension',pts:5,texte:'Q1 — Quel titre donneriez-vous ? Justifiez.',rep:'Ex : « La revanche de la forêt ». Justification.'},
+
+      {type:'comprehension',pts:6,texte:'Q2 — Pourquoi la ville est-elle « insolente » ?',rep:'Arrogante, a osé s\'installer à la place de la forêt.'},
+
+      {type:'grammaire',pts:3,texte:'Q3 — Verbes et temps dans « Elle regardait... avait pris ».',rep:'« regardait » imparfait (durée), « avait pris » plus-que-parfait (antériorité).'},
+
+      {type:'grammaire',pts:10,texte:'Q4 — Réécrivez au futur de l\'indicatif.',rep:'Futur : « sera, aura, fera, ira... »'}
+
     ]
+
   },
+
   {
-    id:6, annee:'2023', session:'Centres Ã©trangers (gr.1)',
-    titre:'23GENFRQGCE1 â€” Philippe Jaccottet, Et NÃ©anmoins â€” rouge-gorge au jardin',
+
+    id:6, annee:'2023', session:'Centres étrangers (gr.1)',
+
+    titre:'23GENFRQGCE1 — Philippe Jaccottet, Et Néanmoins — rouge-gorge au jardin',
+
     pdf:'https://www.education.gouv.fr/media/156294/download',
-    dictee_auteur:'Philippe Jaccottet, Et NÃ©anmoins, 2001',
-    dictee_texte:'Travaillant au jardin, je vois soudain, Ã  deux pas, un rouge-gorge ; on dirait qu\'il veut vous parler, au moins vous tenir compagnie.',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Racontez une rencontre inattendue avec un Â« presque rien Â».',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” Les Å“uvres vous touchent-elles plus quand elles dÃ©fendent une cause ?',
-    texte_sujet:'1   Travaillant au jardin, je vois soudain, Ã  deux pas, un rouge-gorge ; on dirait qu\'il veut\n2   vous parler, au moins vous tenir compagnie : minuscule piÃ©ton, victime toute dÃ©signÃ©e\n3   des chats.\n    Philippe Jaccottet, Et NÃ©anmoins, 2001',
+
+    dictee_auteur:'Philippe Jaccottet, Et Néanmoins, 2001',
+
+    dictee_texte:'Travaillant au jardin, je vois soudain, à deux pas, un rouge-gorge ; on dirait qu\'il veut vous parler, au moins vous tenir compagnie.',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Racontez une rencontre inattendue avec un « presque rien ».',
+
+    redaction_s2:'SUJET DE RÉFLEXION — Les œuvres vous touchent-elles plus quand elles défendent une cause ?',
+
+    texte_sujet:'1   Travaillant au jardin, je vois soudain, à deux pas, un rouge-gorge ; on dirait qu\'il veut\n2   vous parler, au moins vous tenir compagnie : minuscule piéton, victime toute désignée\n3   des chats.\n    Philippe Jaccottet, Et Néanmoins, 2001',
+
     questions:[
-      {type:'comprehension',pts:3,texte:'Q1 â€” Qui parle ? Quel est le thÃ¨me ?',rep:'Le poÃ¨te. Rencontre avec un rouge-gorge, contemplation.'},
-      {type:'comprehension',pts:6,texte:'Q2 â€” Trois sentiments du poÃ¨te.',rep:'Ã‰merveillement, douceur, mÃ©lancolie lÃ©gÃ¨re.'},
-      {type:'grammaire',pts:5,texte:'Q3 â€” Composition de Â« insondable Â».',rep:'in- + sond- + -able = qu\'on ne peut sonder.'},
-      {type:'grammaire',pts:8,texte:'Q4 â€” RÃ©Ã©crivez au pluriel (vents, bruits, rouges-gorges).',rep:'Â« les rumeurs des vents... les bruits... les rouges-gorges Â»'}
+
+      {type:'comprehension',pts:3,texte:'Q1 — Qui parle ? Quel est le thème ?',rep:'Le poète. Rencontre avec un rouge-gorge, contemplation.'},
+
+      {type:'comprehension',pts:6,texte:'Q2 — Trois sentiments du poète.',rep:'Émerveillement, douceur, mélancolie légère.'},
+
+      {type:'grammaire',pts:5,texte:'Q3 — Composition de « insondable ».',rep:'in- + sond- + -able = qu\'on ne peut sonder.'},
+
+      {type:'grammaire',pts:8,texte:'Q4 — Réécrivez au pluriel (vents, bruits, rouges-gorges).',rep:'« les rumeurs des vents... les bruits... les rouges-gorges »'}
+
     ]
+
   },
+
   {
-    id:7, annee:'2021', session:'MÃ©tropole (juin)',
-    titre:'21GENFRQGME1 â€” Abdellatif LaÃ¢bi, L\'Arbre Ã  poÃ¨mes â€” libertÃ©, rÃ©sistance',
+
+    id:7, annee:'2021', session:'Métropole (juin)',
+
+    titre:'21GENFRQGME1 — Abdellatif Laâbi, L\'Arbre à poèmes — liberté, résistance',
+
     pdf:'https://www.education.gouv.fr/media/115740/download',
-    dictee_auteur:'Abdellatif LaÃ¢bi, L\'Arbre Ã  poÃ¨mes, 1993',
-    dictee_texte:'Je suis l\'arbre Ã  poÃ¨mes. Les savants disent que j\'appartiens Ã  une espÃ¨ce en voie de disparition.',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Ã‰crivez un texte poÃ©tique oÃ¹ un Ã©lÃ©ment de la nature parle.',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” Faut-il rÃ©sister Ã  l\'Ã©volution du monde ?',
-    texte_sujet:'1   Je suis l\'arbre Ã  poÃ¨mes. Les savants disent que j\'appartiens Ã  une espÃ¨ce en voie de\n2   disparition. Mais personne ne s\'en Ã©meut alors que des campagnes ont Ã©tÃ© lancÃ©es\n3   rÃ©cemment pour sauver le panda du NÃ©pal et l\'Ã©lÃ©phant d\'Afrique.\n    Abdellatif LaÃ¢bi, L\'Arbre Ã  poÃ¨mes, 1993',
+
+    dictee_auteur:'Abdellatif Laâbi, L\'Arbre à poèmes, 1993',
+
+    dictee_texte:'Je suis l\'arbre à poèmes. Les savants disent que j\'appartiens à une espèce en voie de disparition.',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Écrivez un texte poétique où un élément de la nature parle.',
+
+    redaction_s2:'SUJET DE RÉFLEXION — Faut-il résister à l\'évolution du monde ?',
+
+    texte_sujet:'1   Je suis l\'arbre à poèmes. Les savants disent que j\'appartiens à une espèce en voie de\n2   disparition. Mais personne ne s\'en émeut alors que des campagnes ont été lancées\n3   récemment pour sauver le panda du Népal et l\'éléphant d\'Afrique.\n    Abdellatif Laâbi, L\'Arbre à poèmes, 1993',
+
     questions:[
-      {type:'comprehension',pts:4,texte:'Q1 â€” Montrez que l\'arbre est personnifiÃ©.',rep:'Â« je m\'accroche Â», Â« je les truffe d\'Ã©pines Â» â†’ actions volontaires.'},
-      {type:'comprehension',pts:6,texte:'Q2 â€” Reproches de l\'arbre Ã  l\'homme.',rep:'Coupe les arbres sans respect, dÃ©truit la nature.'},
-      {type:'grammaire',pts:3,texte:'Q3 â€” Formation de Â« rÃ©ellement Â».',rep:'rÃ©el + -ment â†’ adverbe de maniÃ¨re.'},
-      {type:'grammaire',pts:9,texte:'Q4 â€” RÃ©Ã©crivez Ã  l\'imparfait avec Â« nous Â».',rep:'Â« nous nous accrochions... nous remontions... Â»'}
+
+      {type:'comprehension',pts:4,texte:'Q1 — Montrez que l\'arbre est personnifié.',rep:'« je m\'accroche », « je les truffe d\'épines » → actions volontaires.'},
+
+      {type:'comprehension',pts:6,texte:'Q2 — Reproches de l\'arbre à l\'homme.',rep:'Coupe les arbres sans respect, détruit la nature.'},
+
+      {type:'grammaire',pts:3,texte:'Q3 — Formation de « réellement ».',rep:'réel + -ment → adverbe de manière.'},
+
+      {type:'grammaire',pts:9,texte:'Q4 — Réécrivez à l\'imparfait avec « nous ».',rep:'« nous nous accrochions... nous remontions... »'}
+
     ]
+
   },
+
   {
-    id:8, annee:'2020', session:'MÃ©tropole (juin)',
-    titre:'20GENFRQGME1 â€” MoliÃ¨re, Monsieur de Pourceaugnac â€” scÃ¨ne d\'exposition',
+
+    id:8, annee:'2020', session:'Métropole (juin)',
+
+    titre:'20GENFRQGME1 — Molière, Monsieur de Pourceaugnac — scène d\'exposition',
+
     pdf:'https://www.education.gouv.fr/media/102618/download',
-    dictee_auteur:'MoliÃ¨re, Monsieur de Pourceaugnac, 1670',
-    dictee_texte:'JULIE. â€“ Mon Dieu, Ã‰raste, gardons d\'Ãªtre surpris ; je tremble qu\'on ne nous voie ensemble.',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Ã‰crivez un dialogue thÃ©Ã¢tral oÃ¹ NÃ©rine tente de convaincre Oronte.',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” Attendez-vous des Å“uvres qu\'elles vous procurent Â« le plaisir de la surprise Â» ?',
-    texte_sujet:'JULIE, Ã‰RASTE, NÃ‰RINE.\n1   JULIE. â€“ Mon Dieu, Ã‰raste, gardons d\'Ãªtre surpris ; je tremble qu\'on ne nous voie\n2   ensemble ; et tout serait perdu, aprÃ¨s la dÃ©fense que l\'on m\'a faite.\n3   Ã‰RASTE. â€“ Je regarde de tous cÃ´tÃ©s, et je n\'aperÃ§ois rien.\n    MoliÃ¨re, Monsieur de Pourceaugnac, 1670',
+
+    dictee_auteur:'Molière, Monsieur de Pourceaugnac, 1670',
+
+    dictee_texte:'JULIE. – Mon Dieu, Éraste, gardons d\'être surpris ; je tremble qu\'on ne nous voie ensemble.',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Écrivez un dialogue théâtral où Nérine tente de convaincre Oronte.',
+
+    redaction_s2:'SUJET DE RÉFLEXION — Attendez-vous des œuvres qu\'elles vous procurent « le plaisir de la surprise » ?',
+
+    texte_sujet:'JULIE, ÉRASTE, NÉRINE.\n1   JULIE. – Mon Dieu, Éraste, gardons d\'être surpris ; je tremble qu\'on ne nous voie\n2   ensemble ; et tout serait perdu, après la défense que l\'on m\'a faite.\n3   ÉRASTE. – Je regarde de tous côtés, et je n\'aperçois rien.\n    Molière, Monsieur de Pourceaugnac, 1670',
+
     questions:[
-      {type:'comprehension',pts:4,texte:'Q1 â€” Situation de Julie et sujet de discussion.',rep:'FiancÃ©e contre son grÃ© Ã  Pourceaugnac. Discute d\'un plan.'},
-      {type:'comprehension',pts:5,texte:'Q2 â€” Expliquez la comparaison Â« comme aux comÃ©dies Â».',rep:'La situation ressemble Ã  une comÃ©die, Ã‰raste = metteur en scÃ¨ne.'},
-      {type:'grammaire',pts:2,texte:'Q3 â€” Remplacez la relative par un adjectif : Â« chose que je ne saurais supporter Â».',rep:'Insupportable (in- + support- + -able).'},
-      {type:'grammaire',pts:10,texte:'Q4 â€” RÃ©Ã©crivez au discours indirect : Â« Julie demanda Ã  Ã‰raste... Â»',rep:'Transposition des temps, pronoms modifiÃ©s.'}
+
+      {type:'comprehension',pts:4,texte:'Q1 — Situation de Julie et sujet de discussion.',rep:'Fiancée contre son gré à Pourceaugnac. Discute d\'un plan.'},
+
+      {type:'comprehension',pts:5,texte:'Q2 — Expliquez la comparaison « comme aux comédies ».',rep:'La situation ressemble à une comédie, Éraste = metteur en scène.'},
+
+      {type:'grammaire',pts:2,texte:'Q3 — Remplacez la relative par un adjectif : « chose que je ne saurais supporter ».',rep:'Insupportable (in- + support- + -able).'},
+
+      {type:'grammaire',pts:10,texte:'Q4 — Réécrivez au discours indirect : « Julie demanda à Éraste... »',rep:'Transposition des temps, pronoms modifiés.'}
+
     ]
+
   },
+
   {
-    id:9, annee:'2019', session:'MÃ©tropole (juin) â€” LÃ©opoldine',
-    titre:'19GENFRQGCAG1 â€” Victor Hugo, Les Contemplations â€” LÃ©opoldine, souvenir, deuil',
+
+    id:9, annee:'2019', session:'Métropole (juin) — Léopoldine',
+
+    titre:'19GENFRQGCAG1 — Victor Hugo, Les Contemplations — Léopoldine, souvenir, deuil',
+
     pdf:'https://www.education.gouv.fr/media/86059/download',
+
     dictee_auteur:'Victor Hugo, Les Contemplations, 1856',
-    dictee_texte:'Elle avait dix ans, et moi trente ; J\'Ã©tais pour elle l\'univers. Oh ! comme l\'herbe est odorante Sous les arbres profonds et verts !',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Racontez un souvenir prÃ©cieux partagÃ© avec un Ãªtre cher.',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” La poÃ©sie est-elle le meilleur moyen d\'exprimer le deuil ?',
-    texte_sujet:'1   Quand nous habitions tous ensemble\n    Sur nos collines d\'autrefois,\n    OÃ¹ l\'eau court, oÃ¹ le buisson tremble,\n    Dans la maison qui touche aux bois,\n5   Elle avait dix ans, et moi trente ;\n    J\'Ã©tais pour elle l\'univers.\n    Victor Hugo, Les Contemplations, 1856',
+
+    dictee_texte:'Elle avait dix ans, et moi trente ; J\'étais pour elle l\'univers. Oh ! comme l\'herbe est odorante Sous les arbres profonds et verts !',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Racontez un souvenir précieux partagé avec un être cher.',
+
+    redaction_s2:'SUJET DE RÉFLEXION — La poésie est-elle le meilleur moyen d\'exprimer le deuil ?',
+
+    texte_sujet:'1   Quand nous habitions tous ensemble\n    Sur nos collines d\'autrefois,\n    Où l\'eau court, où le buisson tremble,\n    Dans la maison qui touche aux bois,\n5   Elle avait dix ans, et moi trente ;\n    J\'étais pour elle l\'univers.\n    Victor Hugo, Les Contemplations, 1856',
+
     questions:[
-      {type:'comprehension',pts:4,texte:'Q1 â€” Portrait de LÃ©opoldine : deux qualitÃ©s.',rep:'GaietÃ©, gÃ©nÃ©rositÃ© (citation).'},
-      {type:'comprehension',pts:5,texte:'Q2 â€” Sentiments pÃ¨re/fille dans les premiÃ¨res strophes.',rep:'Amour intense, complicitÃ©, tendresse.'},
-      {type:'grammaire',pts:2,texte:'Q3 â€” Temps de Â« habitions Â» et son emploi.',rep:'Imparfait. Ã‰tat passÃ© rÃ©volu, nostalgie.'},
-      {type:'grammaire',pts:6,texte:'Q4 â€” RÃ©Ã©crivez strophe 5 : Â« elle Â» â†’ Â« elles Â», Â« je Â» â†’ Â« nous Â».',rep:'FÃ©minin pluriel et 1Ã¨re personne pluriel.'}
+
+      {type:'comprehension',pts:4,texte:'Q1 — Portrait de Léopoldine : deux qualités.',rep:'Gaieté, générosité (citation).'},
+
+      {type:'comprehension',pts:5,texte:'Q2 — Sentiments père/fille dans les premières strophes.',rep:'Amour intense, complicité, tendresse.'},
+
+      {type:'grammaire',pts:2,texte:'Q3 — Temps de « habitions » et son emploi.',rep:'Imparfait. État passé révolu, nostalgie.'},
+
+      {type:'grammaire',pts:6,texte:'Q4 — Réécrivez strophe 5 : « elle » → « elles », « je » → « nous ».',rep:'Féminin pluriel et 1ère personne pluriel.'}
+
     ]
+
   },
+
   {
-    id:10, annee:'2019', session:'MÃ©tropole (juin) â€” La Rumeur',
-    titre:'19GENFRQGME1 â€” Victor Hugo, Toute la Lyre â€” La Rumeur, pouvoir de la parole',
+
+    id:10, annee:'2019', session:'Métropole (juin) — La Rumeur',
+
+    titre:'19GENFRQGME1 — Victor Hugo, Toute la Lyre — La Rumeur, pouvoir de la parole',
+
     pdf:'https://www.education.gouv.fr/media/86060/download',
+
     dictee_auteur:'Victor Hugo, Toute la Lyre, 1888',
-    dictee_texte:'Jeunes gens, prenez garde aux choses que vous dites. Tout peut sortir d\'un mot qu\'en passant vous perdÃ®tes.',
-    redaction_s1:'SUJET D\'IMAGINATION â€” Faites le portrait de quelqu\'un qui a comptÃ© pour vous.',
-    redaction_s2:'SUJET DE RÃ‰FLEXION â€” Pourquoi un artiste Ã©crit-il son autobiographie ?',
-    texte_sujet:'1   Jeunes gens, prenez garde aux choses que vous dites.\n2   Tout peut sortir d\'un mot qu\'en passant vous perdÃ®tes.\n3   Tout, la haine et le deuil ! â€“ Et ne m\'objectez pas\n4   Que vos amis sont sÃ»rs et que vous parlez basâ€¦\n    Victor Hugo, Toute la Lyre, 1888',
+
+    dictee_texte:'Jeunes gens, prenez garde aux choses que vous dites. Tout peut sortir d\'un mot qu\'en passant vous perdîtes.',
+
+    redaction_s1:'SUJET D\'IMAGINATION — Faites le portrait de quelqu\'un qui a compté pour vous.',
+
+    redaction_s2:'SUJET DE RÉFLEXION — Pourquoi un artiste écrit-il son autobiographie ?',
+
+    texte_sujet:'1   Jeunes gens, prenez garde aux choses que vous dites.\n2   Tout peut sortir d\'un mot qu\'en passant vous perdîtes.\n3   Tout, la haine et le deuil ! – Et ne m\'objectez pas\n4   Que vos amis sont sûrs et que vous parlez bas…\n    Victor Hugo, Toute la Lyre, 1888',
+
     questions:[
-      {type:'comprehension',pts:4,texte:'Q1 â€” ConsÃ©quences d\'un Â« mot dÃ©sagrÃ©able Â».',rep:'Le mot se rÃ©pand, incontrÃ´lable, revient Ã  son auteur.'},
-      {type:'comprehension',pts:6,texte:'Q2 â€” Figure de style : Â« il court, part, bondit... Â»',rep:'Personnification â†’ la parole devient menaÃ§ante.'},
-      {type:'grammaire',pts:4,texte:'Q3 â€” Mode de Â« prenez Â», Â« objectez Â», Â« Ã‰coutez Â».',rep:'ImpÃ©ratif prÃ©sent â†’ conseil direct au lecteur.'},
-      {type:'grammaire',pts:10,texte:'Q4 â€” RÃ©Ã©crivez en remplaÃ§ant Â« il Â» par Â« ils Â».',rep:'Masculin pluriel : Â« ils vous Ã©chappent, ils fuient... Â»'}
+
+      {type:'comprehension',pts:4,texte:'Q1 — Conséquences d\'un « mot désagréable ».',rep:'Le mot se répand, incontrôlable, revient à son auteur.'},
+
+      {type:'comprehension',pts:6,texte:'Q2 — Figure de style : « il court, part, bondit... »',rep:'Personnification → la parole devient menaçante.'},
+
+      {type:'grammaire',pts:4,texte:'Q3 — Mode de « prenez », « objectez », « Écoutez ».',rep:'Impératif présent → conseil direct au lecteur.'},
+
+      {type:'grammaire',pts:10,texte:'Q4 — Réécrivez en remplaçant « il » par « ils ».',rep:'Masculin pluriel : « ils vous échappent, ils fuient... »'}
+
     ]
+
   }
+
 ];
 
+
+
 // ============================================================
+
 // FONCTIONS D'AFFICHAGE
+
 // ============================================================
+
+
 
 function esc(s) {
+
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
 }
+
+
 
 function buildGrid() {
+
   const grid = document.getElementById('grid');
+
   let html = '';
+
   SUJETS.forEach((s, idx) => {
+
     html += '<div class="card" onclick="ouvrirSujet(' + idx + ')">'
+
       + '<div class="card-top"><span class="card-num">Sujet ' + s.id + '</span><span class="badge">' + s.annee + '</span></div>'
+
       + '<div class="card-titre">' + esc(s.titre) + '</div>'
+
       + '<div class="card-meta">' + esc(s.session) + '</div>'
-      + '<a class="card-pdf" href="' + s.pdf + '" target="_blank" onclick="event.stopPropagation()">ðŸ“„ Sujet officiel PDF</a>'
+
+      + '<a class="card-pdf" href="' + s.pdf + '" target="_blank" onclick="event.stopPropagation()">📄 Sujet officiel PDF</a>'
+
       + '</div>';
+
   });
+
   grid.innerHTML = html;
+
 }
+
+
 
 function ouvrirSujet(idx) {
+
   const s = SUJETS[idx];
-  document.getElementById('svTitre').innerHTML = 'DNB ' + s.annee + ' â€” ' + s.session;
+
+  document.getElementById('svTitre').innerHTML = 'DNB ' + s.annee + ' — ' + s.session;
+
   document.getElementById('svSub').textContent = s.titre;
+
   document.getElementById('svDl').href = s.pdf;
+
   document.getElementById('btnDl').onclick = () => telecharger(idx);
+
+
 
   let html = '';
 
+
+
   // SECTION DICTEE
+
   const didx = 'dict_' + idx;
+
   html += '<div class="section-box">'
-    + '<div class="section-head"><span class="sec-badge badge-dict">DictÃ©e</span><span style="font-size:12px;color:#9090a8">' + esc(s.dictee_auteur) + '</span></div>'
+
+    + '<div class="section-head"><span class="sec-badge badge-dict">Dictée</span><span style="font-size:12px;color:#9090a8">' + esc(s.dictee_auteur) + '</span></div>'
+
     + '<div class="section-body">'
-    + '<div class="dictee-consigne">Le professeur lit la dictÃ©e Ã  voix haute. Tapez ce que vous entendez.</div>'
-    + '<textarea class="dictee-area" id="' + didx + '" placeholder="Ã‰crivez la dictÃ©e ici..."></textarea>'
-    + '<button class="btn-corriger-dict" onclick="corrigerDictee(' + idx + ',\'' + didx + '\')">âœ¦ Corriger la dictÃ©e</button>'
+
+    + '<div class="dictee-consigne">Le professeur lit la dictée à voix haute. Tapez ce que vous entendez.</div>'
+
+    + '<textarea class="dictee-area" id="' + didx + '" placeholder="Écrivez la dictée ici..."></textarea>'
+
+    + '<button class="btn-corriger-dict" onclick="corrigerDictee(' + idx + ',\'' + didx + '\')">✦ Corriger la dictée</button>'
+
     + '<div class="panel" id="panel_' + didx + '"></div>'
+
     + '</div></div>';
+
+
 
   // SECTION QUESTIONS
+
   html += '<div class="section-box">'
-    + '<div class="section-head"><span class="sec-badge badge-red">ComprÃ©hension &amp; Grammaire</span><span style="font-size:12px;color:#9090a8">' + s.questions.length + ' questions</span></div>';
+
+    + '<div class="section-head"><span class="sec-badge badge-red">Compréhension &amp; Grammaire</span><span style="font-size:12px;color:#9090a8">' + s.questions.length + ' questions</span></div>';
+
   s.questions.forEach((q, qi) => {
+
     const qid = 'q_' + idx + '_' + qi;
-    const badge = q.type === 'comprehension' ? '<span class="q-badge qb-comp">ComprÃ©hension</span>' : '<span class="q-badge qb-gram">Grammaire</span>';
+
+    const badge = q.type === 'comprehension' ? '<span class="q-badge qb-comp">Compréhension</span>' : '<span class="q-badge qb-gram">Grammaire</span>';
+
     html += '<div class="question" style="padding:14px 16px">'
+
       + badge
+
       + '<div class="q-texte">' + esc(q.texte) + '</div>'
-      + '<textarea class="answer-area" id="ans_' + qid + '" placeholder="RÃ©ponse..."></textarea>'
-      + '<button class="btn-corriger" onclick="corriger(' + idx + ',' + qi + ',\'' + qid + '\')">âœ¦ Corriger avec IA</button>'
+
+      + '<textarea class="answer-area" id="ans_' + qid + '" placeholder="Réponse..."></textarea>'
+
+      + '<button class="btn-corriger" onclick="corriger(' + idx + ',' + qi + ',\'' + qid + '\')">✦ Corriger avec IA</button>'
+
       + '<div class="panel" id="panel_' + qid + '"></div>'
+
       + '</div>';
+
   });
+
   html += '</div>';
 
+
+
   // SECTION REDACTION
+
   html += '<div class="section-box">'
-    + '<div class="section-head"><span class="sec-badge badge-redac">RÃ©daction</span></div>'
+
+    + '<div class="section-head"><span class="sec-badge badge-redac">Rédaction</span></div>'
+
     + '<div class="section-body">'
+
     + '<div class="redac-sujet"><strong>Sujet 1 :</strong> ' + esc(s.redaction_s1) + '</div>'
+
     + '<div class="redac-sujet"><strong>Sujet 2 :</strong> ' + esc(s.redaction_s2) + '</div>'
-    + '<textarea class="answer-area" id="redac_' + idx + '" style="min-height:180px" placeholder="RÃ©digez votre texte ici..."></textarea>'
-    + '<button class="btn-corriger" onclick="corrigerRedac(' + idx + ')">âœ¦ Corriger la rÃ©daction</button>'
+
+    + '<textarea class="answer-area" id="redac_' + idx + '" style="min-height:180px" placeholder="Rédigez votre texte ici..."></textarea>'
+
+    + '<button class="btn-corriger" onclick="corrigerRedac(' + idx + ')">✦ Corriger la rédaction</button>'
+
     + '<div class="panel" id="panel_redac_' + idx + '"></div>'
+
     + '</div></div>';
 
+
+
   document.getElementById('svContent').innerHTML = html;
+
   document.getElementById('landing').style.display = 'none';
+
   const sv = document.getElementById('sujetView');
+
   sv.style.display = 'block';
+
   sv.classList.add('active');
+
   window.scrollTo(0,0);
+
 }
+
+
 
 function retour() {
+
   document.getElementById('sujetView').style.display = 'none';
+
   document.getElementById('sujetView').classList.remove('active');
+
   document.getElementById('landing').style.display = 'block';
+
   window.scrollTo(0,0);
+
 }
 
+
+
 // ============================================================
+
 // CORRECTIONS (utilisent window.callIA du proxy-client.js)
+
 // ============================================================
+
+
 
 function badge(val) {
+
   const ok = (val === 'Oui' || val === 'OK');
+
   const partiel = (val === 'Partiel');
+
   const bg = ok ? 'rgba(94,207,177,.15)' : partiel ? 'rgba(245,166,35,.15)' : 'rgba(232,122,122,.15)';
+
   const col = ok ? '#5ecfb1' : partiel ? '#f5a623' : '#e87a7a';
-  const icon = ok ? 'âœ“' : partiel ? 'â—‘' : 'âœ—';
+
+  const icon = ok ? '✓' : partiel ? '◑' : '✗';
+
   return '<span style="background:'+bg+';color:'+col+';border:1px solid '+col+';border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;">'+icon+' '+esc(val)+'</span>';
+
 }
+
+
 
 async function corrigerDictee(sIdx, did) {
+
   const s = SUJETS[sIdx];
+
   const texteEleve = document.getElementById(did).value.trim();
-  if (!texteEleve) { alert('Ã‰cris ta dictÃ©e d\'abord !'); return; }
+
+  if (!texteEleve) { alert('Écris ta dictée d\'abord !'); return; }
+
+
 
   const panel = document.getElementById('panel_' + did);
+
   const btn = panel.previousElementSibling;
+
   panel.classList.add('show');
+
   panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+
   if (btn) btn.disabled = true;
 
-  const system = `Tu es correcteur expert DNB pour la DICTÃ‰E.
-Compare le texte officiel et le texte de l'Ã©lÃ¨ve.
-Compte les fautes par catÃ©gorie : lexicale, accord sujet-verbe, accord nom-adjectif, participe passÃ©, homophone, ponctuation.
-Note sur 10 points : -0.5 par faute (mÃªme faute rÃ©pÃ©tÃ©e = -0.5 une seule fois).
-RÃ©ponds UNIQUEMENT en JSON sans markdown :
-{"note":X,"sur":10,"total_fautes":N,"liste_fautes":[{"incorrect":"...","correct":"...","regle":"..."}],"commentaire":"bilan","pistes":"rÃ¨gles Ã  retravailler"}`;
 
-  const prompt = `Texte officiel : ${s.dictee_texte}\nTexte de l'Ã©lÃ¨ve : ${texteEleve}`;
+
+  const system = `Tu es correcteur expert DNB pour la DICTÉE.
+
+Compare le texte officiel et le texte de l'élève.
+
+Compte les fautes par catégorie : lexicale, accord sujet-verbe, accord nom-adjectif, participe passé, homophone, ponctuation.
+
+Note sur 10 points : -0.5 par faute (même faute répétée = -0.5 une seule fois).
+
+Réponds UNIQUEMENT en JSON sans markdown :
+
+{"note":X,"sur":10,"total_fautes":N,"liste_fautes":[{"incorrect":"...","correct":"...","regle":"..."}],"commentaire":"bilan","pistes":"règles à retravailler"}`;
+
+
+
+  const prompt = `Texte officiel : ${s.dictee_texte}\nTexte de l'élève : ${texteEleve}`;
+
+
 
   try {
+
     const txt = await window.callIA(prompt, system);
+
     const json = window.safeJSON ? window.safeJSON(txt) : (()=>{try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}catch(e){return null;}})();
+
     
+
     if (!STORE[s.id]) STORE[s.id] = [];
+
     STORE[s.id].push({
+
       type:'dictee', reponseEleve: texteEleve,
+
       correctionIA: json ? json.commentaire : txt,
+
       correctionOff: s.dictee_texte, note: json ? json.note : null, pts: 10
+
     });
+
     saveCorrections();
+
+
 
     let listeFautes = '';
+
     if (json && json.liste_fautes && json.liste_fautes.length) {
-      listeFautes = '<div class="corr-conseil" style="margin-bottom:8px;"><strong>âœ— Fautes dÃ©tectÃ©es :</strong><br>' +
-        json.liste_fautes.map(f => 'â€¢ <em>' + esc(f.incorrect||'') + '</em> â†’ <strong>' + esc(f.correct||'') + '</strong> â€” ' + esc(f.regle||'')).join('<br>') +
+
+      listeFautes = '<div class="corr-conseil" style="margin-bottom:8px;"><strong>✗ Fautes détectées :</strong><br>' +
+
+        json.liste_fautes.map(f => '• <em>' + esc(f.incorrect||'') + '</em> → <strong>' + esc(f.correct||'') + '</strong> — ' + esc(f.regle||'')).join('<br>') +
+
         '</div>';
+
     }
 
+
+
     panel.innerHTML = `
+
       <div class="corr-ia">
-        <div class="corr-note">${json ? 'âœ“ ' + json.note + ' / 10' : '? / 10'}</div>
-        ${json && json.total_fautes != null ? '<div class="corr-conseil">ðŸ“Š Total fautes : ' + json.total_fautes + '</div>' : ''}
+
+        <div class="corr-note">${json ? '✓ ' + json.note + ' / 10' : '? / 10'}</div>
+
+        ${json && json.total_fautes != null ? '<div class="corr-conseil">📊 Total fautes : ' + json.total_fautes + '</div>' : ''}
+
         ${listeFautes}
+
         <div class="corr-txt">${json ? json.commentaire : txt}</div>
-        ${json && json.pistes ? '<div class="corr-conseil" style="color:#e8c87a">ðŸŽ¯ ' + esc(json.pistes) + '</div>' : ''}
+
+        ${json && json.pistes ? '<div class="corr-conseil" style="color:#e8c87a">🎯 ' + esc(json.pistes) + '</div>' : ''}
+
       </div>
-      <div class="corr-off"><strong>ðŸ“– TEXTE OFFICIEL</strong><br>${esc(s.dictee_texte)}</div>
-      <button class="btn-copy" onclick="copier(this)">ðŸ“‹ Copier</button>`;
+
+      <div class="corr-off"><strong>📖 TEXTE OFFICIEL</strong><br>${esc(s.dictee_texte)}</div>
+
+      <button class="btn-copy" onclick="copier(this)">📋 Copier</button>`;
+
   } catch(err) {
+
     let errMsg = err.message;
-    if (errMsg === 'ACCES_BLOQUE') errMsg = 'AccÃ¨s bloquÃ©. Veuillez activer votre abonnement.';
-    panel.innerHTML = '<div class="erreur">âŒ ' + errMsg + '</div>';
+
+    if (errMsg === 'ACCES_BLOQUE') errMsg = 'Accès bloqué. Veuillez activer votre abonnement.';
+
+    panel.innerHTML = '<div class="erreur">❌ ' + errMsg + '</div>';
+
   }
+
   if (btn) btn.disabled = false;
+
 }
+
+
 
 async function corriger(sIdx, qi, qid) {
+
   const s = SUJETS[sIdx];
+
   const q = s.questions[qi];
+
   const ans = document.getElementById('ans_' + qid).value.trim();
-  if (!ans) { alert('Ã‰cris ta rÃ©ponse d\'abord !'); return; }
+
+  if (!ans) { alert('Écris ta réponse d\'abord !'); return; }
+
+
 
   const panel = document.getElementById('panel_' + qid);
+
   const btn = panel.previousElementSibling;
+
   panel.classList.add('show');
+
   panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+
   if (btn) btn.disabled = true;
+
+
 
   const pts = q.pts;
+
   const disc = q.type === 'comprehension' ? 'COMPREHENSION' : 'GRAMMAIRE';
+
   const qTexte = q.texte.split('\n').join(' ').substring(0, 300);
 
+
+
   const system = `Tu es correcteur expert DNB en ${disc}.
+
 Sujet: ${s.titre}, session ${s.annee}
+
 Question (${pts} pts): ${qTexte}
 
-MÃ©thode DNB ${q.type === 'comprehension' ? 'COMPREHENSION' : 'GRAMMAIRE'}:
-${q.type === 'comprehension' ? 
-  '- Citations exactes avec guillemets\n- Reformulation en mots propres\n- Figures de style nommÃ©es avec effet\n- Nombre d\'Ã©lÃ©ments demandÃ©s respectÃ©' : 
-  '- RÃ¨gle grammaticale explicitÃ©e\n- Accords justifiÃ©s (genre, nombre)\n- Pour rÃ©Ã©criture: TOUS les changements vÃ©rifiÃ©s'}
 
-RÃ©ponds UNIQUEMENT en JSON sans markdown:
-{"note":X,"sur":${pts},"cours_su":"Oui/Partiel/Non","methode":"Oui/Partiel/Non","commentaire":"analyse 3-5 lignes","pistes":"conseils prÃ©cis"}`;
+
+Méthode DNB ${q.type === 'comprehension' ? 'COMPREHENSION' : 'GRAMMAIRE'}:
+
+${q.type === 'comprehension' ? 
+
+  '- Citations exactes avec guillemets\n- Reformulation en mots propres\n- Figures de style nommées avec effet\n- Nombre d\'éléments demandés respecté' : 
+
+  '- Règle grammaticale explicitée\n- Accords justifiés (genre, nombre)\n- Pour réécriture: TOUS les changements vérifiés'}
+
+
+
+Réponds UNIQUEMENT en JSON sans markdown:
+
+{"note":X,"sur":${pts},"cours_su":"Oui/Partiel/Non","methode":"Oui/Partiel/Non","commentaire":"analyse 3-5 lignes","pistes":"conseils précis"}`;
+
+
 
   const texteContext = (q.type === 'comprehension' && s.texte_sujet) ? 'TEXTE :\n' + s.texte_sujet + '\n\n' : '';
-  const prompt = texteContext + `Question : ${qTexte}\nCorrection attendue : ${q.rep}\nRÃ©ponse Ã©lÃ¨ve : ${ans}`;
+
+  const prompt = texteContext + `Question : ${qTexte}\nCorrection attendue : ${q.rep}\nRéponse élève : ${ans}`;
+
+
 
   try {
+
     const txt = await window.callIA(prompt, system);
+
     const json = window.safeJSON ? window.safeJSON(txt) : (()=>{try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}catch(e){return null;}})();
+
     
+
     if (!STORE[s.id]) STORE[s.id] = [];
+
     STORE[s.id].push({
+
       type: q.type, qi: qi+1, question: q.texte.substring(0,80),
+
       reponseEleve: ans, correctionIA: json ? json.commentaire : txt,
+
       correctionOff: q.rep, pts: pts, note: json ? json.note : null
+
     });
+
     saveCorrections();
 
+
+
     panel.innerHTML = `
+
       <div class="corr-ia">
+
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-          <div class="corr-note">âœ“ ${json ? json.note : '?'} / ${pts}</div>
+
+          <div class="corr-note">✓ ${json ? json.note : '?'} / ${pts}</div>
+
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
+
             <span style="font-size:10px;">Cours</span>${badge(json ? json.cours_su : '?')}
-            <span style="font-size:10px;margin-left:6px;">MÃ©thode</span>${badge(json ? json.methode : '?')}
+
+            <span style="font-size:10px;margin-left:6px;">Méthode</span>${badge(json ? json.methode : '?')}
+
           </div>
+
         </div>
+
         <div class="corr-txt">${json ? json.commentaire : txt}</div>
-        ${json && json.pistes ? '<div class="corr-conseil" style="margin-top:8px;color:#e8c87a">ðŸŽ¯ ' + esc(json.pistes) + '</div>' : ''}
+
+        ${json && json.pistes ? '<div class="corr-conseil" style="margin-top:8px;color:#e8c87a">🎯 ' + esc(json.pistes) + '</div>' : ''}
+
       </div>
-      <div class="corr-off"><strong>ðŸ“– CORRECTION OFFICIELLE</strong><br>${esc(q.rep)}</div>
-      <button class="btn-copy" onclick="copier(this)">ðŸ“‹ Copier</button>`;
+
+      <div class="corr-off"><strong>📖 CORRECTION OFFICIELLE</strong><br>${esc(q.rep)}</div>
+
+      <button class="btn-copy" onclick="copier(this)">📋 Copier</button>`;
+
   } catch(err) {
+
     let errMsg = err.message;
-    if (errMsg === 'ACCES_BLOQUE') errMsg = 'AccÃ¨s bloquÃ©. Veuillez activer votre abonnement.';
-    panel.innerHTML = '<div style="color:#e87a7a">âŒ ' + errMsg + '</div>';
+
+    if (errMsg === 'ACCES_BLOQUE') errMsg = 'Accès bloqué. Veuillez activer votre abonnement.';
+
+    panel.innerHTML = '<div style="color:#e87a7a">❌ ' + errMsg + '</div>';
+
   }
+
   if (btn) btn.disabled = false;
+
 }
+
+
 
 async function corrigerRedac(sIdx) {
+
   const s = SUJETS[sIdx];
+
   const ans = document.getElementById('redac_' + sIdx).value.trim();
-  if (!ans) { alert('Ã‰cris ta rÃ©daction d\'abord !'); return; }
+
+  if (!ans) { alert('Écris ta rédaction d\'abord !'); return; }
+
+
 
   const panel = document.getElementById('panel_redac_' + sIdx);
+
   const btn = panel.previousElementSibling;
+
   panel.classList.add('show');
+
   panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+
   if (btn) btn.disabled = true;
 
-  const system = `Tu es correcteur expert DNB pour la RÃ‰DACTION.
-BARÃˆME sur 40 points :
-- AdÃ©quation au sujet (10 pts)
+
+
+  const system = `Tu es correcteur expert DNB pour la RÉDACTION.
+
+BARÈME sur 40 points :
+
+- Adéquation au sujet (10 pts)
+
 - Style et vocabulaire (10 pts)
+
 - Orthographe et grammaire (10 pts)
+
 - Structure (10 pts)
 
-RÃ©ponds UNIQUEMENT en JSON sans markdown:
+
+
+Réponds UNIQUEMENT en JSON sans markdown:
+
 {"note":X,"sur":40,"criteres":{"adequation":X,"style":X,"orthographe":X,"structure":X},"commentaire":"analyse","pistes":"conseils"}`;
 
-  const prompt = `Sujet 1 : ${s.redaction_s1}\nSujet 2 : ${s.redaction_s2}\n\nRÃ©daction Ã©lÃ¨ve : ${ans}`;
+
+
+  const prompt = `Sujet 1 : ${s.redaction_s1}\nSujet 2 : ${s.redaction_s2}\n\nRédaction élève : ${ans}`;
+
+
 
   try {
+
     const txt = await window.callIA(prompt, system);
+
     const json = window.safeJSON ? window.safeJSON(txt) : (()=>{try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}catch(e){return null;}})();
+
     
+
     if (!STORE[s.id]) STORE[s.id] = [];
+
     STORE[s.id].push({
+
       type:'redaction', reponseEleve: ans, correctionIA: json ? json.commentaire : txt,
+
       correctionOff: 'Sujet 1: ' + s.redaction_s1 + ' | Sujet 2: ' + s.redaction_s2,
+
       note: json ? json.note : null, pts: 40
+
     });
+
     saveCorrections();
 
+
+
     panel.innerHTML = `
+
       <div class="corr-ia">
-        <div class="corr-note">${json ? 'âœ“ ' + json.note + ' / 40' : '? / 40'}</div>
-        ${json && json.criteres ? '<div class="corr-conseil">ðŸ“Š AdÃ©quation: '+(json.criteres.adequation||'?')+'/10 Â· Style: '+(json.criteres.style||'?')+'/10 Â· Ortho: '+(json.criteres.orthographe||'?')+'/10 Â· Structure: '+(json.criteres.structure||'?')+'/10</div>' : ''}
+
+        <div class="corr-note">${json ? '✓ ' + json.note + ' / 40' : '? / 40'}</div>
+
+        ${json && json.criteres ? '<div class="corr-conseil">📊 Adéquation: '+(json.criteres.adequation||'?')+'/10 · Style: '+(json.criteres.style||'?')+'/10 · Ortho: '+(json.criteres.orthographe||'?')+'/10 · Structure: '+(json.criteres.structure||'?')+'/10</div>' : ''}
+
         <div class="corr-txt">${json ? json.commentaire : txt}</div>
-        ${json && json.pistes ? '<div class="corr-conseil" style="color:#e8c87a">ðŸŽ¯ ' + esc(json.pistes) + '</div>' : ''}
+
+        ${json && json.pistes ? '<div class="corr-conseil" style="color:#e8c87a">🎯 ' + esc(json.pistes) + '</div>' : ''}
+
       </div>
-      <button class="btn-copy" onclick="copier(this)">ðŸ“‹ Copier</button>`;
+
+      <button class="btn-copy" onclick="copier(this)">📋 Copier</button>`;
+
   } catch(err) {
+
     let errMsg = err.message;
-    if (errMsg === 'ACCES_BLOQUE') errMsg = 'AccÃ¨s bloquÃ©. Veuillez activer votre abonnement.';
-    panel.innerHTML = '<div style="color:#e87a7a">âŒ ' + errMsg + '</div>';
+
+    if (errMsg === 'ACCES_BLOQUE') errMsg = 'Accès bloqué. Veuillez activer votre abonnement.';
+
+    panel.innerHTML = '<div style="color:#e87a7a">❌ ' + errMsg + '</div>';
+
   }
+
   if (btn) btn.disabled = false;
+
 }
+
+
 
 async function copier(btn) {
+
   try {
+
     await navigator.clipboard.writeText(btn.parentElement.innerText);
-    btn.textContent = 'âœ“ CopiÃ©';
-    setTimeout(() => btn.textContent = 'ðŸ“‹ Copier', 2000);
+
+    btn.textContent = '✓ Copié';
+
+    setTimeout(() => btn.textContent = '📋 Copier', 2000);
+
   } catch(e) {}
+
 }
+
+
 
 function telecharger(sIdx) {
+
   const s = SUJETS[sIdx];
+
   const data = STORE[s.id];
+
   if (!data || !data.length) { alert('Corrige au moins une question d\'abord.'); return; }
+
   let totalObt = 0, totalMax = 0;
+
   data.forEach(c => { if (c.note != null) totalObt += parseFloat(c.note); totalMax += (c.pts || 0); });
+
   
+
   let html = `<html><head><meta charset="UTF-8"><style>
+
     body{font-family:Arial,sans-serif;font-size:13px;color:#111;padding:2rem;max-width:800px;margin:0 auto;}
+
     h1{font-size:18px;border-bottom:3px solid #c97de8;color:#7a2ea0;padding-bottom:8px;}
+
     h2{font-size:13px;margin-top:1.5rem;border-left:4px solid #c97de8;padding-left:10px;}
+
     .score{font-size:18px;font-weight:bold;color:#7a2ea0;margin:16px 0;padding:12px;background:#f9f0ff;border-radius:8px;}
+
     .ia{background:#fdf0ff;border-left:3px solid #c97de8;padding:10px;margin:8px 0;}
+
     .off{background:#e6f9ee;border-left:3px solid #34c76b;padding:10px;margin:8px 0;font-size:12px;}
+
     .eleve{background:#f0f0ff;border-left:3px solid #9090c8;padding:10px;margin:8px 0;}
+
   </style></head><body>
-  <h1>ðŸ“– Corrections FranÃ§ais â€” ${s.annee} ${s.session}</h1>
+
+  <h1>📖 Corrections Français — ${s.annee} ${s.session}</h1>
+
   <div class="score">Score total : ${totalObt.toFixed(1)} / ${totalMax} (${Math.round(totalObt/totalMax*100)}%)</div>`;
+
   data.forEach(c => {
-    const typeLabel = c.type === 'dictee' ? 'ðŸ“ DictÃ©e' : c.type === 'redaction' ? 'âœï¸ RÃ©daction' : (c.type === 'comprehension' ? 'ðŸ” ComprÃ©hension' : 'ðŸ“ Grammaire');
-    html += `<h2>${typeLabel}${c.qi ? ' â€” Q'+c.qi : ''}${c.note != null ? ' ('+c.note+'/'+(c.pts||'?')+')' : ''}</h2>`;
+
+    const typeLabel = c.type === 'dictee' ? '📝 Dictée' : c.type === 'redaction' ? '✍️ Rédaction' : (c.type === 'comprehension' ? '🔍 Compréhension' : '📐 Grammaire');
+
+    html += `<h2>${typeLabel}${c.qi ? ' — Q'+c.qi : ''}${c.note != null ? ' ('+c.note+'/'+(c.pts||'?')+')' : ''}</h2>`;
+
     if (c.question) html += `<div class="eleve"><strong>Question :</strong> ${esc(c.question)}</div>`;
-    html += `<div class="eleve"><strong>âœï¸ RÃ©ponse Ã©lÃ¨ve :</strong><br>${esc(c.reponseEleve || 'â€”')}</div>`;
-    html += `<div class="ia"><strong>ðŸ¤– Analyse IA :</strong><br>${esc(c.correctionIA || '')}</div>`;
-    html += `<div class="off"><strong>ðŸ“– Correction officielle :</strong><br>${esc(c.correctionOff || '')}</div>`;
+
+    html += `<div class="eleve"><strong>✏️ Réponse élève :</strong><br>${esc(c.reponseEleve || '—')}</div>`;
+
+    html += `<div class="ia"><strong>🤖 Analyse IA :</strong><br>${esc(c.correctionIA || '')}</div>`;
+
+    html += `<div class="off"><strong>📖 Correction officielle :</strong><br>${esc(c.correctionOff || '')}</div>`;
+
   });
+
   html += '</body></html>';
+
   const win = window.open('','_blank');
+
   win.document.write(html);
+
   win.document.close();
+
   win.print();
+
 }
 
+
+
 // Initialisation
+
 buildGrid();
+
 </script>
+
 </body>
+
 </html>
