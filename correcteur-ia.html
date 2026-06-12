@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ðŸ¤– Correcteur â€“ Brevet 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#000000;font-family:'DM Sans',sans-serif;padding:1rem;color:#ffffff;}
+    .container{max-width:900px;margin:0 auto;background:#1a1a1a;border-radius:2rem;padding:2rem;border:1px solid #ffcc00;}
+    h1{font-family:'Playfair Display',serif;font-size:2rem;color:#ffcc00;margin-bottom:0.25rem;}
+    .sub{color:#aaa;margin-bottom:2rem;border-left:3px solid #ffcc00;padding-left:1rem;}
+    .back-link{display:inline-block;margin-bottom:1rem;text-decoration:none;color:#5ecfb1;font-size:0.8rem;}
+    
+    textarea{width:100%;background:#0a0a0f;border:1px solid #333;border-radius:1rem;padding:1rem;color:white;font-size:1rem;margin-bottom:1rem;font-family:'DM Sans',sans-serif;resize:vertical;}
+    .btn-group{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;}
+    button{background:#1e2a3e;border:1px solid #5ecfb1;border-radius:40px;padding:0.5rem 1.2rem;font-size:0.8rem;color:#5ecfb1;cursor:pointer;}
+    button:hover{background:#2a3652;}
+    .loading{color:#ffcc00;text-align:center;padding:1rem;display:none;}
+    .resultat{background:#2a2a2a;border-radius:1rem;padding:1rem;margin-top:1rem;border-left:4px solid #5ecfb1;display:none;}
+    .selecteur{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;}
+    select{background:#2a2a2a;border:1px solid #333;border-radius:40px;padding:0.4rem 0.8rem;color:white;}
+    .note{font-size:2rem;font-weight:700;color:#ffcc00;}
+  </style>
+  
+<script src="proxy-client.js"></script>
+
+<script>
+const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
+function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
+function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
+function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
+function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
+function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
+function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
+function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
+function afficherBlocageEssaiExpire(){afficherOverlay();}
+function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
+function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
+window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
+</script>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back-link">â† Retour au hub</a>
+  <h1>ðŸ¤– Correcteur</h1>
+  <div class="sub">Notation â€¢ Correction â€¢ MÃ©thodologie par matiÃ¨re</div>
+
+  <div class="selecteur">
+    <label>ðŸ“š MatiÃ¨re : </label>
+    <select id="matiereSelect">
+      <option value="francais">ðŸ“– FranÃ§ais (rÃ©daction, essai, commentaire)</option>
+      <option value="maths">ðŸ“ MathÃ©matiques (dÃ©monstration, rÃ©solution)</option>
+      <option value="histoire">ðŸŒ Histoire-GÃ©o & EMC (paragraphe argumentÃ©)</option>
+      <option value="sciences">ðŸ”¬ Sciences (dÃ©marche scientifique)</option>
+    </select>
+  </div>
+
+  <textarea id="userTexte" rows="12" placeholder="Collez votre texte ici..."></textarea>
+  
+  <div class="btn-group">
+    <button id="corrigerBtn">ðŸ¤– Corriger mon texte</button>
+    <button id="effacerBtn">ðŸ—‘ï¸ Effacer</button>
+  </div>
+
+  <div id="loading" class="loading">â³ Analyse en cours...</div>
+  <div id="resultat" class="resultat"></div>
+
+  <div class="sub" style="margin-top:1rem; font-size:0.7rem;">ðŸ’¡ Le correcteur note selon le barÃ¨me officiel et donne une aide mÃ©thodologique adaptÃ©e Ã  la matiÃ¨re.</div>
+</div>
+
+<script>
+  // ============================================================
+  // URL DU PROXY GOOGLE SHEETS
+  // ============================================================
+      
+  // BarÃ¨mes et mÃ©thodologies par matiÃ¨re
+  const baremes = {
+    francais: { nom: "FranÃ§ais", points: 20, criteres: "Orthographe (4 pts), syntaxe (4 pts), cohÃ©rence (6 pts), pertinence (6 pts)", methodologie: "Introduction : amorce, prÃ©sentation, problÃ©matique, plan. DÃ©veloppement : paragraphes structurÃ©s, connecteurs, exemples. Conclusion : rappel, synthÃ¨se, ouverture." },
+    maths: { nom: "MathÃ©matiques", points: 20, criteres: "DÃ©marche (5 pts), calculs (5 pts), rÃ©daction (5 pts), rÃ©sultat (5 pts)", methodologie: "1. Lire l'Ã©noncÃ©, repÃ©rer les donnÃ©es. 2. Choisir la propriÃ©tÃ©/thÃ©orÃ¨me. 3. RÃ©diger les calculs Ã©tape par Ã©tape. 4. VÃ©rifier la cohÃ©rence du rÃ©sultat. 5. Conclure par une phrase." },
+    histoire: { nom: "Histoire-GÃ©o & EMC", points: 20, criteres: "Connaissances (6 pts), analyse (6 pts), argumentation (4 pts), expression (4 pts)", methodologie: "Paragraphe argumentÃ© : 1. Introduction (contexte, problÃ©matique). 2. DÃ©veloppement (thÃ¨se, arguments, exemples prÃ©cis). 3. Conclusion (rÃ©ponse, ouverture)." },
+    sciences: { nom: "Sciences", points: 20, criteres: "Connaissances (6 pts), dÃ©marche scientifique (6 pts), rigueur (4 pts), expression (4 pts)", methodologie: "DÃ©marche scientifique : 1. ProblÃ©matique/hypothÃ¨se. 2. Protocole expÃ©rimental. 3. RÃ©sultats observÃ©s. 4. InterprÃ©tation/conclusion." }
+  };
+
+  async function callCorrection(texte, matiere) {
+    // VÃ©rification accÃ¨s
+    if (typeof aAccesComplet !== 'undefined' && !aAccesComplet()) {
+      if (typeof afficherBlocageEssaiExpire !== 'undefined') afficherBlocageEssaiExpire();
+      throw new Error('ACCES_BLOQUE');
+    }
+    const b = baremes[matiere];
+    const prompt = `Tu es correcteur expert du brevet des collÃ¨ges.
+
+MatiÃ¨re : ${b.nom}
+BarÃ¨me : ${b.criteres} â€” BAREME UNIVERSEL : 1/3 bonne rÃ©ponse + 1/3 rÃ©daction + 1/3 justification.
+MÃ©thodologie attendue : ${b.methodologie}
+
+Texte de l'Ã©lÃ¨ve :
+${texte}
+
+RÃ©ponds UNIQUEMENT en JSON (sans texte avant ou aprÃ¨s) :
+{
+  "note": X,
+  "detail_bareme": "rÃ©ponse X/3 - rÃ©daction X/3 - justification X/3",
+  "appreciation": "...",
+  "erreurs": ["erreur 1", "erreur 2"],
+  "conseilsMethodologiques": ["conseil 1", "conseil 2"],
+  "versionCorrigee": "..."
+}`;
+
+    try {
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout 45s')), 45000));
+      const payload = JSON.stringify({
+        userId: localStorage.getItem('user_id') || 'anon',
+        action: 'correction_ia', prompt: prompt,
+        system: 'Tu es un correcteur bienveillant et exigeant pour le brevet.',
+        estPayant: typeof isPaid !== 'undefined' ? isPaid() : false,
+        sessionId: sessionStorage.getItem('session_id') || 'sess',
+        joursRestantsEssai: 3, source: 'correcteur-ia', matiere: matiere
+      });
+      const req = fetch('https://script.google.com/macros/s/AKfycbxzUhsZ4ewxV_zGsu5h_L2eryTJiW2E-gZLvihC-vPl2DimCJxAeTF2dhbDF8no-ocG/exec', {
+        method: 'POST',
+        body: new URLSearchParams({ data: payload })
+      }).then(r => r.json()).then(d => {
+        if (d.success && d.content) return d.content;
+        throw new Error(d.error || 'Erreur proxy');
+      });
+      return await Promise.race([req, timeout]);
+    } catch(e) {
+      console.error(e);
+      return "{}";
+    }
+  }
+
+
+  function afficherCorrection(correction, matiere) {
+    const resultDiv = document.getElementById("resultat");
+    try {
+      const json = JSON.parse(correction);
+      const b = baremes[matiere];
+      resultDiv.innerHTML = `
+        <div class="note">ðŸ“Š Note : ${json.note}/${b.points}</div>
+        <div style="margin: 0.5rem 0;"><strong>ðŸ‘ ApprÃ©ciation :</strong> ${json.appreciation || "..."}</div>
+        <hr style="border-color:#333; margin:0.5rem 0;">
+        <strong>âš ï¸ Erreurs dÃ©tectÃ©es :</strong>
+        <ul>${(json.erreurs || []).map(e => `<li>${e}</li>`).join('') || "<li>Aucune erreur majeure</li>"}</ul>
+        <strong>ðŸ’¡ Conseils mÃ©thodologiques (${b.nom}) :</strong>
+        <ul>${(json.conseilsMethodologiques || []).map(c => `<li>${c}</li>`).join('') || "<li>Relisez votre texte Ã  voix haute.</li>"}</ul>
+        <strong>âœï¸ Version corrigÃ©e :</strong><br>
+        <div style="background:#0a0a0f; padding:0.8rem; border-radius:0.8rem; margin-top:0.5rem;">${(json.versionCorrigee || "Non disponible").replace(/\n/g, '<br>')}</div>
+      `;
+    } catch(e) {
+      resultDiv.innerHTML = `<pre style="white-space:pre-wrap;">${correction}</pre>`;
+    }
+    resultDiv.style.display = "block";
+  }
+
+  document.getElementById("corrigerBtn").addEventListener("click", async () => {
+    const texte = document.getElementById("userTexte").value.trim();
+    if (texte === "") { alert("Veuillez Ã©crire un texte Ã  corriger."); return; }
+    const matiere = document.getElementById("matiereSelect").value;
+    document.getElementById("loading").style.display = "block";
+    document.getElementById("resultat").style.display = "none";
+    const correction = await callCorrection(texte, matiere);
+    document.getElementById("loading").style.display = "none";
+    
+    // TRACKER : correction dans l'outil correcteur
+    if (typeof trackAction === 'function') {
+      trackAction('correction_ia', matiere, 'correcteur', null);
+    }
+    
+    afficherCorrection(correction, matiere);
+  });
+
+  document.getElementById("effacerBtn").addEventListener("click", () => {
+    document.getElementById("userTexte").value = "";
+    document.getElementById("resultat").style.display = "none";
+  });
+</script>
+
+</body>
+</html>

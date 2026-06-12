@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sciences â€” 10 sujets DNB avec correction IA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#09090f;color:#e8e8f0;font-family:Arial,sans-serif;min-height:100vh;}
+
+/* LANDING */
+#landing{max-width:1000px;margin:0 auto;padding:1.5rem;}
+.header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.header h1{font-size:1.4rem;color:#5eaacf;}
+.header p{font-size:12px;color:#9090a8;margin-top:3px;}
+a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.card{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem;cursor:pointer;transition:border-color .2s;}
+.card:hover{border-color:#5eaacf;}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.card-num{font-size:11px;color:#5a5a72;font-family:monospace;}
+.badge{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(94,170,207,.12);color:#5eaacf;border:1px solid rgba(94,170,207,.25);}
+.card-titre{font-size:13px;color:#e8e8f0;margin-bottom:6px;line-height:1.4;}
+.card-meta{font-size:11px;color:#5a5a72;}
+.card-pdf{display:inline-block;margin-top:8px;font-size:11px;color:#5ecfb1;text-decoration:none;}
+.card-pdf:hover{text-decoration:underline;}
+
+/* SUJET VIEW */
+#sujetView{display:none;max-width:900px;margin:0 auto;padding:1.5rem;}
+#sujetView.active{display:block;}
+.sv-header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.sv-titre{font-size:1.1rem;font-weight:700;color:#5eaacf;}
+.sv-sub{font-size:12px;color:#9090a8;margin-top:3px;}
+.sv-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.btn-retour{color:#5ecfb1;font-size:13px;cursor:pointer;background:none;border:none;}
+.sv-dl{color:#5eaacf;font-size:12px;padding:5px 12px;border-radius:6px;background:rgba(94,170,207,.1);border:1px solid rgba(94,170,207,.3);text-decoration:none;}
+.sv-dl:hover{background:rgba(94,170,207,.2);}
+.btn-pdf-export{color:#5ecfb1;font-size:12px;padding:5px 12px;border-radius:6px;background:rgba(94,207,177,.08);border:1px solid rgba(94,207,177,.25);cursor:pointer;}
+
+/* EXERCICES */
+.exo{background:#111118;border:1px solid #2a2a38;border-radius:12px;margin-bottom:1.2rem;overflow:hidden;}
+.exo-head{padding:12px 16px;border-bottom:1px solid #2a2a38;display:flex;align-items:center;gap:10px;}
+.exo-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.badge-svt{background:rgba(94,207,177,.15);color:#5ecfb1;border:1px solid rgba(94,207,177,.25);}
+.badge-pc{background:rgba(94,170,207,.15);color:#5eaacf;border:1px solid rgba(94,170,207,.25);}
+.badge-techno{background:rgba(245,166,35,.15);color:#f5a623;border:1px solid rgba(245,166,35,.25);}
+.exo-label{font-size:12px;color:#9090a8;}
+.question{padding:14px 16px;border-bottom:1px solid #1a1a24;}
+.question:last-child{border-bottom:none;}
+.q-texte{font-size:13px;line-height:1.6;margin-bottom:10px;color:#e8e8f0;white-space:pre-wrap;}
+.answer-area{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:8px;color:#e8e8f0;font-size:13px;padding:10px;font-family:inherit;resize:vertical;min-height:70px;outline:none;}
+.answer-area:focus{border-color:#5eaacf;}
+.btn-corriger{margin-top:8px;padding:7px 16px;border-radius:7px;border:1px solid rgba(94,170,207,.4);background:rgba(94,170,207,.08);color:#5eaacf;font-size:12px;cursor:pointer;}
+.btn-corriger:hover{background:rgba(94,170,207,.15);}
+.btn-corriger:disabled{opacity:.4;cursor:not-allowed;}
+.panel{display:none;margin-top:10px;background:#0d0d14;border-radius:8px;border:1px solid #2a2a38;padding:14px;font-size:13px;}
+.panel.show{display:block;}
+.loading{display:flex;align-items:center;gap:8px;color:#9090a8;font-size:13px;}
+.dot{width:8px;height:8px;border-radius:50%;background:#5eaacf;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+.corr-note{font-size:1.1rem;font-weight:800;color:#5ecfb1;margin-bottom:8px;}
+.corr-conseil{background:#1a1a24;border-radius:6px;padding:8px 12px;margin-bottom:6px;font-size:12px;line-height:1.5;}
+.corr-txt{font-size:13px;line-height:1.6;color:#e8e8f0;margin-bottom:8px;}
+.corr-off{margin-top:12px;padding-top:12px;border-top:1px solid #2a2a38;font-size:12px;color:#9090a8;}
+.corr-off strong{color:#5ecfb1;display:block;margin-bottom:4px;}
+.btn-copy{margin-top:8px;padding:5px 12px;border-radius:6px;border:1px solid #2a2a38;background:#1a1a24;color:#9090a8;font-size:11px;cursor:pointer;}
+</style>
+<script>
+const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
+function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
+function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
+function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
+function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
+function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
+function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxzUhsZ4ewxV_zGsu5h_L2eryTJiW2E-gZLvihC-vPl2DimCJxAeTF2dhbDF8no-ocG/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
+function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
+function afficherBlocageEssaiExpire(){afficherOverlay();}
+function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
+function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
+window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
+</script>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="header">
+    <div>
+      <h1>ðŸ”¬ Sujets Sciences â€” Brevet DNB</h1>
+      <p>10 vrais sujets officiels Â· SVT Â· Physique-Chimie Â· Technologie Â· 2023â†’2025</p>
+    </div>
+    <a href="index.html" class="back">â† Hub</a>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- SUJET VIEW -->
+<div id="sujetView">
+  <div class="sv-header">
+    <div>
+      <div class="sv-titre" id="svTitre"></div>
+      <div class="sv-sub" id="svSub"></div>
+    </div>
+    <div class="sv-actions">
+      <a class="sv-dl" id="svDl" href="#" target="_blank">â¬‡ PDF officiel</a>
+      <button class="btn-pdf-export" id="btnPdfExport">ðŸ“„ Mes corrections</button>
+      <button class="btn-retour" onclick="retour()">â† Retour</button>
+    </div>
+  </div>
+  <div id="svContent"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CHARGEMENT DES FICHIERS EXTERNES (monÃ©tisation + IA + tracker) -->
+<!-- ============================================================ -->
+
+<script src="proxy-client.js"></script>
+<script src="tracker_gs.js"></script>
+
+<script>
+// ============================================================
+// DONNÃ‰ES DES 10 SUJETS (contenu pÃ©dagogique intact)
+// ============================================================
+
+const STORAGE_CORRECTIONS_KEY = 'sc_corrections_ia';
+const STORE = {};
+
+// Charger les corrections sauvegardÃ©es
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_CORRECTIONS_KEY) || '{}');
+  Object.assign(STORE, saved);
+} catch(e) {}
+
+function saveCorrections() {
+  try {
+    localStorage.setItem(STORAGE_CORRECTIONS_KEY, JSON.stringify(STORE));
+  } catch(e) {}
+}
+
+const SUJETS = [
+  {
+    id:1, annee:'2023', session:'MÃ©tropole (septembre)',
+    titre:'23GENSCMEAG3 â€” SVT: PhÃ©nylcÃ©tonurie Â· PC: Gaz Ã  effet de serre',
+    pdf:'https://svt.ac-besancon.fr/wp-content/uploads/sites/104/2023/10/23GENSCMEAG3.pdf',
+    exos:[
+      {type:'svt',label:'SVT â€” PhÃ©nylcÃ©tonurie (25 pts)',pts:25,questions:[
+        {texte:'Q1a (5 pts) â€” Ã€ partir du document 2, citer le traitement que le patient 2 devra suivre. Justifier avec des valeurs chiffrÃ©es.',rep:'Le patient 2 a un taux de phÃ©nylalanine supÃ©rieur Ã  10 mg/dL â†’ traitement : rÃ©gime alimentaire pauvre en phÃ©nylalanine.'},
+        {texte:'Q1b (6 pts) â€” Indiquer les DEUX propositions qui conviennent : a. pauvre en phÃ©nylalanine / b. pauvre en phÃ©nylalanine pour Ã©viter accumulation / c. riche en tyrosine / d. riche en tyrosine car PAH non fonctionnelle',rep:'Propositions b et c.'},
+        {texte:'Q2 (7 pts) â€” Expliquer le lien entre phÃ©nylcÃ©tonurie et aspect trÃ¨s clair de la peau, cheveux et yeux.',rep:'PAH non fonctionnelle â†’ phÃ©nylalanine ne peut Ãªtre transformÃ©e en tyrosine â†’ dÃ©ficit en tyrosine â†’ mÃ©lanine insuffisante.'},
+        {texte:'Q3 (7 pts) â€” Comment les symptÃ´mes graves peuvent Ãªtre Ã©vitÃ©s aujourd\'hui ? Trois idÃ©es.',rep:'1) DÃ©pistage systÃ©matique Ã  la naissance. 2) RÃ©gime pauvre en phÃ©nylalanine. 3) SupplÃ©mentation en tyrosine.'}
+      ]},
+      {type:'pc',label:'PC â€” Gaz Ã  effet de serre (25 pts)',pts:25,questions:[
+        {texte:'Q1a (8 pts) â€” Identifier l\'activitÃ© humaine gÃ©nÃ©rant chaque gaz : COâ‚‚, CHâ‚„, Nâ‚‚O.',rep:'COâ‚‚ : combustion fossiles. CHâ‚„ : Ã©levage, riziculture. Nâ‚‚O : engrais azotÃ©s.'},
+        {texte:'Q1b â€” Gaz Ã  effet de serre le plus abondant en 2018. Composition de sa molÃ©cule.',rep:'COâ‚‚. 1 atome C + 2 atomes O.'},
+        {texte:'Q1c â€” Ã‰quation correcte pour combustion du charbon. Pourquoi les autres sont incorrectes ?',rep:'C + Oâ‚‚ â†’ COâ‚‚. Les autres ne respectent pas la conservation des atomes.'},
+        {texte:'Q4a (9 pts) â€” OUI/NON : Verre, PolyÃ©thylÃ¨ne transparent, PolyÃ©thylÃ¨ne noir sur camÃ©ra thermique.',rep:'Verre : NON. PolyÃ©thylÃ¨ne transparent : OUI. PolyÃ©thylÃ¨ne noir : NON.'},
+        {texte:'Q4b â€” P1 ou P2 : rayonnement camÃ©ra thermique = lumiÃ¨re visible ?',rep:'P2 correcte. C\'est de l\'infrarouge, pas de la lumiÃ¨re visible.'},
+        {texte:'Q4c â€” MatÃ©riau dont la propriÃ©tÃ© d\'absorption se rapproche des GES.',rep:'PolyÃ©thylÃ¨ne noir (absorbe l\'infrarouge comme les GES).'}
+      ]}
+    ]
+  },
+  {
+    id:2, annee:'2023', session:'Nouvelle-CalÃ©donie',
+    titre:'23GENSCNC1 â€” Techno: SystÃ¨me photovoltaÃ¯que Â· SVT: PÃªche et santÃ©',
+    pdf:'https://eduscol.education.gouv.fr/sites/default/files/document/23genscnc1pdf-104709.pdf',
+    exos:[
+      {type:'techno',label:'Technologie â€” SystÃ¨me photovoltaÃ¯que (21 pts)',pts:21,questions:[
+        {texte:'Q1 (3 pts) â€” Relier chaque fonction technique Ã  sa solution technique.',rep:'Transmettre courant alternatif â†’ Onduleur. Optimiser â†’ Optimiseurs. Mesurer â†’ Compteurs. Convertir â†’ Panneaux.'},
+        {texte:'Q2 (4 pts) â€” ComplÃ©ter les 4 zones du schÃ©ma Ã©nergÃ©tique.',rep:'Zone1: Ã‰nergie solaire â†’ Zone2: Panneaux â†’ Zone3: Onduleur â†’ Zone4: Appareils.'},
+        {texte:'Q6 (4 pts) â€” Expliquer en quoi un systÃ¨me photovoltaÃ¯que en autoconsommation respecte l\'environnement.',rep:'Ã‰nergie solaire renouvelable â†’ pas d\'Ã©mission de COâ‚‚ â†’ rÃ©duit l\'impact environnemental.'}
+      ]},
+      {type:'svt',label:'SVT â€” PÃªche et santÃ© (29 pts)',pts:29,questions:[
+        {texte:'Q2 (5 pts) â€” CatÃ©gorie de poissons la plus dangereuse pour la santÃ©.',rep:'Grands prÃ©dateurs (thon, marlin) car bioaccumulation des polluants.'},
+        {texte:'Q4 (5 pts) â€” Expliquer comment le mÃ©thylmercure se retrouve dans le thon.',rep:'Mercure â†’ mÃ©thylmercure par bactÃ©ries â†’ phytoplancton â†’ zooplancton â†’ petits poissons â†’ grands prÃ©dateurs.'},
+        {texte:'Q5 (5 pts) â€” Deux arguments montrant que la pÃªche Ã  la palangre est respectueuse de l\'environnement.',rep:'1) SÃ©lective, peu de prises accessoires. 2) Pas de contact avec les fonds marins.'}
+      ]}
+    ]
+  },
+  {
+    id:3, annee:'2023', session:'PolynÃ©sie',
+    titre:'23GENSCPO3 â€” SVT: Cyclones Â· Techno: BoÃ®tier DAE',
+    pdf:'https://eduscol.education.fr/document/53565/download',
+    exos:[
+      {type:'svt',label:'SVT â€” Cyclones (23 pts)',pts:23,questions:[
+        {texte:'Q1 (2 pts) â€” Comparer densitÃ© population mondiale vs littoraux.',rep:'DensitÃ© sur littoraux bien supÃ©rieure Ã  la moyenne mondiale.'},
+        {texte:'Q5 (8 pts) â€” Comment l\'intensitÃ© des cyclones pourrait devenir plus intense dans le futur.',rep:'RÃ©chauffement climatique â†’ hausse tempÃ©rature ocÃ©ans â†’ Ã©vaporation plus importante â†’ cyclones plus intenses.'}
+      ]},
+      {type:'techno',label:'Technologie â€” BoÃ®tier DAE (27 pts)',pts:27,questions:[
+        {texte:'Q3 (2 pts) â€” Deux solutions techniques pour tempÃ©rer l\'intÃ©rieur du boÃ®tier.',rep:'1) RÃ©sistance chauffante. 2) Ventilateur avec capteur de tempÃ©rature.'},
+        {texte:'Q5 (7 pts) â€” ComplÃ©ter les chaÃ®nes d\'information et d\'Ã©nergie de la fonction Â« Ventiler Â».',rep:'Info : Capteur â†’ microprocesseur â†’ moteur. Ã‰nergie : RÃ©seau â†’ moteur â†’ pales.'}
+      ]}
+    ]
+  },
+  {
+    id:4, annee:'2024', session:'Asie-Pacifique',
+    titre:'24GENSCAA1 â€” PC: Taxis volants JO 2024 Â· Techno: Domespace',
+    pdf:'https://www.education.gouv.fr/media/195809/download',
+    exos:[
+      {type:'pc',label:'PC â€” Taxis volants (25 pts)',pts:25,questions:[
+        {texte:'Q1 (1 pt) â€” Symbole de l\'atome de carbone.',rep:'C'},
+        {texte:'Q2 (1 pt) â€” Nombre de protons dans l\'atome de carbone.',rep:'6'},
+        {texte:'Q4 (2 pts) â€” Actions mÃ©caniques subies par le taxi posÃ© sur sol horizontal.',rep:'Poids P (vers le bas) et rÃ©action du sol R (vers le haut).'},
+        {texte:'Q5 (3 pts) â€” Relation pour calculer le poids P. UnitÃ©s de m et g.',rep:'P = m Ã— g. m en kg, g en N/kg.'},
+        {texte:'Q6 (4 pts) â€” Calculer le poids du taxi volant avec pilote (m = 560 kg, g = 10 N/kg).',rep:'P = 560 Ã— 10 = 5600 N'}
+      ]},
+      {type:'techno',label:'Technologie â€” Domespace (25 pts)',pts:25,questions:[
+        {texte:'Q4 (6 pts) â€” Choisir 3 matÃ©riels nÃ©cessaires pour un pilotage Ã  distance.',rep:'Smartphone, Borne wifi, Modem-routeur. Justification : permettent de contrÃ´ler Ã  distance.'}
+      ]}
+    ]
+  },
+  {
+    id:5, annee:'2024', session:'AmÃ©rique du Nord',
+    titre:'24GENSCAN1 â€” PC: Batterie smartphone Â· SVT: Oiseaux-Ã©lÃ©phants Madagascar',
+    pdf:'https://www.education.gouv.fr/media/195323/download',
+    exos:[
+      {type:'pc',label:'PC â€” Batterie smartphone (25 pts)',pts:25,questions:[
+        {texte:'Q1c â€” Pourquoi la dissolution du COâ‚‚ dans l\'eau provoque une acidification des ocÃ©ans.',rep:'COâ‚‚ + Hâ‚‚O â†’ Hâ‚‚COâ‚ƒ â†’ libÃ©ration d\'ions Hâº â†’ baisse du pH.'},
+        {texte:'Q2 (2 pts) â€” Deux solutions pour rÃ©duire l\'impact carbone d\'un smartphone.',rep:'1) Prolonger la durÃ©e de vie. 2) Utiliser Ã©nergie renouvelable pour recharger.'},
+        {texte:'Q3a â€” Symbole du lithium.',rep:'Li'},
+        {texte:'Q3b â€” Nombre de protons dans l\'atome de lithium.',rep:'3'},
+        {texte:'Q3d â€” Formule de l\'ion lithium.',rep:'Liâº'},
+        {texte:'Q5 (4 pts) â€” Ã‰nergie pour recharger batterie en 30 min (P = 20W).',rep:'E = P Ã— t = 20 Ã— 0,5 = 10 Wh'}
+      ]},
+      {type:'svt',label:'SVT â€” Oiseaux-Ã©lÃ©phants de Madagascar (25 pts)',pts:25,questions:[
+        {texte:'Q3 (6 pts) â€” Origine de la modification des courants ocÃ©aniques dans l\'hÃ©misphÃ¨re Sud entre -41 et -32 Ma.',rep:'Ouverture du passage de Drake â†’ courant circumpolaire antarctique â†’ refroidissement.'}
+      ]}
+    ]
+  },
+  {
+    id:6, annee:'2024', session:'Centres Ã©trangers',
+    titre:'24GENSCG11 â€” PC: Fonds marins et plongÃ©e Â· SVT: Paludisme',
+    pdf:'https://www.education.gouv.fr/media/195515/download',
+    exos:[
+      {type:'pc',label:'PC â€” Fonds marins et plongÃ©e (25 pts)',pts:25,questions:[
+        {texte:'Q1 â€” Eaux favorables aux coraux (pH 8,0-8,4) : acides ou basiques ?',rep:'Basiques (pH > 7).'},
+        {texte:'Q6 â€” Segment correspondant au poids du plongeur.',rep:'FlÃ¨che verticale vers le bas.'},
+        {texte:'Q7 â€” Poids du plongeur (m = 90 kg, g = 10 N/kg).',rep:'P = 90 Ã— 10 = 900 N'},
+        {texte:'Q9 â€” Profondeur d avec T = 0,04 s et v = 1500 m/s.',rep:'d = (1500 Ã— 0,04)/2 = 30 m'}
+      ]},
+      {type:'svt',label:'SVT â€” Paludisme (25 pts)',pts:25,questions:[
+        {texte:'Q1 (3 pts) â€” Organisme responsable du paludisme et organisme transmetteur.',rep:'Plasmodium (parasite), moustique Anopheles (vecteur).'},
+        {texte:'Q3 (7 pts) â€” Comment la disparition des amphibiens peut augmenter les cas de paludisme.',rep:'Amphibiens mangent moustiques â†’ disparition â†’ augmentation moustiques â†’ augmentation transmission.'}
+      ]}
+    ]
+  },
+  {
+    id:7, annee:'2024', session:'MÃ©tropole (juin)',
+    titre:'24GENSCMEAG1 â€” PC: Piscine olympique Â· Techno: Vigie feux de forÃªt',
+    pdf:'https://www.education.gouv.fr/media/195920/download',
+    exos:[
+      {type:'pc',label:'PC â€” Piscine olympique (25 pts)',pts:25,questions:[
+        {texte:'Q1 (2 pts) â€” Deux inconvÃ©nients d\'une eau de piscine avec pH < 7.',rep:'1) Irritation yeux/peau. 2) Corrosion des Ã©quipements.'},
+        {texte:'Q3 (3 pts) â€” Dans Fe + 2Hâº â†’ FeÂ²âº + Hâ‚‚, identifier une molÃ©cule, un atome, un ion.',rep:'MolÃ©cule : Hâ‚‚. Atome : Fe. Ion : Hâº ou FeÂ²âº.'},
+        {texte:'Q5b â€” Forme d\'Ã©nergie convertie en Ã©nergie cinÃ©tique lors du plongeon.',rep:'Ã‰nergie potentielle de pesanteur (Epp).'}
+      ]},
+      {type:'techno',label:'Technologie â€” Vigie feux de forÃªt (25 pts)',pts:25,questions:[
+        {texte:'Q1 (5 pts) â€” Besoin auquel rÃ©pond la vigie.',rep:'DÃ©tecter les dÃ©parts de feux de forÃªt rapidement.'},
+        {texte:'Q3 (6 pts) â€” CapacitÃ© batterie pour 12h autonomie.',rep:'CapacitÃ© = Puissance totale consommÃ©e Ã— 12h.'}
+      ]}
+    ]
+  },
+  {
+    id:8, annee:'2025', session:'MÃ©tropole (juin)',
+    titre:'25GENSCMEAG1 â€” SVT: Doryphores et pommes de terre Â· PC: Mission Alpha ISS',
+    pdf:'https://www.education.gouv.fr/sites/default/files/2025-06/dipl-me-national-du-brevet-2025-sciences-441402.pdf',
+    exos:[
+      {type:'svt',label:'SVT â€” Doryphores et pommes de terre (25 pts)',pts:25,questions:[
+        {texte:'Q1 (4 pts) â€” Proposition exacte : diminution nombre tubercules / diminution masse moyenne tubercules.',rep:'Proposition 3 : diminution de la masse moyenne des tubercules.'},
+        {texte:'Q2b â€” IntÃ©rÃªt d\'utiliser plusieurs plants par expÃ©rience.',rep:'Obtenir une moyenne fiable, limiter les variations individuelles.'}
+      ]},
+      {type:'pc',label:'PC â€” Mission Alpha ISS (25 pts)',pts:25,questions:[
+        {texte:'Q2a â€” Le dioxygÃ¨ne Oâ‚‚ est-il un atome ou une molÃ©cule ?',rep:'MolÃ©cule (assemblage de 2 atomes O).'},
+        {texte:'Q2b â€” Proposition correcte : 2kg eau â†’ 2kg Hâ‚‚ + 1kg Oâ‚‚ / 0,22kg Hâ‚‚ + 1,78kg Oâ‚‚ / inverse.',rep:'P2 : 0,22kg Hâ‚‚ + 1,78kg Oâ‚‚ (conservation de la masse).'},
+        {texte:'Q4a â€” CaractÃ©riser le mouvement de l\'ISS (rectiligne/circulaire, uniforme/accÃ©lÃ©rÃ©).',rep:'Circulaire et uniforme.'},
+        {texte:'Q4b â€” Expliquer Â« 16 levers de Soleil Â» par calcul (42700 km/tour, 28000 km/h).',rep:'DurÃ©e tour = 42700/28000 â‰ˆ 1,525h. 24/1,525 â‰ˆ 15,7 â†’ 16 tours/jour.'}
+      ]}
+    ]
+  },
+  {
+    id:9, annee:'2025', session:'AmÃ©rique du Nord',
+    titre:'25GENSCAN1 â€” PC: Balle tennis de table Â· SVT: Vers de terre et agriculture',
+    pdf:'https://www.education.gouv.fr/sites/default/files/2025-06/dipl-me-national-du-brevet-2025---sciences-440574.pdf',
+    exos:[
+      {type:'pc',label:'PC â€” Balle de tennis de table (25 pts)',pts:25,questions:[
+        {texte:'Q1 (1 pt) â€” Pictogramme associÃ© aux balles en celluloÃ¯d.',rep:'Inflammable (flamme).'},
+        {texte:'Q3 (3 pts) â€” MolÃ©cule Câ‚ƒHâ‚…N : nom et nombre des atomes.',rep:'3C, 5H, 1N.'},
+        {texte:'Q4.1 (2 pts) â€” Nombre de protons de l\'atome d\'azote.',rep:'7 (Z = 7).'},
+        {texte:'Q7 (3 pts) â€” Relation correcte pour Ec : Â½Ã—mÂ²Ã—vÂ² / Â½Ã—mÃ—vÂ² / Â½Ã—mÂ²Ã—v.',rep:'Ec = Â½ Ã— m Ã— vÂ²'},
+        {texte:'Q8 (5 pts) â€” Vitesse maximale vmax Ã  l\'impact (h = 0,5 m, g = 10 N/kg).',rep:'v = âˆš(2Ã—gÃ—h) = âˆš(2Ã—10Ã—0,5) = âˆš10 â‰ˆ 3,16 m/s'}
+      ]},
+      {type:'svt',label:'SVT â€” Vers de terre et agriculture (25 pts)',pts:25,questions:[
+        {texte:'Q1 (6 pts) â€” DiffÃ©rences observÃ©es entre Jour 1 et Jour 7 du lombricomposteur.',rep:'Jour 7 : dÃ©chets dÃ©composÃ©s, mÃ©langÃ©s, enrichis â†’ humus.'},
+        {texte:'Q4 (7 pts) â€” Pourquoi la prÃ©servation des vers de terre est un enjeu pour nourrir l\'humanitÃ©.',rep:'Vers amÃ©liorent structure et fertilitÃ© du sol â†’ meilleurs rendements agricoles.'}
+      ]}
+    ]
+  },
+  {
+    id:10, annee:'2025', session:'Asie',
+    titre:'25GENSCAA1 â€” PC: SÃ©curitÃ© Ã©lectrique voilier Â· SVT: Volcans Islande',
+    pdf:'https://www.freemaths.fr/sujets-dnb-college/brevet-serie-generale/sciences/annees/annee-2025/asie/sujet-et-correction/brevet-sciences-asie-2025-sujet.pdf',
+    exos:[
+      {type:'pc',label:'PC â€” SÃ©curitÃ© Ã©lectrique voilier (25 pts)',pts:25,questions:[
+        {texte:'Q1 (2 pts) â€” Appareils branchÃ©s en sÃ©rie ou dÃ©rivation ? Justifier.',rep:'En dÃ©rivation â†’ chaque appareil fonctionne indÃ©pendamment.'},
+        {texte:'Q3 (3 pts) â€” Ã‰quation modÃ©lisant l\'oxydation du cuivre : 2Cu+Oâ‚‚â†’2CuO / 2Cu+2Oâ‚‚â†’CuO / Cu+2Oâ‚‚â†’2CuO / 2CuOâ†’2Cu+Oâ‚‚',rep:'2Cu + Oâ‚‚ â†’ 2CuO (conservation des atomes).'},
+        {texte:'Q4 (2 pts) â€” Formule de l\'ion cuivre (II).',rep:'CuÂ²âº'},
+        {texte:'Q5 (3 pts) â€” IntensitÃ© lampe 6W - 12V.',rep:'I = P/U = 6/12 = 0,5 A'},
+        {texte:'Q7 (2 pts) â€” Effet de l\'ajout d\'une rÃ©sistance en sÃ©rie sur l\'intensitÃ©.',rep:'L\'intensitÃ© diminue.'}
+      ]},
+      {type:'svt',label:'SVT â€” Volcans comme source d\'Ã©nergie (25 pts)',pts:25,questions:[
+        {texte:'Q4 (8 pts) â€” Pourquoi les caractÃ©ristiques de l\'Islande justifient le dÃ©veloppement de la gÃ©othermie.',rep:'1) Dorsale ocÃ©anique â†’ activitÃ© volcanique. 2) Geysers et sources chaudes. 3) Ã‰nergie renouvelable. 4) DÃ©jÃ  30% Ã©lectricitÃ© gÃ©othermique.'}
+      ]}
+    ]
+  }
+];
+
+// ============================================================
+// FONCTIONS D'AFFICHAGE
+// ============================================================
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  let html = '';
+  SUJETS.forEach((s, idx) => {
+    html += '<div class="card" onclick="ouvrirSujet(' + idx + ')">'
+      + '<div class="card-top"><span class="card-num">Sujet ' + s.id + '</span><span class="badge">' + s.annee + '</span></div>'
+      + '<div class="card-titre">' + esc(s.titre) + '</div>'
+      + '<div class="card-meta">' + esc(s.session) + '</div>'
+      + (s.pdf ? '<a class="card-pdf" href="' + s.pdf + '" target="_blank" onclick="event.stopPropagation()">ðŸ“„ Sujet officiel PDF</a>' : '')
+      + '</div>';
+  });
+  grid.innerHTML = html;
+}
+
+function ouvrirSujet(idx) {
+  const s = SUJETS[idx];
+  document.getElementById('svTitre').innerHTML = 'DNB ' + s.annee + ' â€” ' + s.session;
+  document.getElementById('svSub').textContent = s.titre;
+  document.getElementById('svDl').href = s.pdf;
+  document.getElementById('btnPdfExport').onclick = () => exportPDF(idx);
+
+  let html = '';
+  s.exos.forEach((exo, ei) => {
+    const cls = exo.type === 'svt' ? 'badge-svt' : exo.type === 'pc' ? 'badge-pc' : 'badge-techno';
+    const label = exo.type === 'svt' ? 'SVT' : exo.type === 'pc' ? 'Physique-Chimie' : 'Technologie';
+    html += '<div class="exo">'
+      + '<div class="exo-head"><span class="exo-badge ' + cls + '">' + label + '</span><span class="exo-label">' + esc(exo.label) + '</span></div>';
+    exo.questions.forEach((q, qi) => {
+      const qid = 'q_' + s.id + '_' + ei + '_' + qi;
+      html += '<div class="question">'
+        + '<div class="q-texte">' + esc(q.texte) + '</div>'
+        + '<textarea class="answer-area" id="ans_' + qid + '" placeholder="Ã‰cris ta rÃ©ponse ici..."></textarea>'
+        + '<button class="btn-corriger" onclick="corriger(' + idx + ',' + ei + ',' + qi + ',\'' + qid + '\')">âœ¦ Corriger avec IA</button>'
+        + '<div class="panel" id="panel_' + qid + '"></div>'
+        + '</div>';
+    });
+    html += '</div>';
+  });
+
+  document.getElementById('svContent').innerHTML = html;
+  document.getElementById('landing').style.display = 'none';
+  const sv = document.getElementById('sujetView');
+  sv.style.display = 'block';
+  sv.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function retour() {
+  document.getElementById('sujetView').style.display = 'none';
+  document.getElementById('sujetView').classList.remove('active');
+  document.getElementById('landing').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+// ============================================================
+// CORRECTION IA (utilise window.callIA du proxy-client.js)
+// ============================================================
+
+function badge(val) {
+  const ok = (val === 'Oui' || val === 'OK');
+  const partiel = (val === 'Partiel');
+  const bg = ok ? 'rgba(94,207,177,.15)' : partiel ? 'rgba(245,166,35,.15)' : 'rgba(232,122,122,.15)';
+  const col = ok ? '#5ecfb1' : partiel ? '#f5a623' : '#e87a7a';
+  const icon = ok ? 'âœ“' : partiel ? 'â—‘' : 'âœ—';
+  return '<span style="background:'+bg+';color:'+col+';border:1px solid '+col+';border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;">'+icon+' '+esc(val)+'</span>';
+}
+
+async function corriger(sIdx, ei, qi, qid) {
+  const s = SUJETS[sIdx];
+  const exo = s.exos[ei];
+  const q = exo.questions[qi];
+  const ans = document.getElementById('ans_' + qid).value.trim();
+  if (!ans) { alert("Ã‰cris ta rÃ©ponse d'abord !"); return; }
+
+  const panel = document.getElementById('panel_' + qid);
+  const btn = panel.previousElementSibling?.querySelector('.btn-corriger');
+  panel.classList.add('show');
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+  if (btn) btn.disabled = true;
+
+  const disc = exo.type === 'svt' ? 'SVT' : exo.type === 'pc' ? 'Physique-Chimie' : 'Technologie';
+  const pts = exo.pts;
+  const qTexteClean = q.texte.split('\n').join(' ').substring(0,300);
+
+  const system = `Tu es un correcteur expert du DNB en SCIENCES (${disc}), exigeant et bienveillant.
+
+Ta correction doit Ãªtre APPROFONDIE. RÃ©ponds UNIQUEMENT en JSON valide avec cette structure exacte :
+{
+  "note": "X/${pts}",
+  "cours_su": "Oui" ou "Partiel" ou "Non",
+  "methode": "Oui" ou "Partiel" ou "Non",
+  "commentaire": "Analyse dÃ©taillÃ©e de la rÃ©ponse (3-5 lignes)",
+  "pistes": "2 ou 3 conseils prÃ©cis pour progresser"
+}
+
+CritÃ¨res DNB SCIENCES :
+- cours_su : dÃ©finitions, lois, formules, vocabulaire scientifique corrects ?
+- methode : raisonnement logique, Ã©tapes visibles, exploitation des documents, conclusion explicite
+- La note sur ${pts} pts doit reflÃ©ter la qualitÃ© de la rÃ©ponse`;
+
+  const prompt = `Sujet: ${s.titre} (${s.annee})
+Exercice: ${exo.label}
+Question: ${qTexteClean}
+Correction attendue: ${q.rep}
+RÃ©ponse Ã©lÃ¨ve: ${ans}`;
+
+  try {
+    const txt = await window.callIA(prompt, system);
+    const json = window.safeJSON ? window.safeJSON(txt) : (()=>{try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}catch(e){return null;}})();
+    
+    if (!STORE[s.id]) STORE[s.id] = [];
+    STORE[s.id].push({
+      exo: exo.label, qi: qi+1, question: q.texte.substring(0,80),
+      reponseEleve: ans, correctionIA: json ? json.commentaire : txt,
+      correctionOff: q.rep, pts: pts, note: json ? json.note : null
+    });
+    saveCorrections();
+
+    panel.innerHTML = `
+      <div class="corr-ia">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div class="corr-note">âœ“ ${json ? json.note : '?'} / ${pts}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            <span style="font-size:10px;color:#9090a8;">Cours</span>${badge(json ? json.cours_su : '?')}
+            <span style="font-size:10px;color:#9090a8;margin-left:6px;">MÃ©thode</span>${badge(json ? json.methode : '?')}
+          </div>
+        </div>
+        <div class="corr-txt">${json ? json.commentaire : txt}</div>
+        ${json && json.pistes ? '<div class="corr-conseil" style="margin-top:8px;color:#e8c87a">ðŸŽ¯ ' + esc(json.pistes) + '</div>' : ''}
+      </div>
+      <div class="corr-off"><strong>ðŸ“– CORRECTION OFFICIELLE</strong><br>${esc(q.rep)}</div>
+      <button class="btn-copy" onclick="copier(this)">ðŸ“‹ Copier</button>`;
+  } catch(err) {
+    let errMsg = err.message;
+    if (errMsg === 'ACCES_BLOQUE') errMsg = 'AccÃ¨s bloquÃ©. Veuillez activer votre abonnement.';
+    panel.innerHTML = '<div style="color:#e87a7a">âŒ ' + errMsg + '</div>';
+  }
+  if (btn) btn.disabled = false;
+}
+
+async function copier(btn) {
+  try {
+    await navigator.clipboard.writeText(btn.parentElement.innerText);
+    btn.textContent = 'âœ“ CopiÃ©';
+    setTimeout(() => btn.textContent = 'ðŸ“‹ Copier', 2000);
+  } catch(e) {}
+}
+
+function exportPDF(sIdx) {
+  const s = SUJETS[sIdx];
+  const data = STORE[s.id];
+  if (!data || !data.length) { alert("Corrige au moins une question d'abord."); return; }
+  let totalObt = 0, totalMax = 0;
+  data.forEach(c => { if (c.note != null) totalObt += parseFloat(c.note); totalMax += c.pts; });
+  
+  let html = `<html><head><meta charset="UTF-8"><style>
+    body{font-family:Arial,sans-serif;font-size:13px;color:#111;padding:2rem;}
+    h1{font-size:16px;border-bottom:2px solid #5eaacf;color:#2a6a8a;padding-bottom:6px;}
+    h2{font-size:13px;margin-top:1.2rem;border-left:4px solid #5eaacf;padding-left:8px;color:#333;}
+    .ia{background:#e6f4f9;border-left:3px solid #5eaacf;padding:8px;border-radius:4px;margin-bottom:6px;}
+    .off{background:#e6f9ee;border-left:3px solid #34c76b;padding:8px;border-radius:4px;}
+    .total{margin-top:16px;padding:10px;background:#f5f5f5;border-radius:6px;font-weight:bold;}
+  </style></head><body>
+  <h1>ðŸ”¬ Sciences DNB ${s.annee} â€” ${s.session}</h1>
+  <p>GÃ©nÃ©rÃ© le ${new Date().toLocaleDateString('fr-FR')} Â· ${data.length} question(s)</p>`;
+  data.forEach(c => {
+    html += `<h2>${c.exo} â€” Q${c.qi} (${c.pts} pts)</h2>
+    <div class="ia">ðŸ¤– ${c.correctionIA}</div>
+    <div class="off">ðŸ“– ${c.correctionOff}</div>`;
+  });
+  html += `<div class="total">ðŸ“Š Note totale estimÃ©e : ${totalObt.toFixed(1)} / ${totalMax} pts (${Math.round(totalObt/totalMax*100)}%)</div></body></html>`;
+  const win = window.open('','_blank');
+  win.document.write(html);
+  win.document.close();
+  win.print();
+}
+
+// Initialisation
+buildGrid();
+</script>
+</body>
+</html>

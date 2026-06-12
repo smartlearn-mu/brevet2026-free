@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automatismes Sciences â€” Brevet 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#09090f;--s1:#111118;--s2:#1a1a24;--br:#2a2a38;--acc:#5eaacf;--acc2:#3a7da8;--teal:#5ecfb1;--gold:#e8c87a;--red:#e87a7a;--blue-w:#7eb8f5;--pink-n:#f59eb8;--text:#e8e8f0;--dim:#9090a8;--muted:#5a5a72;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+.page-header{background:linear-gradient(135deg,#0a0a1a 0%,#0a1a1f 100%);border-bottom:2px solid var(--acc);padding:20px 24px;}
+.page-header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.page-back{color:var(--dim);text-decoration:none;font-size:13px;}
+.page-back:hover{color:var(--acc);}
+.page-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;flex:1;}
+.page-title span{color:var(--acc);}
+.eleve-bar{display:flex;gap:8px;background:var(--s2);border-radius:50px;padding:4px;width:fit-content;}
+.eleve-btn{padding:7px 22px;border-radius:50px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;background:transparent;color:var(--dim);}
+.eleve-btn.aw{background:var(--blue-w);color:#09090f;}
+.eleve-btn.an{background:var(--pink-n);color:#09090f;}
+
+/* WARNING SPACED LEARNING */
+.warning-box{background:rgba(232,200,122,.1);border-left:4px solid var(--gold);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--gold);}
+.warning-box strong{color:var(--gold);font-family:'Syne',sans-serif;}
+.warning-box p{margin:4px 0;}
+.warning-box .close-warning{float:right;cursor:pointer;font-size:16px;opacity:0.7;transition:opacity .2s;}
+.warning-box .close-warning:hover{opacity:1;}
+
+.container{max-width:960px;margin:0 auto;padding:24px;}
+.phase{display:none;}.phase.active{display:block;}
+.stats-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+.stat{background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:10px 16px;display:flex;flex-direction:column;gap:2px;}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--acc);}
+.stat-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace;}
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--acc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--br);}
+.chapitres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:7px;max-height:340px;overflow-y:auto;padding:2px;margin-bottom:14px;}
+.ch-item{display:flex;align-items:center;gap:8px;background:var(--s1);border:1px solid var(--br);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px;user-select:none;}
+.ch-item:hover{border-color:var(--acc);}
+.ch-item.selected{border-color:var(--acc);background:rgba(94,170,207,.08);}
+.ch-item.faible{border-color:rgba(232,66,74,.4);}
+.ch-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);min-width:24px;}
+.ch-warn{margin-left:auto;font-size:10px;color:var(--acc2);}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.btn{padding:7px 16px;border-radius:8px;border:1px solid var(--br);background:var(--s2);color:var(--dim);font-size:12px;cursor:pointer;}
+.btn:hover{border-color:var(--acc);color:var(--acc);}
+.btn-primary{background:var(--acc);border-color:var(--acc);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;padding:10px 28px;border-radius:10px;}
+.btn-primary:hover{opacity:.85;}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.info-strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+.pill{background:var(--s2);border:1px solid var(--br);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--dim);display:flex;align-items:center;gap:6px;}
+.pill b{color:var(--text);}
+.timer-bar{display:flex;align-items:center;justify-content:space-between;background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:10px 16px;margin-bottom:20px;}
+.timer-val{font-family:'DM Mono',monospace;font-size:1.4rem;color:var(--acc);}
+.timer-val.urgent{color:var(--red);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.prog-bar{flex:1;height:5px;background:var(--br);border-radius:3px;margin:0 16px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--acc);border-radius:3px;transition:width .3s;}
+.q-card{background:var(--s1);border:1px solid var(--br);border-radius:12px;padding:20px;margin-bottom:12px;animation:fi .3s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.q-meta{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.q-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-family:'DM Mono',monospace;}
+.q-badge.ch{background:rgba(94,170,207,.1);border:1px solid rgba(94,170,207,.2);color:var(--acc);}
+.q-badge.tp-r{background:rgba(232,66,74,.1);border:1px solid rgba(232,66,74,.2);color:var(--red);}
+.q-badge.tp-n{background:rgba(94,207,177,.1);border:1px solid rgba(94,207,177,.2);color:var(--teal);}
+.q-badge.tp-p{background:rgba(94,170,207,.08);border:1px solid rgba(94,170,207,.15);color:var(--acc);}
+.q-text{font-size:15px;font-weight:500;margin-bottom:12px;line-height:1.5;}
+textarea.rep{width:100%;background:var(--s2);border:1px solid var(--br);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 14px;resize:vertical;min-height:60px;outline:none;}
+textarea.rep:focus{border-color:var(--acc);}
+textarea.rep::placeholder{color:var(--muted);}
+.q-btns{display:flex;gap:8px;margin-top:8px;}
+.btn-verif{background:var(--acc);color:#fff;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;padding:7px 18px;cursor:pointer;}
+.btn-verif:disabled{opacity:.4;cursor:not-allowed;}
+.feedback{display:none;margin-top:10px;border-radius:8px;overflow:hidden;}
+.feedback.show{display:block;}
+.fb-ok{padding:10px 14px;background:rgba(94,207,177,.1);border-left:3px solid var(--teal);font-size:13px;color:var(--teal);font-weight:600;}
+.fb-mid{padding:10px 14px;background:rgba(232,200,122,.1);border-left:3px solid var(--gold);font-size:13px;color:var(--gold);font-weight:600;}
+.fb-bad{padding:10px 14px;background:rgba(232,66,74,.1);border-left:3px solid var(--red);font-size:13px;color:var(--red);font-weight:600;}
+.fb-rep{background:var(--s2);padding:10px 14px;font-size:13px;border-top:1px solid var(--br);}
+.fb-rep strong{color:var(--gold);display:block;margin-bottom:3px;font-size:11px;}
+.btn-next{background:var(--acc);color:#fff;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;padding:7px 18px;cursor:pointer;margin-top:8px;}
+.resultats-card{background:var(--s1);border:1px solid var(--br);border-radius:14px;padding:2rem;text-align:center;}
+.score-grand{font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;margin:12px 0;}
+.score-grand.ex{color:var(--teal);}.score-grand.bi{color:var(--gold);}.score-grand.ef{color:var(--red);}
+.faibles-box{background:var(--s2);border:1px solid rgba(232,66,74,.3);border-radius:8px;padding:12px;margin:12px 0;text-align:left;}
+.faibles-box h4{color:var(--red);font-size:12px;font-family:'Syne',sans-serif;margin-bottom:6px;}
+.faibles-box li{font-size:12px;color:var(--dim);padding:2px 0;}
+</style>
+<script src="proxy-client.js"></script>
+<style>
+#trial-banner{width:100%;height:40px;background:#e8c87a;display:none;align-items:center;justify-content:center;gap:24px;position:sticky;top:0;z-index:9999;font-family:Arial,sans-serif;}
+#trial-banner .tb-left{font-size:13px;font-weight:700;color:#09090f;}
+#trial-banner .tb-btn{background:#09090f;color:#e8c87a;border:none;border-radius:6px;padding:5px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+#trial-banner .tb-btn:hover{opacity:.8;}
+</style>
+
+<script>
+const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
+function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
+function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
+function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
+function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
+function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
+function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
+function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
+function afficherBlocageEssaiExpire(){afficherOverlay();}
+function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
+function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
+window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
+</script>
+</head>
+<body>
+<div id="trial-banner">
+  <span class="tb-left">ðŸ†“ Essai gratuit â€” <span id="tbDays">J-2</span> jours restants</span>
+  <button class="tb-btn" onclick="window.location.href='https://wise.com/pay/r/UeBUFQoUY_B5FYE'">ðŸ’³ DÃ©bloquer l'accÃ¨s (29â‚¬/an)</button>
+</div>
+<div class="page-header">
+  <div class="page-header-inner">
+    <a href="index.html" class="page-back">â† Hub</a>
+    <div class="page-title"><span>Automatismes</span> Sciences ðŸ”¬</div>
+    <div class="eleve-bar">
+      <button class="eleve-btn aw" id="btnW">ðŸŒŠ Ã‰lÃ¨ve 1</button>
+      <button class="eleve-btn" id="btnN">âš¡ Ã‰lÃ¨ve 2</button>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="phase active" id="phaseSelect">
+    
+    <!-- âš ï¸ WARNING SPACED LEARNING âš ï¸ -->
+    <div class="warning-box" id="warningBox">
+      <span class="close-warning" onclick="document.getElementById('warningBox').style.display='none';">&times;</span>
+      <strong>ðŸ§  Mode Spaced Learning (rÃ©vision circulaire)</strong>
+      <p>âœ… Pour activer la <strong>rÃ©pÃ©tition espacÃ©e</strong> (rÃ©vision des leÃ§ons anciennes + nouvelles) :</p>
+      <p>ðŸ‘‰ <strong>SÃ©lectionnez TOUS les chapitres que vous avez dÃ©jÃ  vus depuis le dÃ©but de l'annÃ©e</strong> (mÃªme les anciens).</p>
+      <p>ðŸ“Œ L'ordinateur piochera automatiquement : <strong>20 cartes des chapitres choisis + 10 cartes des erreurs + 10 cartes d'autres chapitres</strong>.</p>
+      <p>ðŸ’¡ <strong>Plus vous sÃ©lectionnez de chapitres, plus la rÃ©vision est efficace !</strong></p>
+    </div>
+
+    <div class="stats-bar" style="margin-top:8px">
+      <div class="stat"><div class="stat-val" id="stCartes">0</div><div class="stat-label">Cartes sÃ©l.</div></div>
+      <div class="stat"><div class="stat-val" id="stMait" style="color:var(--teal)">0</div><div class="stat-label">MaÃ®trisÃ©es</div></div>
+      <div class="stat"><div class="stat-val" id="stPct" style="color:var(--gold)">0%</div><div class="stat-label">Progression</div></div>
+      <div class="stat"><div class="stat-val" id="stRegle" style="color:var(--dim);font-size:.9rem">â€”</div><div class="stat-label">Questions</div></div>
+    </div>
+    <div class="section-title">Chapitres Ã  rÃ©viser</div>
+    <div class="chapitres-grid" id="chapGrid"></div>
+    <div class="btn-row">
+      <button class="btn" id="btnAll">âœ… Tout</button>
+      <button class="btn" id="btnNone">âŒ Aucun</button>
+      <button class="btn" id="btnFaibles" style="border-color:rgba(232,66,74,.4);color:var(--red)">âš  Faibles</button>
+      <button class="btn" id="btnReset">ðŸ”„ Reset progression</button>
+    </div>
+    <div class="info-strip">
+      <div class="pill">â± <b>45 min</b> max</div>
+      <div class="pill">ðŸ“š RÃ¨gle <b>20-10-10</b></div>
+      <div class="pill">ðŸ” Spaced repetition</div>
+      <div class="pill">ðŸ“Š â†’ <b>Suivi parental</b></div>
+    </div>
+    <button class="btn-primary" id="btnStart" disabled>ðŸŽ¯ DÃ©marrer la session</button>
+  </div>
+  <div class="phase" id="phaseSession">
+    <div class="timer-bar">
+      <span class="timer-val" id="timerVal">45:00</span>
+      <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <span id="qCount" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--dim)">Q 0/0</span>
+    </div>
+    <div id="qArea"></div>
+    <div id="fbArea"></div>
+    <div id="nextWrap" style="display:none;margin-top:8px">
+      <button class="btn-next" id="btnNext">Question suivante â†’</button>
+    </div>
+  </div>
+  <div class="phase" id="phaseRes">
+    <div class="resultats-card">
+      <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em">Session terminÃ©e</p>
+      <div class="score-grand" id="scoreGrand">0%</div>
+      <div id="scoreDetail" style="font-size:14px;color:var(--dim);margin-bottom:6px"></div>
+      <div id="msgFin" style="font-size:14px;color:var(--dim);margin-bottom:14px"></div>
+      <div id="faiblesRes"></div>
+      <div class="btn-row" style="justify-content:center;margin-top:14px">
+        <button class="btn-primary" id="btnNouv">ðŸ“š Nouvelle session</button>
+        <button class="btn" id="btnSuivi">ðŸ“Š Suivi parental</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+// ==================== DONNÃ‰ES COMMUNES SCIENCES (SVT + PHYSIQUE-CHIMIE) ====================
+// 28 CHAPITRES â€“ 280 FLASHCARDS
+
+const CHAPITRES_SC = {
+  // ==================== PARTIE 1 : SVT (chapitres 1 Ã  18) ====================
+  1: { titre: "RÃ©chauffement climatique", cartes: [
+    { q: "Citez trois gaz Ã  effet de serre (GES).", r: "COâ‚‚ (dioxyde de carbone), CHâ‚„ (mÃ©thane), Nâ‚‚O (protoxyde d'azote)." },
+    { q: "Quelles sont les causes humaines du rÃ©chauffement climatique ?", r: "Combustion des Ã©nergies fossiles, dÃ©forestation, agriculture intensive, Ã©levage." },
+    { q: "Quelles sont les consÃ©quences du rÃ©chauffement climatique ?", r: "Fonte des glaciers, montÃ©e des eaux, catastrophes naturelles, extinction d'espÃ¨ces." },
+    { q: "Qu'est-ce que l'Accord de Paris (2015) ?", r: "TraitÃ© international pour limiter le rÃ©chauffement Ã  +2Â°C (idÃ©al 1,5Â°C)." },
+    { q: "DiffÃ©rence entre effet de serre naturel et rÃ©chauffement climatique ?", r: "L'effet de serre naturel est vital. Le rÃ©chauffement est dÃ» Ã  son augmentation par l'homme." },
+    { q: "Qu'est-ce que l'empreinte carbone ?", r: "Mesure des Ã©missions de gaz Ã  effet de serre d'une activitÃ©, d'un produit ou d'une personne." },
+    { q: "Citez 3 solutions pour rÃ©duire son empreinte carbone.", r: "Transports en commun/vÃ©lo, isolation du logement, rÃ©duire sa consommation de viande." },
+    { q: "Qu'est-ce que la transition Ã©nergÃ©tique ?", r: "Passage des Ã©nergies fossiles aux Ã©nergies renouvelables." },
+    { q: "Qu'est-ce que la COP ?", r: "ConfÃ©rence des Parties (nÃ©gociations climatiques annuelles)." },
+    { q: "Qu'est-ce que le GIEC ?", r: "Groupe d'experts intergouvernemental sur l'Ã©volution du climat (prix Nobel de la paix 2007)." }
+  ]},
+  2: { titre: "La cellule â€” unitÃ© du vivant", cartes: [
+    { q: "Quels sont les constituants d'une cellule animale ?", r: "Membrane plasmique, cytoplasme, noyau, mitochondries." },
+    { q: "Quelle est la diffÃ©rence entre cellule animale et cellule vÃ©gÃ©tale ?", r: "La cellule vÃ©gÃ©tale possÃ¨de une paroi cellulosique et des chloroplastes." },
+    { q: "OÃ¹ se dÃ©roule la photosynthÃ¨se ?", r: "Dans les chloroplastes des cellules vÃ©gÃ©tales." },
+    { q: "Qu'est-ce qu'un tissu ?", r: "Ensemble de cellules ayant la mÃªme fonction." },
+    { q: "Donner l'Ã©quation de la photosynthÃ¨se.", r: "COâ‚‚ + Hâ‚‚O + lumiÃ¨re â†’ glucose + Oâ‚‚." },
+    { q: "Qu'est-ce que la diffÃ©renciation cellulaire ?", r: "Processus par lequel une cellule non spÃ©cialisÃ©e devient une cellule spÃ©cialisÃ©e." },
+    { q: "Qu'est-ce qu'une cellule souche ?", r: "Cellule non spÃ©cialisÃ©e capable de se diviser et de se diffÃ©rencier." },
+    { q: "Qu'est-ce que la membrane plasmique ?", r: "BarriÃ¨re qui entoure la cellule et rÃ©gule les Ã©changes." },
+    { q: "Qu'est-ce que le noyau de la cellule ?", r: "Contient l'ADN, dirige les activitÃ©s cellulaires." },
+    { q: "Qu'est-ce que la mitochondrie ?", r: "Organite qui produit l'Ã©nergie de la cellule (respiration cellulaire)." }
+  ]},
+  3: { titre: "GÃ©nÃ©tique et hÃ©rÃ©ditÃ©", cartes: [
+    { q: "Qu'est-ce qu'un gÃ¨ne ?", r: "Fragment d'ADN qui porte l'information pour un caractÃ¨re hÃ©rÃ©ditaire." },
+    { q: "DiffÃ©rence entre allÃ¨le dominant et rÃ©cessif.", r: "Dominant : s'exprime mÃªme Ã  un seul exemplaire. RÃ©cessif : s'exprime seulement en deux exemplaires." },
+    { q: "Qu'est-ce qu'un caryotype ?", r: "Photographie classÃ©e des chromosomes d'une cellule." },
+    { q: "Combien de chromosomes possÃ¨de un Ãªtre humain ?", r: "46 chromosomes (23 paires)." },
+    { q: "Qu'est-ce que la mucoviscidose ?", r: "Maladie gÃ©nÃ©tique due Ã  deux allÃ¨les rÃ©cessifs." },
+    { q: "Qu'est-ce que l'ADN ?", r: "MolÃ©cule support de l'information gÃ©nÃ©tique (forme de double hÃ©lice)." },
+    { q: "Qu'est-ce qu'un chromosome ?", r: "Structure contenant l'ADN, visible lors de la division cellulaire." },
+    { q: "Qu'est-ce que la trisomie 21 ?", r: "PrÃ©sence d'un chromosome supplÃ©mentaire sur la paire 21." },
+    { q: "Qu'est-ce que la drÃ©panocytose ?", r: "Maladie gÃ©nÃ©tique des globules rouges (forme de faucille)." },
+    { q: "Qu'est-ce que le test ADN ?", r: "Analyse de l'ADN pour identifier une personne ou une maladie." }
+  ]},
+  4: { titre: "Ã‰volution des espÃ¨ces", cartes: [
+    { q: "Qu'est-ce que la sÃ©lection naturelle ?", r: "Les individus les mieux adaptÃ©s Ã  leur environnement survivent et se reproduisent (Darwin)." },
+    { q: "Citez trois preuves de l'Ã©volution.", r: "Fossiles, anatomie comparÃ©e, similitudes gÃ©nÃ©tiques (ADN)." },
+    { q: "Qu'est-ce qu'un ancÃªtre commun ?", r: "EspÃ¨ce disparue dont descendent plusieurs espÃ¨ces actuelles." },
+    { q: "Qu'est-ce qu'un arbre phylogÃ©nÃ©tique ?", r: "SchÃ©ma qui reprÃ©sente les liens de parentÃ© entre espÃ¨ces." },
+    { q: "Qu'est-ce que la dÃ©rive gÃ©nÃ©tique ?", r: "Variation alÃ©atoire de la frÃ©quence des gÃ¨nes dans une petite population." },
+    { q: "Qui est Charles Darwin ?", r: "Naturaliste britannique, auteur de 'L'Origine des espÃ¨ces' (1859)." },
+    { q: "Qu'est-ce que le transformisme ?", r: "ThÃ©orie selon laquelle les espÃ¨ces se transforment au cours du temps." },
+    { q: "Qu'est-ce que le fixisme ?", r: "ThÃ©orie selon laquelle les espÃ¨ces sont fixes et immuables." },
+    { q: "Citez un exemple de sÃ©lection naturelle chez l'homme.", r: "RÃ©sistance au paludisme chez les porteurs de l'allÃ¨le drÃ©panocytaire." },
+    { q: "Qu'est-ce que l'endÃ©misme ?", r: "EspÃ¨ce prÃ©sente uniquement dans une rÃ©gion gÃ©ographique restreinte." }
+  ]},
+  5: { titre: "Reproduction", cartes: [
+    { q: "Qu'est-ce que la reproduction asexuÃ©e ?", r: "Un seul individu donne naissance Ã  des clones (bouturage, marcottage)." },
+    { q: "Qu'est-ce que la fÃ©condation ?", r: "Fusion d'un gamÃ¨te mÃ¢le et d'un gamÃ¨te femelle pour former un zygote." },
+    { q: "Quelles sont les Ã©tapes du dÃ©veloppement embryonnaire ?", r: "FÃ©condation â†’ segmentation â†’ gastrulation â†’ organogenÃ¨se." },
+    { q: "Comment se fait la pollinisation ?", r: "Transport du pollen par le vent, l'eau, les insectes ou les animaux." },
+    { q: "Qu'est-ce que la mitose ?", r: "Division cellulaire qui produit deux cellules filles identiques (croissance, rÃ©paration)." },
+    { q: "Qu'est-ce que la mÃ©iose ?", r: "Division cellulaire qui produit des gamÃ¨tes avec la moitiÃ© des chromosomes." },
+    { q: "Qu'est-ce qu'un gamÃ¨te ?", r: "Cellule reproductrice (spermatozoÃ¯de chez l'homme, ovule chez la femme)." },
+    { q: "Qu'est-ce que le zygote ?", r: "Cellule Å“uf rÃ©sultant de la fÃ©condation." },
+    { q: "Qu'est-ce que la gestation ?", r: "PÃ©riode de dÃ©veloppement de l'embryon puis du fÅ“tus dans l'utÃ©rus." },
+    { q: "Qu'est-ce que la mÃ©nopause ?", r: "ArrÃªt dÃ©finitif des rÃ¨gles et de la fertilitÃ© chez la femme." }
+  ]},
+  6: { titre: "SystÃ¨me nerveux", cartes: [
+    { q: "Quels sont les organes du systÃ¨me nerveux central ?", r: "Cerveau, cervelet, tronc cÃ©rÃ©bral, moelle Ã©piniÃ¨re." },
+    { q: "Qu'est-ce qu'un neurone ?", r: "Cellule spÃ©cialisÃ©e dans la transmission de l'influx nerveux." },
+    { q: "DiffÃ©rence entre mouvement volontaire et rÃ©flexe.", r: "Volontaire : commandÃ© par le cerveau. RÃ©flexe : commandÃ© par la moelle Ã©piniÃ¨re." },
+    { q: "Qu'est-ce qu'une synapse ?", r: "Zone de communication entre deux neurones." },
+    { q: "Qu'est-ce que l'influx nerveux ?", r: "Signal Ã©lectrique qui se propage le long des neurones." },
+    { q: "Qu'est-ce que le cerveau ?", r: "Centre de contrÃ´le des fonctions supÃ©rieures (pensÃ©e, mÃ©moire, Ã©motions)." },
+    { q: "Qu'est-ce que le cervelet ?", r: "Coordonne les mouvements et l'Ã©quilibre." },
+    { q: "Qu'est-ce que le rÃ©flexe rotulien ?", r: "RÃ©flexe obtenu en frappant le tendon sous la rotule (extension de la jambe)." },
+    { q: "Qu'est-ce qu'un neurotransmetteur ?", r: "Substance chimique qui transmet le message d'un neurone Ã  l'autre." },
+    { q: "Qu'est-ce que la plasticitÃ© cÃ©rÃ©brale ?", r: "CapacitÃ© du cerveau Ã  se modifier en fonction de l'expÃ©rience." }
+  ]},
+  7: { titre: "Hormones et rÃ©gulation", cartes: [
+    { q: "Quel est le rÃ´le de l'insuline ?", r: "Hormone qui fait baisser le taux de glucose (glycÃ©mie) dans le sang." },
+    { q: "Que se passe-t-il lors d'un stress ?", r: "LibÃ©ration d'adrÃ©naline qui accÃ©lÃ¨re le cÅ“ur et prÃ©pare le corps Ã  l'action." },
+    { q: "Quelles sont les hormones sexuelles principales ?", r: "TestostÃ©rone (hommes), Å“strogÃ¨nes et progestÃ©rone (femmes)." },
+    { q: "Quel est le rÃ´le de l'hypothalamus ?", r: "Glande dans le cerveau, chef d'orchestre des autres glandes." },
+    { q: "Qu'est-ce que le diabÃ¨te de type 1 ?", r: "Maladie auto-immune oÃ¹ le pancrÃ©as ne produit plus d'insuline." },
+    { q: "Qu'est-ce que le diabÃ¨te de type 2 ?", r: "DiabÃ¨te liÃ© Ã  une rÃ©sistance Ã  l'insuline (souvent liÃ© Ã  l'obÃ©sitÃ©)." },
+    { q: "Qu'est-ce que la glycÃ©mie ?", r: "Taux de glucose dans le sang." },
+    { q: "Quel est le rÃ´le de la thyroÃ¯de ?", r: "Produit des hormones qui rÃ©gulent le mÃ©tabolisme." },
+    { q: "Qu'est-ce que le cortisol ?", r: "Hormone du stress produite par les glandes surrÃ©nales." },
+    { q: "Qu'est-ce que la pubertÃ© ?", r: "PÃ©riode de dÃ©veloppement sexuel sous l'influence des hormones." }
+  ]},
+  8: { titre: "Nutrition et digestion", cartes: [
+    { q: "Citez les trois grandes familles de nutriments.", r: "Glucides (sucres), lipides (graisses), protides (protÃ©ines)." },
+    { q: "Ã€ quoi servent les enzymes digestives ?", r: "Ã€ dÃ©grader les aliments (ex: amylase dÃ©grade l'amidon)." },
+    { q: "OÃ¹ se dÃ©roule l'absorption des nutriments ?", r: "Dans l'intestin grÃªle, grÃ¢ce aux villositÃ©s intestinales." },
+    { q: "Qu'est-ce que le bol alimentaire ?", r: "Masse pÃ¢teuse formÃ©e par les aliments mÃ¢chÃ©s et mÃ©langÃ©s Ã  la salive." },
+    { q: "Que sont les fibres alimentaires ?", r: "Sucres non digestibles qui facilitent le transit intestinal." },
+    { q: "Quels aliments sont riches en fer ?", r: "Viande rouge, lentilles, Ã©pinards, Å“ufs." },
+    { q: "Qu'est-ce que le lactose ?", r: "Sucre du lait, digÃ©rÃ© par la lactase." },
+    { q: "Qu'est-ce que la digestion mÃ©canique ?", r: "Mastication, brassage, fragmentation des aliments." },
+    { q: "Qu'est-ce que la digestion chimique ?", r: "DÃ©gradation des aliments par les enzymes." },
+    { q: "Qu'est-ce que le systÃ¨me digestif ?", r: "Ensemble des organes qui transforment les aliments (bouche, estomac, intestins)." }
+  ]},
+  9: { titre: "Respiration et circulation sanguine", cartes: [
+    { q: "OÃ¹ se produisent les Ã©changes gazeux entre l'air et le sang ?", r: "Dans les alvÃ©oles pulmonaires." },
+    { q: "Quel est le trajet du sang dans la circulation ?", r: "CÅ“ur â†’ artÃ¨res â†’ capillaires (Ã©changes) â†’ veines â†’ cÅ“ur." },
+    { q: "Que transportent les globules rouges ?", r: "L'oxygÃ¨ne (Oâ‚‚) grÃ¢ce Ã  l'hÃ©moglobine." },
+    { q: "DiffÃ©rence entre artÃ¨re et veine.", r: "ArtÃ¨re : sang part du cÅ“ur, paroi Ã©paisse. Veine : sang retourne au cÅ“ur." },
+    { q: "Qu'est-ce que l'hÃ©moglobine ?", r: "ProtÃ©ine des globules rouges qui fixe l'oxygÃ¨ne." },
+    { q: "Qu'est-ce que la circulation pulmonaire ?", r: "Circuit entre le cÅ“ur et les poumons." },
+    { q: "Qu'est-ce que la circulation systÃ©mique ?", r: "Circuit entre le cÅ“ur et le reste du corps." },
+    { q: "Qu'est-ce que la frÃ©quence cardiaque ?", r: "Nombre de battements du cÅ“ur par minute." },
+    { q: "Qu'est-ce que la pression artÃ©rielle ?", r: "Force exercÃ©e par le sang sur les parois des artÃ¨res." },
+    { q: "Qu'est-ce que le pouls ?", r: "Onde de pression ressentie dans les artÃ¨res." }
+  ]},
+  10: { titre: "Microbes et infections", cartes: [
+    { q: "Citez les 4 grandes catÃ©gories de microbes.", r: "BactÃ©ries, virus, champignons, parasites." },
+    { q: "Quelles sont les barriÃ¨res naturelles de l'organisme ?", r: "Peau, muqueuses, sucs gastriques, larmes." },
+    { q: "DiffÃ©rence entre bactÃ©rie et virus.", r: "BactÃ©rie : cellule vivante. Virus : particule non vivante, nÃ©cessite une cellule hÃ´te." },
+    { q: "Qu'est-ce qu'un anticorps ?", r: "ProtÃ©ine fabriquÃ©e par les lymphocytes qui neutralise un antigÃ¨ne." },
+    { q: "Comment se reproduisent les bactÃ©ries ?", r: "Par division binaire (scission binaire)." },
+    { q: "Comment se reproduisent les virus ?", r: "En dÃ©tournant la machinerie d'une cellule hÃ´te." },
+    { q: "Qu'est-ce qu'un antigÃ¨ne ?", r: "Substance Ã©trangÃ¨re reconnue par le systÃ¨me immunitaire." },
+    { q: "Qu'est-ce que la fiÃ¨vre ?", r: "Ã‰lÃ©vation de la tempÃ©rature corporelle, signe de lutte contre l'infection." },
+    { q: "Qu'est-ce qu'une zoonose ?", r: "Maladie transmise de l'animal Ã  l'homme." },
+    { q: "Qu'est-ce qu'un rÃ©servoir de microbes ?", r: "ÃŠtre vivant ou milieu oÃ¹ les microbes se multiplient." }
+  ]},
+  11: { titre: "Vaccination et antibiotiques", cartes: [
+    { q: "Qu'est-ce qu'un vaccin ?", r: "AntigÃ¨ne affaibli qui dÃ©clenche une rÃ©ponse immunitaire sans provoquer la maladie." },
+    { q: "Pourquoi les antibiotiques sont-ils inefficaces contre les virus ?", r: "Ils ciblent des structures propres aux bactÃ©ries (paroi, ribosomes)." },
+    { q: "Qu'est-ce que l'immunitÃ© de groupe ?", r: "Protection collective quand un pourcentage Ã©levÃ© de la population est vaccinÃ©." },
+    { q: "Pourquoi y a-t-il une rÃ©sistance aux antibiotiques ?", r: "Les bactÃ©ries mutent et deviennent insensibles (surutilisation)." },
+    { q: "Qu'est-ce que l'effet mÃ©moire immunitaire ?", r: "CapacitÃ© Ã  rÃ©agir plus vite lors d'un second contact avec un antigÃ¨ne." },
+    { q: "Pourquoi fait-on des rappels de vaccin ?", r: "Pour maintenir un niveau suffisant d'anticorps protecteurs." },
+    { q: "Qu'est-ce que Louis Pasteur ?", r: "Scientifique franÃ§ais, inventeur du vaccin contre la rage." },
+    { q: "Qu'est-ce que la variolisation ?", r: "AncÃªtre de la vaccination (inoculation de la variole)." },
+    { q: "Qu'est-ce qu'un antibiotique Ã  large spectre ?", r: "Antibiotique efficace contre de nombreuses bactÃ©ries." },
+    { q: "Qu'est-ce que l'automÃ©dication ?", r: "Fait de se soigner sans avis mÃ©dical (risque de rÃ©sistance)." }
+  ]},
+  12: { titre: "SexualitÃ© et reproduction humaine", cartes: [
+    { q: "Citez trois mÃ©thodes contraceptives.", r: "Pilule, prÃ©servatif, stÃ©rilet, implant, patch." },
+    { q: "Que signifie IST ?", r: "Infection Sexuellement Transmissible." },
+    { q: "Comment agit le prÃ©servatif face au VIH ?", r: "BarriÃ¨re physique empÃªchant l'Ã©change de liquides biologiques." },
+    { q: "Qu'est-ce que le VIH ?", r: "Virus qui attaque les lymphocytes, affaiblit le systÃ¨me immunitaire (sida)." },
+    { q: "Qu'est-ce que la pilule contraceptive ?", r: "MÃ©dicament hormonal qui bloque l'ovulation." },
+    { q: "Qu'est-ce que le stÃ©rilet ?", r: "Dispositif intra-utÃ©rin (cuivre ou hormonal)." },
+    { q: "Qu'est-ce que la contraception d'urgence ?", r: "Pilule du lendemain, Ã  prendre rapidement aprÃ¨s un rapport non protÃ©gÃ©." },
+    { q: "Qu'est-ce que le sida ?", r: "Syndrome d'immunodÃ©ficience acquise, stade avancÃ© de l'infection par le VIH." },
+    { q: "Qu'est-ce que la chlamydia ?", r: "IST bactÃ©rienne souvent asymptomatique, peut causer la stÃ©rilitÃ©." },
+    { q: "Qu'est-ce que le HPV ?", r: "Papillomavirus humain, responsable du cancer du col de l'utÃ©rus." }
+  ]},
+  13: { titre: "DÃ©fenses immunitaires", cartes: [
+    { q: "Qu'est-ce que l'immunitÃ© innÃ©e ?", r: "ImmÃ©diate, non spÃ©cifique (peau, phagocytes, inflammation)." },
+    { q: "Qu'est-ce que l'immunitÃ© acquise ?", r: "Lente, spÃ©cifique (anticorps, lymphocytes mÃ©moire)." },
+    { q: "Quel est le rÃ´le des lymphocytes B ?", r: "Fabriquer des anticorps." },
+    { q: "Quel est le rÃ´le des lymphocytes T ?", r: "DÃ©truire les cellules infectÃ©es." },
+    { q: "Qu'est-ce qu'un phagocyte ?", r: "Cellule qui engloutit et dÃ©truit les microbes." },
+    { q: "Qu'est-ce qu'une rÃ©action allergique ?", r: "RÃ©action excessive du systÃ¨me immunitaire Ã  un allergÃ¨ne." },
+    { q: "Qu'est-ce qu'une maladie auto-immune ?", r: "SystÃ¨me immunitaire attaque les cellules du corps." },
+    { q: "Qu'est-ce qu'un immunosuppresseur ?", r: "MÃ©dicament qui diminue les dÃ©fenses immunitaires." },
+    { q: "Qu'est-ce que la sÃ©ropositivitÃ© ?", r: "PrÃ©sence d'anticorps contre le VIH dans le sang." },
+    { q: "Qu'est-ce que le vaccin thÃ©rapeutique ?", r: "Vaccin administrÃ© aprÃ¨s l'infection pour renforcer l'immunitÃ©." }
+  ]},
+  14: { titre: "La photosynthÃ¨se", cartes: [
+    { q: "OÃ¹ se dÃ©roule la photosynthÃ¨se ?", r: "Dans les chloroplastes des cellules vÃ©gÃ©tales." },
+    { q: "Donner l'Ã©quation de la photosynthÃ¨se.", r: "6 COâ‚‚ + 6 Hâ‚‚O + lumiÃ¨re â†’ Câ‚†Hâ‚â‚‚Oâ‚† (glucose) + 6 Oâ‚‚." },
+    { q: "Quels sont les pigments photosynthÃ©tiques ?", r: "Chlorophylle (verte), carotÃ©noÃ¯des (orange/rouge)." },
+    { q: "Quel est le rÃ´le de la photosynthÃ¨se ?", r: "Produire de la matiÃ¨re organique et de l'oxygÃ¨ne." },
+    { q: "Qu'est-ce que le spectre d'absorption de la chlorophylle ?", r: "La chlorophylle absorbe surtout le bleu et le rouge (pas le vert)." },
+    { q: "Qu'est-ce que la productivitÃ© primaire ?", r: "QuantitÃ© de matiÃ¨re organique produite par la photosynthÃ¨se." },
+    { q: "Qu'est-ce que l'autotrophie ?", r: "CapacitÃ© Ã  produire sa propre matiÃ¨re organique." },
+    { q: "Qu'est-ce que l'hÃ©tÃ©rotrophie ?", r: "Besoin de se nourrir de matiÃ¨re organique produite par d'autres." },
+    { q: "Pourquoi les feuilles sont-elles vertes ?", r: "La chlorophylle rÃ©flÃ©chit la lumiÃ¨re verte (absorbe le reste)." },
+    { q: "Qu'est-ce que le photopÃ©riodisme ?", r: "RÃ©action des plantes Ã  la durÃ©e du jour." }
+  ]},
+  15: { titre: "La respiration cellulaire", cartes: [
+    { q: "OÃ¹ se dÃ©roule la respiration cellulaire ?", r: "Dans les mitochondries des cellules." },
+    { q: "Donner l'Ã©quation de la respiration cellulaire.", r: "Câ‚†Hâ‚â‚‚Oâ‚† (glucose) + 6 Oâ‚‚ â†’ 6 COâ‚‚ + 6 Hâ‚‚O + Ã©nergie (ATP)." },
+    { q: "Qu'est-ce que l'ATP ?", r: "AdÃ©nosine triphosphate, molÃ©cule qui stocke et transporte l'Ã©nergie." },
+    { q: "DiffÃ©rence entre respiration et photosynthÃ¨se.", r: "Respiration : consomme Oâ‚‚ et glucose, produit COâ‚‚ et Ã©nergie. PhotosynthÃ¨se : inverse." },
+    { q: "Qu'est-ce que la fermentation ?", r: "Respiration sans oxygÃ¨ne (production d'alcool ou d'acide lactique)." },
+    { q: "Qu'est-ce que le mÃ©tabolisme ?", r: "Ensemble des rÃ©actions chimiques dans une cellule." },
+    { q: "Qu'est-ce que le catabolisme ?", r: "DÃ©gradation de molÃ©cules pour produire de l'Ã©nergie." },
+    { q: "Qu'est-ce que l'anabolisme ?", r: "SynthÃ¨se de molÃ©cules consommant de l'Ã©nergie." },
+    { q: "Pourquoi les muscles produisent-ils de l'acide lactique ?", r: "Fermentation lactique en manque d'oxygÃ¨ne (effort intense)." },
+    { q: "Qu'est-ce que la glycolyse ?", r: "PremiÃ¨re Ã©tape de la respiration, dans le cytoplasme." }
+  ]},
+  16: { titre: "BiodiversitÃ© et Ã©cosystÃ¨mes", cartes: [
+    { q: "Qu'est-ce que la biodiversitÃ© ?", r: "DiversitÃ© des espÃ¨ces, des gÃ¨nes et des Ã©cosystÃ¨mes." },
+    { q: "Qu'est-ce qu'un Ã©cosystÃ¨me ?", r: "Ensemble d'Ãªtres vivants et de leur environnement." },
+    { q: "Qu'est-ce qu'une chaÃ®ne alimentaire ?", r: "Suite d'Ãªtres vivants qui se mangent (producteur â†’ consommateur)." },
+    { q: "Qu'est-ce qu'un rÃ©seau trophique ?", r: "Ensemble des chaÃ®nes alimentaires interconnectÃ©es." },
+    { q: "Qu'est-ce qu'une espÃ¨ce endÃ©mique ?", r: "EspÃ¨ce prÃ©sente uniquement dans une rÃ©gion." },
+    { q: "Qu'est-ce qu'une espÃ¨ce invasive ?", r: "EspÃ¨ce introduite qui prolifÃ¨re et nuit Ã  l'Ã©cosystÃ¨me." },
+    { q: "Qu'est-ce que la biomasse ?", r: "Masse totale des Ãªtres vivants dans un Ã©cosystÃ¨me." },
+    { q: "Qu'est-ce qu'une aire marine protÃ©gÃ©e ?", r: "Zone maritime oÃ¹ les activitÃ©s sont rÃ©glementÃ©es." },
+    { q: "Qu'est-ce que l'UICN ?", r: "Union internationale pour la conservation de la nature." },
+    { q: "Qu'est-ce que le dÃ©veloppement durable ?", r: "RÃ©pondre aux besoins actuels sans compromettre l'avenir." }
+  ]},
+  17: { titre: "Risques sanitaires et environnementaux", cartes: [
+    { q: "Qu'est-ce qu'un perturbateur endocrinien ?", r: "Substance chimique qui perturbe le systÃ¨me hormonal." },
+    { q: "Qu'est-ce qu'un pesticide ?", r: "Produit chimique utilisÃ© pour Ã©liminer les nuisibles." },
+    { q: "Qu'est-ce que la pollution de l'air ?", r: "PrÃ©sence de particules ou gaz nocifs (PM2.5, NOâ‚‚, ozone)." },
+    { q: "Qu'est-ce que la pollution de l'eau ?", r: "Contamination par des nitrates, pesticides, mÃ©taux lourds." },
+    { q: "Qu'est-ce que le rÃ©chauffement climatique ?", r: "Augmentation de la tempÃ©rature moyenne due aux GES." },
+    { q: "Qu'est-ce que l'effet de serre ?", r: "PhÃ©nomÃ¨ne naturel qui retient la chaleur." },
+    { q: "Qu'est-ce que la couche d'ozone ?", r: "Couche atmosphÃ©rique qui filtre les UV." },
+    { q: "Qu'est-ce que les CFC ?", r: "Chlorofluorocarbures, responsables du trou de la couche d'ozone." },
+    { q: "Qu'est-ce que la dÃ©sertification ?", r: "Transformation des terres en dÃ©sert." },
+    { q: "Qu'est-ce que l'acidification des ocÃ©ans ?", r: "Absorption du COâ‚‚ qui abaisse le pH de l'eau." }
+  ]},
+  18: { titre: "GÃ©ologie et risques naturels", cartes: [
+    { q: "Qu'est-ce qu'un sÃ©isme ?", r: "Tremblement de terre dÃ» Ã  la rupture des roches." },
+    { q: "Qu'est-ce qu'un volcan ?", r: "Ouverture dans la croÃ»te terrestre libÃ©rant magma et gaz." },
+    { q: "DiffÃ©rence entre magma et lave.", r: "Magma : roche fondue sous terre. Lave : magma Ã  la surface." },
+    { q: "Qu'est-ce qu'un tsunami ?", r: "Vague gÃ©ante due Ã  un sÃ©isme sous-marin." },
+    { q: "Qu'est-ce que la subduction ?", r: "Plongement d'une plaque tectonique sous une autre." },
+    { q: "Qu'est-ce que la dÃ©rive des continents ?", r: "ThÃ©orie de Wegener (les continents bougent)." },
+    { q: "Qu'est-ce que la tectonique des plaques ?", r: "ThÃ©orie expliquant les mouvements de l'Ã©corce terrestre." },
+    { q: "Qu'est-ce que l'Ã©rosion ?", r: "Usure des roches par l'eau, le vent, la glace." },
+    { q: "Qu'est-ce qu'une faille ?", r: "Fracture dans la croÃ»te terrestre." },
+    { q: "Qu'est-ce qu'un point chaud ?", r: "RemontÃ©e de magma sous la plaque (ex: Hawaii)." }
+  ]},
+  // ==================== PARTIE 2 : PHYSIQUE-CHIMIE (chapitres 19 Ã  28) ====================
+  19: { titre: "Atomes et molÃ©cules", cartes: [
+    { q: "Quels sont les constituants d'un atome ?", r: "Protons (charge +), neutrons (neutres) dans le noyau, Ã©lectrons (charge -) autour." },
+    { q: "Donner la formule de la molÃ©cule d'eau.", r: "Hâ‚‚O (2 atomes d'hydrogÃ¨ne, 1 atome d'oxygÃ¨ne)." },
+    { q: "DiffÃ©rence entre atome et molÃ©cule.", r: "Atome = plus petite particule d'un Ã©lÃ©ment. MolÃ©cule = assemblage d'atomes." },
+    { q: "Comment passe-t-on de l'Ã©tat solide Ã  l'Ã©tat liquide ?", r: "Fusion (apport de chaleur)." },
+    { q: "Qu'est-ce qu'un ion ?", r: "Atome ou molÃ©cule ayant gagnÃ© ou perdu des Ã©lectrons (charge Ã©lectrique)." },
+    { q: "Qu'est-ce qu'un isotope ?", r: "Atome avec mÃªme nombre de protons mais diffÃ©rent nombre de neutrons." },
+    { q: "DiffÃ©rence entre fusion et fission nuclÃ©aire.", r: "Fusion : assemblage de noyaux (Ã©toiles). Fission : Ã©clatement d'un noyau (centrales)." },
+    { q: "Qu'est-ce que la masse atomique ?", r: "Somme des protons et neutrons (en u)." },
+    { q: "Qu'est-ce que le numÃ©ro atomique ?", r: "Nombre de protons (Z)." },
+    { q: "Donner la formule du dioxyde de carbone.", r: "COâ‚‚." }
+  ]},
+  20: { titre: "MÃ©langes et corps purs", cartes: [
+    { q: "Qu'est-ce qu'un corps pur ?", r: "Substance composÃ©e d'un seul type de constituant (ex: eau distillÃ©e)." },
+    { q: "DiffÃ©rence entre mÃ©lange homogÃ¨ne et hÃ©tÃ©rogÃ¨ne.", r: "HomogÃ¨ne : on ne distingue pas les constituants. HÃ©tÃ©rogÃ¨ne : plusieurs phases." },
+    { q: "Comment sÃ©parer du sable et de l'eau ?", r: "Filtration." },
+    { q: "Comment sÃ©parer de l'eau salÃ©e ?", r: "Distillation (Ã©vaporation puis condensation)." },
+    { q: "Qu'est-ce qu'une solution ?", r: "MÃ©lange homogÃ¨ne (solvant + solutÃ©)." },
+    { q: "Qu'est-ce que la dÃ©cantation ?", r: "SÃ©paration par diffÃ©rence de densitÃ©." },
+    { q: "Qu'est-ce que la centrifugation ?", r: "SÃ©paration par force centrifuge." },
+    { q: "Qu'est-ce que la chromatographie ?", r: "Technique pour sÃ©parer les constituants d'un mÃ©lange." },
+    { q: "Qu'est-ce qu'un solvant ?", r: "Substance qui dissout (ex: eau, alcool)." },
+    { q: "Qu'est-ce qu'un solutÃ© ?", r: "Substance dissoute (ex: sucre, sel)." }
+  ]},
+  21: { titre: "RÃ©actions chimiques", cartes: [
+    { q: "Qu'est-ce qu'une rÃ©action chimique ?", r: "Transformation de rÃ©actifs en produits, avec conservation des atomes." },
+    { q: "Ã‰crire l'Ã©quation de combustion complÃ¨te du mÃ©thane.", r: "CHâ‚„ + 2 Oâ‚‚ â†’ COâ‚‚ + 2 Hâ‚‚O." },
+    { q: "DiffÃ©rence entre rÃ©action exothermique et endothermique.", r: "Exothermique : dÃ©gage de la chaleur. Endothermique : absorbe de la chaleur." },
+    { q: "Qu'est-ce qu'une oxydorÃ©duction ?", r: "RÃ©action avec transfert d'Ã©lectrons." },
+    { q: "Qu'est-ce qu'une neutralisation ?", r: "RÃ©action entre un acide et une base â†’ eau + sel." },
+    { q: "Ã‰crire l'Ã©quation de combustion du butane.", r: "2 Câ‚„Hâ‚â‚€ + 13 Oâ‚‚ â†’ 8 COâ‚‚ + 10 Hâ‚‚O." },
+    { q: "Qu'est-ce que la combustion incomplÃ¨te ?", r: "Manque d'oxygÃ¨ne â†’ production de CO (monoxyde de carbone)." },
+    { q: "Qu'est-ce que la catalyse ?", r: "AccÃ©lÃ©ration d'une rÃ©action par un catalyseur." },
+    { q: "Qu'est-ce que la loi de Lavoisier ?", r: "Rien ne se perd, rien ne se crÃ©e, tout se transforme." },
+    { q: "Qu'est-ce que la combustion ?", r: "RÃ©action chimique avec du dioxygÃ¨ne." }
+  ]},
+  22: { titre: "Solutions et concentration", cartes: [
+    { q: "DiffÃ©rence entre solvant et solutÃ©.", r: "Solvant : substance qui dissout (ex: eau). SolutÃ© : substance dissoute (ex: sucre)." },
+    { q: "Formule de la concentration massique.", r: "C = m/V (en g/L)." },
+    { q: "Que signifie un pH de 3 ?", r: "Solution acide (pH < 7)." },
+    { q: "Que signifie un pH de 10 ?", r: "Solution basique (pH > 7)." },
+    { q: "Que signifie un pH de 7 ?", r: "Solution neutre." },
+    { q: "Comment mesure-t-on le pH ?", r: "Papier pH ou pH-mÃ¨tre." },
+    { q: "Qu'est-ce qu'une solution saturÃ©e ?", r: "Solution qui ne peut plus dissoudre de solutÃ©." },
+    { q: "Qu'est-ce que la dissolution ?", r: "Processus oÃ¹ un solutÃ© se disperse dans un solvant." },
+    { q: "Qu'est-ce que la dilution ?", r: "Ajout de solvant pour diminuer la concentration." },
+    { q: "Formule de la dilution : Câ‚ Ã— Vâ‚ = Câ‚‚ Ã— Vâ‚‚ ?", r: "Oui (conservation de la quantitÃ© de matiÃ¨re)." }
+  ]},
+  23: { titre: "Mouvement et vitesse", cartes: [
+    { q: "Quels sont les types de trajectoires ?", r: "Rectiligne, circulaire, curviligne." },
+    { q: "Formule de la vitesse moyenne.", r: "v = d/t (m/s ou km/h)." },
+    { q: "Convertir 20 m/s en km/h.", r: "72 km/h (Ã—3,6)." },
+    { q: "Convertir 90 km/h en m/s.", r: "25 m/s (Ã·3,6)." },
+    { q: "Qu'est-ce qu'un mouvement uniforme ?", r: "Vitesse constante." },
+    { q: "Qu'est-ce qu'un mouvement accÃ©lÃ©rÃ© ?", r: "La vitesse augmente." },
+    { q: "Qu'est-ce qu'un mouvement dÃ©cÃ©lÃ©rÃ© ?", r: "La vitesse diminue." },
+    { q: "Qu'est-ce que la vitesse instantanÃ©e ?", r: "Vitesse Ã  un instant prÃ©cis." },
+    { q: "Qu'est-ce que la vitesse moyenne ?", r: "Moyenne sur un trajet." },
+    { q: "Donner la formule du temps : t = ?", r: "t = d/v." }
+  ]},
+  24: { titre: "Forces et interactions", cartes: [
+    { q: "Formule du poids (force de gravitÃ©).", r: "P = m Ã— g (g â‰ˆ 9,8 N/kg sur Terre)." },
+    { q: "Quelles sont les caractÃ©ristiques d'une force ?", r: "Direction, sens, intensitÃ© (valeur), point d'application." },
+    { q: "Qu'est-ce qu'une force de frottement ?", r: "Force qui s'oppose au mouvement ou au glissement." },
+    { q: "Sur la Lune, le poids est-il diffÃ©rent ?", r: "Oui, car g est plus faible (g Lune â‰ˆ 1,6 N/kg)." },
+    { q: "Qu'est-ce que la force ?", r: "Action qui peut modifier le mouvement ou dÃ©former un objet." },
+    { q: "Qu'est-ce que la rÃ©action d'un support ?", r: "Force perpendiculaire au support." },
+    { q: "Qu'est-ce que la tension d'un fil ?", r: "Force exercÃ©e par un fil tirÃ©." },
+    { q: "Qu'est-ce que la poussÃ©e d'ArchimÃ¨de ?", r: "Force qui fait flotter les objets." },
+    { q: "Qu'est-ce que le centre de gravitÃ© ?", r: "Point oÃ¹ s'applique le poids." },
+    { q: "Qu'est-ce que la dynamique ?", r: "Ã‰tude des forces et des mouvements." }
+  ]},
+  25: { titre: "Principe d'inertie (Newton)", cartes: [
+    { q: "Ã‰noncer le principe d'inertie.", r: "Si les forces qui s'exercent sur un corps se compensent (F=0), alors son mouvement est rectiligne uniforme ou il est au repos." },
+    { q: "Pourquoi doit-on attacher sa ceinture de sÃ©curitÃ© ?", r: "Application du principe d'inertie : en cas de freinage, le corps continue tout droit." },
+    { q: "Qu'est-ce que le principe des actions rÃ©ciproques ?", r: "Deux corps en interaction exercent des forces opposÃ©es (action/rÃ©action)." },
+    { q: "Ã‰noncer la 2e loi de Newton.", r: "La somme des forces est Ã©gale Ã  la masse multipliÃ©e par l'accÃ©lÃ©ration : Î£F = m Ã— a." },
+    { q: "Ã‰noncer la 3e loi de Newton.", r: "Si A exerce une force sur B, alors B exerce une force Ã©gale et opposÃ©e sur A." },
+    { q: "Qu'est-ce qu'un rÃ©fÃ©rentiel galilÃ©en ?", r: "RÃ©fÃ©rentiel oÃ¹ le principe d'inertie s'applique." },
+    { q: "Qu'est-ce que la quantitÃ© de mouvement ?", r: "p = m Ã— v." },
+    { q: "Qu'est-ce que le travail d'une force ?", r: "Ã‰nergie transfÃ©rÃ©e par une force." },
+    { q: "Qu'est-ce que la puissance ?", r: "Travail par unitÃ© de temps (P = E/t)." },
+    { q: "Qu'est-ce que l'Ã©nergie mÃ©canique ?", r: "Somme de l'Ã©nergie cinÃ©tique et potentielle." }
+  ]},
+  26: { titre: "Pression", cartes: [
+    { q: "Formule de la pression.", r: "P = F/S (en Pascals, Pa)." },
+    { q: "Quelle est la pression atmosphÃ©rique normale ?", r: "1013 hPa (hectopascals)." },
+    { q: "Pourquoi les oreilles se bouchent-elles en montagne ?", r: "La pression atmosphÃ©rique diminue avec l'altitude." },
+    { q: "Pourquoi les skis sont-ils larges ?", r: "Pour augmenter la surface et diminuer la pression sur la neige." },
+    { q: "Qu'est-ce que la pression hydrostatique ?", r: "Pression dans un liquide (augmente avec la profondeur)." },
+    { q: "Qu'est-ce que le thÃ©orÃ¨me de Pascal ?", r: "Pression transmise intÃ©gralement dans un liquide." },
+    { q: "Ã€ quoi sert un manomÃ¨tre ?", r: "Mesurer la pression." },
+    { q: "Qu'est-ce que le vide ?", r: "Espace sans matiÃ¨re (pression nulle)." },
+    { q: "Qu'est-ce que la pression absolue ?", r: "Pression par rapport au vide." },
+    { q: "Qu'est-ce que la pression relative ?", r: "Pression par rapport Ã  la pression atmosphÃ©rique." }
+  ]},
+  27: { titre: "Sources et formes d'Ã©nergie", cartes: [
+    { q: "Citez trois Ã©nergies fossiles.", r: "Charbon, pÃ©trole, gaz naturel." },
+    { q: "Citez trois Ã©nergies renouvelables.", r: "Solaire, Ã©olien, hydraulique, biomasse, gÃ©othermie." },
+    { q: "Formule de l'Ã©nergie cinÃ©tique.", r: "Ec = Â½ Ã— m Ã— vÂ² (en Joules)." },
+    { q: "Formule de l'Ã©nergie potentielle de position.", r: "Ep = m Ã— g Ã— h (en Joules)." },
+    { q: "Qu'est-ce que l'Ã©nergie chimique ?", r: "Ã‰nergie stockÃ©e dans les liaisons chimiques (carburants, aliments, piles)." },
+    { q: "Quelle est la part du nuclÃ©aire dans l'Ã©lectricitÃ© franÃ§aise ?", r: "Environ 70% (la France est le pays le plus nuclÃ©arisÃ©)." },
+    { q: "Pourquoi les Ã©nergies fossiles sont-elles critiquÃ©es ?", r: "Elles Ã©mettent du COâ‚‚ (GES) et sont Ã©puisables." },
+    { q: "Une voiture Ã  100 km/h a-t-elle plus d'Ã©nergie qu'Ã  50 km/h ?", r: "4 fois plus (car vÂ² â†’ 2Â² = 4)." },
+    { q: "Qu'est-ce que l'Ã©nergie nuclÃ©aire ?", r: "Ã‰nergie libÃ©rÃ©e par la fission ou fusion des noyaux atomiques." },
+    { q: "Qu'est-ce que l'Ã©nergie hydraulique ?", r: "Ã‰nergie des chutes d'eau (barrages)." }
+  ]},
+  28: { titre: "Circuits Ã©lectriques", cartes: [
+    { q: "Ã‰noncer la loi d'Ohm.", r: "U = R Ã— I (U en volts, R en ohms, I en ampÃ¨res)." },
+    { q: "Formule de la puissance Ã©lectrique.", r: "P = U Ã— I (P en watts)." },
+    { q: "DiffÃ©rence entre circuit sÃ©rie et circuit dÃ©rivation.", r: "SÃ©rie : un seul chemin, mÃªme courant. DÃ©rivation : plusieurs chemins, mÃªme tension." },
+    { q: "Qu'est-ce qu'un court-circuit ?", r: "Chemin de trÃ¨s faible rÃ©sistance qui contourne un rÃ©cepteur, courant trÃ¨s Ã©levÃ©." },
+    { q: "Ã€ quoi sert un fusible ou un disjoncteur ?", r: "Ã€ couper le circuit en cas de surintensitÃ©." },
+    { q: "Ã€ quoi sert la prise de terre ?", r: "Ã€ Ã©vacuer le courant de fuite vers la terre (protection contre les Ã©lectrocutions)." },
+    { q: "Qu'est-ce qu'une rÃ©sistance ?", r: "Composant qui s'oppose au passage du courant." },
+    { q: "Qu'est-ce que la tension Ã©lectrique ?", r: "DiffÃ©rence de potentiel entre deux points (en volts)." },
+    { q: "Qu'est-ce que l'intensitÃ© du courant ?", r: "DÃ©bit d'Ã©lectrons (en ampÃ¨res)." },
+    { q: "Qu'est-ce qu'un gÃ©nÃ©rateur ?", r: "Appareil qui fournit de l'Ã©nergie Ã©lectrique (pile, batterie, alternateur)." }
+  ]}
+};
+
+// VÃ©rification
+console.log("Chapitres Sciences chargÃ©s :", Object.keys(CHAPITRES_SC).length);
+</script>
+<script>
+
+let eleve = 'eleve1';
+let session = [], idx = 0;
+let score = { ok:0, total:0, chTaux:{} };
+let timerInt = null, tps = 45*60;
+
+const DATA = CHAPITRES_SC;
+const kProg  = () => 'auto_sc_prog_' + eleve;
+const kRat   = () => 'auto_sc_rat_' + eleve;
+const kSuivi = () => 'suivi_sessions_sciences_' + eleve;
+
+function getProg()  { return JSON.parse(localStorage.getItem(kProg())  || '{}'); }
+function getRat()   { return JSON.parse(localStorage.getItem(kRat())   || '{}'); }
+function getScore(ch, q) { return getProg()[ch+'_'+q.substring(0,28)]?.score || 0; }
+function setScore(ch, q, v) {
+  const p = getProg();
+  p[ch+'_'+q.substring(0,28)] = { score:Math.min(3,Math.max(0,v)), date:new Date().toISOString() };
+  localStorage.setItem(kProg(), JSON.stringify(p));
+}
+function getFaibles() {
+  const sessions = JSON.parse(localStorage.getItem(kSuivi())||'[]').slice(0,5);
+  const taux = {};
+  sessions.forEach(s => {
+    if (s.chapitresTaux) Object.entries(s.chapitresTaux).forEach(([ch,t]) => {
+      if (!taux[ch]) taux[ch] = []; taux[ch].push(t);
+    });
+  });
+  return Object.entries(taux).filter(([,v]) => v.reduce((a,b)=>a+b,0)/v.length < 60).map(([ch]) => parseInt(ch));
+}
+function setEleve(e) {
+  eleve = e;
+  document.getElementById('btnW').className = 'eleve-btn' + (e==='eleve1'?' aw':'');
+  document.getElementById('btnN').className = 'eleve-btn' + (e==='eleve2'?' an':'');
+  buildGrid(); updateStats();
+}
+function buildGrid() {
+  const faibles = getFaibles();
+  const g = document.getElementById('chapGrid'); g.innerHTML = '';
+  Object.entries(DATA).forEach(([n, ch]) => {
+    const isFaible = faibles.includes(parseInt(n));
+    const d = document.createElement('div');
+    d.className = 'ch-item' + (isFaible?' faible':'');
+    d.id = 'ci'+n;
+    d.onclick = () => { d.classList.toggle('selected'); updateStats(); };
+    d.innerHTML = '<span class="ch-num">'+n+'</span><span style="font-size:12px">'+ch.titre+'</span>'+(isFaible?'<span class="ch-warn">âš </span>':'');
+    g.appendChild(d);
+  });
+}
+function getSel() { return Array.from(document.querySelectorAll('#chapGrid .ch-item.selected')).map(el=>parseInt(el.id.replace('ci',''))); }
+function selectAll(v) { Object.keys(DATA).forEach(n=>document.getElementById('ci'+n)?.classList.toggle('selected',v)); updateStats(); }
+function selFaibles() { selectAll(false); getFaibles().forEach(n=>document.getElementById('ci'+n)?.classList.add('selected')); updateStats(); }
+function resetProg() { if(confirm('Reset progression ?')){ localStorage.removeItem(kProg()); localStorage.removeItem(kRat()); updateStats(); } }
+function updateStats() {
+  const sel = getSel();
+  const toutes = sel.flatMap(n=>(DATA[n]?.cartes||[]).map(c=>({...c,ch:n})));
+  const mait = toutes.filter(c=>getScore(c.ch,c.q)>=3).length;
+  const pct = toutes.length ? Math.round(mait/toutes.length*100) : 0;
+  document.getElementById('stCartes').textContent = toutes.length;
+  document.getElementById('stMait').textContent = mait;
+  document.getElementById('stPct').textContent = pct+'%';
+  document.getElementById('btnStart').disabled = toutes.length===0;
+  document.getElementById('stRegle').textContent = toutes.length<=40 ? toutes.length+' (toutes)' : '20-10-10';
+}
+function melanger(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function genSession() {
+  const sel = getSel();
+  const principal = sel.flatMap(n=>(DATA[n]?.cartes||[]).map(c=>({...c,ch:n,type:'principal'})));
+  const dedup = arr => { const ids=new Set(); return arr.filter(c=>{if(ids.has(c.q))return false;ids.add(c.q);return true;}); };
+  if (principal.length<=40) return melanger(dedup(principal));
+  const nouv = principal.filter(c=>getScore(c.ch,c.q)===0);
+  const enCours = principal.filter(c=>getScore(c.ch,c.q)>0&&getScore(c.ch,c.q)<3);
+  const mait = principal.filter(c=>getScore(c.ch,c.q)>=3);
+  const vingt = melanger(dedup([...nouv,...enCours,...mait])).slice(0,20);
+  const rat = getRat();
+  let dixRat = Object.entries(rat).filter(([,d])=>d.count>=1).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(([,d])=>({...d.carte,type:'ratee'}));
+  if (dixRat.length<10) {
+    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
+    dixRat = [...dixRat,...melanger([...enCours,...nouv]).filter(c=>!deja.has(c.q)).slice(0,10-dixRat.length).map(c=>({...c,type:'ratee'}))];
+  }
+  const autres = Object.entries(DATA).filter(([n])=>!sel.includes(parseInt(n))).flatMap(([n,ch])=>ch.cartes.map(c=>({...c,ch:parseInt(n),type:'revision'})));
+  let dixRev = melanger([...autres]).slice(0,10);
+  if (dixRev.length<10) {
+    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
+    dixRev = [...dixRev,...melanger([...principal]).filter(c=>!deja.has(c.q)).slice(0,10-dixRev.length).map(c=>({...c,type:'revision'}))];
+  }
+  return melanger(dedup([...vingt,...dixRat,...dixRev])).slice(0,40);
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â• Ã‰VALUATION â€” SEUIL 50% (mots-clÃ©s, bonus rÃ©duits) â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function evaluer(rep, att) {
+  if (!rep || rep.length < 2) return { ok: false, t: 0, m: 'Ã‰cris une rÃ©ponse.' };
+  
+  const r = rep.toLowerCase().trim();
+  const a = att.toLowerCase();
+  
+  if (r === a) return { ok: true, t: 100, m: 'Parfait !' };
+  
+  // Mots de PLUS de 4 lettres
+  const mA = a.split(/[\s,;.()+->]+/).filter(m => m.length > 4);
+  const mR = r.split(/[\s,;.()+->]+/).filter(m => m.length > 4);
+  
+  let ok = 0;
+  mA.forEach(ma => {
+    if (mR.some(mr => mr.includes(ma.slice(0, 4)) || ma.includes(mr.slice(0, 4)))) ok++;
+  });
+  
+  let t = mA.length ? Math.round(ok / mA.length * 100) : 50;
+  
+  // Bonus rÃ©duit : +10 si peu de mots et t>=45
+  if (mR.length <= 4 && t >= 45) t = Math.min(100, t + 10);
+  
+  const cles = mA.slice(0, 3).filter(m => 
+    mR.some(mr => mr.includes(m.slice(0, 4)))
+  );
+  if (cles.length >= 2) t = Math.min(100, t + 5);
+  
+  // Exiger au moins 50% des mots-clÃ©s
+  const motsTrouves = mA.filter(m => 
+    mR.some(mr => mr.includes(m.slice(0, 4)))
+  ).length;
+  
+  if (motsTrouves < mA.length / 2) {
+    return { ok: false, t: Math.min(t, 50), m: 'Il manque des Ã©lÃ©ments essentiels.' };
+  }
+  
+  // SEUIL Ã€ 50%
+  if (t >= 50) {
+    return { ok: true, t, m: t >= 80 ? 'Parfait !' : (t >= 70 ? 'Bien !' : 'Presque !') };
+  }
+  
+  return { ok: false, t, m: 'Ã€ retravailler.' };
+}
+
+function demarrer() {
+  try {
+    session = genSession();
+    if (!session.length) { alert('Aucune carte disponible.'); return; }
+    idx=0; score={ok:0,total:0,chTaux:{}}; tps=45*60;
+    showPhase('phaseSession'); startTimer(); affQ();
+  } catch(e) { alert('Erreur : ' + e.message); console.error(e); }
+}
+function affQ() {
+  if (idx>=session.length){fin();return;}
+  const c=session[idx];
+  document.getElementById('progFill').style.width=Math.round(idx/session.length*100)+'%';
+  document.getElementById('qCount').textContent='Q '+(idx+1)+'/'+session.length;
+  const tLabel=c.type==='ratee'?'ðŸ”´ Ã€ retravailler':c.type==='revision'?'ðŸ”µ RÃ©vision':'ðŸŸ¢ Chapitre choisi';
+  const tCls=c.type==='ratee'?'tp-r':c.type==='revision'?'tp-n':'tp-p';
+  document.getElementById('qArea').innerHTML =
+    '<div class="q-card"><div class="q-meta"><span class="q-badge ch">'+(DATA[c.ch]?.titre||'')+'</span>'
+    +'<span class="q-badge '+tCls+'">'+tLabel+'</span><span class="q-badge ch">Niv '+getScore(c.ch,c.q)+'/3</span></div>'
+    +'<div class="q-text">'+c.q+'</div>'
+    +'<textarea class="rep" id="repIn" placeholder="Ta rÃ©ponse..." rows="3"></textarea>'
+    +'<div class="q-btns"><button class="btn-verif" id="btnVerif">âœ” VÃ©rifier</button></div></div>';
+  document.getElementById('fbArea').innerHTML='';
+  document.getElementById('nextWrap').style.display='none';
+  document.getElementById('btnVerif').addEventListener('click', verif);
+  setTimeout(()=>document.getElementById('repIn')?.focus(),80);
+  document.getElementById('repIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey)verif();});
+}
+function verif() {
+  const rep=document.getElementById('repIn')?.value.trim();
+  if(!rep){alert('Ã‰cris une rÃ©ponse.');return;}
+  const c=session[idx]; const ev=evaluer(rep,c.r);
+  if(ev.ok) score.ok++; score.total++;
+  if(!score.chTaux[c.ch]) score.chTaux[c.ch]={ok:0,t:0};
+  score.chTaux[c.ch].t++; if(ev.ok) score.chTaux[c.ch].ok++;
+  let s=getScore(c.ch,c.q); s=ev.ok?Math.min(s+1,3):Math.max(0,s-1); setScore(c.ch,c.q,s);
+  const rat=getRat(); const id=c.q.slice(0,40);
+  if(!ev.ok){rat[id]={count:(rat[id]?.count||0)+1,carte:c};}
+  else if(rat[id]){rat[id].count=Math.max(0,(rat[id].count||1)-1);if(!rat[id].count)delete rat[id];}
+  localStorage.setItem(kRat(),JSON.stringify(rat));
+  const cls=ev.t>=65?'fb-ok':ev.t>=40?'fb-mid':'fb-bad';
+  const ico=ev.t>=65?'âœ…':ev.t>=40?'âš ï¸':'âŒ';
+  document.getElementById('fbArea').innerHTML='<div class="feedback show"><div class="'+cls+'">'+ico+' '+ev.m+' â€” '+ev.t+'%</div><div class="fb-rep"><strong>ðŸ“– RÃ©ponse attendue</strong>'+c.r+'</div></div>';
+  idx++; document.getElementById('nextWrap').style.display='block';
+  document.getElementById('btnVerif').disabled=true;
+}
+function startTimer(){
+  clearInterval(timerInt);
+  timerInt=setInterval(()=>{
+    if(tps<=0){clearInterval(timerInt);fin();return;} tps--;
+    const m=Math.floor(tps/60),s=tps%60;
+    const el=document.getElementById('timerVal');
+    if(el){el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');el.className='timer-val'+(tps<300?' urgent':'');}
+  },1000);
+}
+function fin(){
+  clearInterval(timerInt);
+  const totalQuestions = score.total;
+  const bonnesReponses = score.ok;
+  const pct = totalQuestions ? Math.round(bonnesReponses / totalQuestions * 100) : 0;
+  const chapitres=getSel().map(n=>DATA[n]?.titre).filter(Boolean);
+  const chapitresTaux={};
+  Object.entries(score.chTaux).forEach(([ch,d])=>{chapitresTaux[DATA[ch]?.titre||'Ch'+ch]=Math.round(d.ok/d.t*100);});
+  const sessions=JSON.parse(localStorage.getItem(kSuivi())||'[]');
+  sessions.unshift({id:Date.now(),date:new Date().toISOString(),matiere:'sciences',eleve,pourcentage:pct,noteSur:totalQuestions,noteObtenue:bonnesReponses,chapitres,chapitresTaux});
+  localStorage.setItem(kSuivi(),JSON.stringify(sessions.slice(0,200)));
+  showPhase('phaseRes');
+  const cls=pct>=80?'ex':pct>=60?'bi':'ef';
+  const msg=pct>=80?'ðŸŒŸ Excellent !':pct>=60?'ðŸ‘ Bien jouÃ© !':pct>=40?'ðŸ’ª Courage !':'ðŸ“š Continue.';
+  document.getElementById('scoreGrand').className='score-grand '+cls;
+  document.getElementById('scoreGrand').textContent = bonnesReponses + '/' + totalQuestions;
+  document.getElementById('scoreDetail').textContent = bonnesReponses + ' bonnes rÃ©ponses sur ' + totalQuestions + ' (' + pct + '%)';
+  document.getElementById('msgFin').textContent=msg;
+  const faibles=Object.entries(chapitresTaux).filter(([,t])=>t<60).map(([ch])=>ch);
+  if(faibles.length){
+    document.getElementById('faiblesRes').innerHTML='<div class="faibles-box"><h4>âš  Chapitres Ã  retravailler (< 60%)</h4><ul>'+faibles.map(f=>'<li>â€¢ '+f+'</li>').join('')+'</ul></div>';
+  }
+}
+function showPhase(id){['phaseSelect','phaseSession','phaseRes'].forEach(p=>document.getElementById(p).className='phase'+(p===id?' active':''));}
+function initApp() {
+  setEleve('eleve1');
+  document.getElementById('btnStart').addEventListener('click', demarrer);
+  document.getElementById('btnAll').addEventListener('click', () => selectAll(true));
+  document.getElementById('btnNone').addEventListener('click', () => selectAll(false));
+  document.getElementById('btnFaibles').addEventListener('click', selFaibles);
+  document.getElementById('btnReset').addEventListener('click', resetProg);
+  document.getElementById('btnW').addEventListener('click', () => setEleve('eleve1'));
+  document.getElementById('btnN').addEventListener('click', () => setEleve('eleve2'));
+  document.getElementById('btnNext').addEventListener('click', () => { document.getElementById('nextWrap').style.display='none'; affQ(); });
+  document.getElementById('btnNouv').addEventListener('click', () => location.reload());
+  document.getElementById('btnSuivi').addEventListener('click', () => window.location.href='suivi-parent.html');
+}
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initApp); } else { initApp(); }
+
+</script>
+<script>
+(function(){
+  var KEY_TS='brevet_trial_start';
+  var KEY_OK='brevet_access';
+  var TRIAL=48*60*60*1000;
+  function tick(){
+    if(localStorage.getItem(KEY_OK)==='1')return;
+    var ts=localStorage.getItem(KEY_TS);
+    if(!ts){localStorage.setItem(KEY_TS,Date.now()+'');ts=Date.now();}
+    else ts=parseInt(ts);
+    var rem=TRIAL-(Date.now()-ts);
+    if(rem<=0)return;
+    var days=Math.ceil(rem/86400000);
+    var el=document.getElementById('tbDays');
+    if(el)el.textContent='J-'+days;
+    document.getElementById('trial-banner').style.display='flex';
+  }
+  tick();
+  setInterval(tick,60000);
+})();
+</script>
+</body>
+</html>

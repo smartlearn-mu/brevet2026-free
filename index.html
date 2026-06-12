@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brevet 2026 â€” Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09090f;
+  --s1: #111118;
+  --s2: #1a1a24;
+  --br: #2a2a38;
+  --teal: #5ecfb1;
+  --gold: #e8c87a;
+  --red: #e87a7a;
+  --violet: #a07af5;
+  --blue: #5eaacf;
+  --text: #e8e8f0;
+  --dim: #9090a8;
+  --muted: #5a5a72;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* â”€â”€ HEADER â”€â”€ */
+.header {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.brand { display: flex; flex-direction: column; gap: 6px; }
+.brand-eye {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.brand-eye::before { content:''; width:20px; height:1px; background:var(--teal); }
+.brand-h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 800;
+  line-height: 1.1;
+}
+.brand-h1 em { font-style: normal; color: var(--gold); }
+.brand-sub { color: var(--dim); font-size: 13px; max-width: 420px; margin-top: 4px; }
+
+/* COUNTDOWN */
+.countdown {
+  background: var(--s1);
+  border: 1px solid var(--br);
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 160px;
+}
+.countdown-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+}
+.countdown-label { font-size: 11px; color: var(--dim); margin-top: 4px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+.countdown-date { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+/* â”€â”€ MAIN â”€â”€ */
+.main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+/* ELEVE TABS */
+.eleve-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 36px;
+  background: var(--s2);
+  border-radius: 50px;
+  padding: 5px;
+  width: fit-content;
+}
+.etab {
+  padding: 8px 28px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  transition: .2s;
+  background: transparent;
+  color: var(--dim);
+}
+.etab.e1 { background: #7eb8f5; color: #09090f; }
+.etab.e2 { background: #f59eb8; color: #09090f; }
+
+/* SECTION */
+.section { margin-bottom: 48px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--br);
+}
+.section-icon { font-size: 20px; }
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+.section-desc { font-size: 12px; color: var(--dim); margin-left: auto; }
+
+/* CARDS GRID */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.cards.wide { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+
+/* CARD */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--br);
+  border-radius: 12px;
+  padding: 18px 20px;
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color .2s, transform .2s, background .2s;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent, var(--teal));
+  opacity: 0;
+  transition: opacity .2s;
+}
+.card:hover { border-color: var(--accent, var(--teal)); transform: translateY(-2px); background: var(--s2); }
+.card:hover::before { opacity: 1; }
+
+.card-icon { font-size: 22px; line-height: 1; }
+.card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
+.card-desc { font-size: 12px; color: var(--dim); line-height: 1.4; }
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--s2);
+  border: 1px solid var(--br);
+  color: var(--dim);
+  width: fit-content;
+  margin-top: auto;
+}
+.card-badge.new { border-color: rgba(94,207,177,.3); color: var(--teal); background: rgba(94,207,177,.06); }
+.card-badge.ia { border-color: rgba(232,200,122,.3); color: var(--gold); background: rgba(232,200,122,.06); }
+.card-badge.pdf { border-color: rgba(232,122,122,.3); color: var(--red); background: rgba(232,122,122,.06); }
+
+/* MATIERE COLORS */
+.fr { --accent: #5ecfb1; }
+.ma { --accent: #e8c87a; }
+.hi { --accent: #f5a623; }
+.sc { --accent: #5eaacf; }
+.sp { --accent: #a07af5; }
+
+/* STREAK / STATS ROW */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.stat-pill {
+  background: var(--s1);
+  border: 1px solid var(--br);
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 110px;
+}
+.stat-val { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1; }
+.stat-label { font-size: 11px; color: var(--dim); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .06em; }
+
+/* PROGRESS BAR */
+.prog-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--dim); margin-bottom: 8px; }
+.prog-bar { flex: 1; height: 5px; background: var(--br); border-radius: 3px; overflow: hidden; max-width: 200px; }
+.prog-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
+
+/* ALERTE */
+.alerte {
+  background: rgba(232,122,122,.08);
+  border: 1px solid rgba(232,122,122,.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.alerte.hidden { display: none; }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--br); margin: 40px 0; }
+
+/* FOOTER */
+.footer { max-width: 1100px; margin: 0 auto; padding: 20px 24px 40px; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+</style>
+
+<script src="proxy-client.js"></script>
+
+<script>
+const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
+function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
+function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
+function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
+function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
+function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
+function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
+function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
+function afficherBlocageEssaiExpire(){afficherOverlay();}
+function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
+function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
+window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
+</script>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-eye">Brevet 2026</div>
+    <h1 class="brand-h1">Hub de rÃ©vision<br><em>DNB 2026</em></h1>
+    <p class="brand-sub">Flashcards Â· Automatismes Â· Sujets officiels Â· Correction IA Â· Suivi parental</p>
+  </div>
+  <div class="countdown">
+    <div class="countdown-num" id="joursRestants">â€”</div>
+    <div class="countdown-label">jours restants</div>
+    <div class="countdown-date">DNB : 26 juin 2026</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ELEVE TABS -->
+  <div class="eleve-tabs" style="margin-top:28px">
+    <button class="etab e1" id="btn1" onclick="setEleve('eleve1')">ðŸ‘¤ Ã‰lÃ¨ve 1</button>
+    <button class="etab e2" id="btn2" onclick="setEleve('eleve2')">ðŸ‘¤ Ã‰lÃ¨ve 2</button>
+  </div>
+
+  <!-- ALERTE INACTIVITE -->
+  <div class="alerte hidden" id="alerteInactivite">âš ï¸ <span id="alerteMsg"></span></div>
+
+  <!-- STATS RAPIDES -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-pill"><div class="stat-val" id="statStreak" style="color:var(--gold)">â€”</div><div class="stat-label">ðŸ”¥ Streak</div></div>
+    <div class="stat-pill"><div class="stat-val" id="statSessions" style="color:var(--teal)">â€”</div><div class="stat-label">Sessions</div></div>
+    <div class="stat-pill"><div class="stat-val" id="statMoyenne" style="color:var(--violet)">â€”</div><div class="stat-label">Moyenne</div></div>
+    <div class="stat-pill"><div class="stat-val" id="statSujets" style="color:var(--blue)">â€”</div><div class="stat-label">Sujets faits</div></div>
+  </div>
+
+  <!-- PROGRESSION PAR MATIERE -->
+  <div style="margin-bottom:36px" id="progSection">
+    <div class="prog-row">
+      <span style="min-width:80px;color:var(--teal)">ðŸ‡«ðŸ‡· FranÃ§ais</span>
+      <div class="prog-bar"><div class="prog-fill" id="progFr" style="width:0%;background:var(--teal)"></div></div>
+      <span id="progFrPct">â€”</span>
+    </div>
+    <div class="prog-row">
+      <span style="min-width:80px;color:var(--gold)">ðŸ“ Maths</span>
+      <div class="prog-bar"><div class="prog-fill" id="progMa" style="width:0%;background:var(--gold)"></div></div>
+      <span id="progMaPct">â€”</span>
+    </div>
+    <div class="prog-row">
+      <span style="min-width:80px;color:#f5a623">ðŸŒ Hist-GÃ©o</span>
+      <div class="prog-bar"><div class="prog-fill" id="progHi" style="width:0%;background:#f5a623"></div></div>
+      <span id="progHiPct">â€”</span>
+    </div>
+    <div class="prog-row">
+      <span style="min-width:80px;color:var(--blue)">ðŸ”¬ Sciences</span>
+      <div class="prog-bar"><div class="prog-fill" id="progSc" style="width:0%;background:var(--blue)"></div></div>
+      <span id="progScPct">â€”</span>
+    </div>
+  </div>
+
+  <!-- â”€â”€ RÃ‰VISIONS â”€â”€ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">ðŸ“–</span>
+      <span class="section-title">Fiches de rÃ©vision</span>
+      <span class="section-desc">Notions en rouge Â· Flashcards interactives Â· PiÃ¨ges classiques</span>
+    </div>
+    <div class="cards wide">
+      <a href="revisions-francais.html" class="card fr">
+        <div class="card-icon">ðŸ‡«ðŸ‡·</div>
+        <div class="card-title">FranÃ§ais</div>
+        <div class="card-desc">26 chapitres Â· Notions clÃ©s en rouge Â· Flashcards cliquables</div>
+        <div class="card-badge new">260 notions</div>
+      </a>
+      <a href="revisions-maths.html" class="card ma">
+        <div class="card-icon">ðŸ“</div>
+        <div class="card-title">MathÃ©matiques</div>
+        <div class="card-desc">26 chapitres Â· Formules Â· Erreurs classiques</div>
+        <div class="card-badge new">260 notions</div>
+      </a>
+      <a href="revisions-histgeo.html" class="card hi">
+        <div class="card-icon">ðŸŒ</div>
+        <div class="card-title">Histoire-GÃ©o-EMC</div>
+        <div class="card-desc">32 chapitres Â· Dates Â· RepÃ¨res Â· Notions clÃ©s</div>
+        <div class="card-badge new">276 notions</div>
+      </a>
+      <a href="revisions-sciences.html" class="card sc">
+        <div class="card-icon">ðŸ”¬</div>
+        <div class="card-title">Sciences</div>
+        <div class="card-desc">26 chapitres Â· Formules Â· DÃ©finitions Â· Lois</div>
+        <div class="card-badge new">260 notions</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- â”€â”€ FLASHCARDS â”€â”€ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">ðŸƒ</span>
+      <span class="section-title">Flashcards</span>
+      <span class="section-desc">MÃ©morisation active Â· Score sauvegardÃ©</span>
+    </div>
+    <div class="cards wide">
+      <a href="flashcards-francais.html" class="card fr">
+        <div class="card-icon">ðŸ‡«ðŸ‡·</div>
+        <div class="card-title">FranÃ§ais</div>
+        <div class="card-desc">26 chapitres Â· 260 cartes Â· Score par chapitre</div>
+        <div class="card-badge new">260 cartes</div>
+      </a>
+      <a href="flashcards-maths.html" class="card ma">
+        <div class="card-icon">ðŸ“</div>
+        <div class="card-title">MathÃ©matiques</div>
+        <div class="card-desc">26 chapitres Â· 260 cartes Â· Formules et dÃ©finitions</div>
+        <div class="card-badge new">260 cartes</div>
+      </a>
+      <a href="flashcards-histgeo.html" class="card hi">
+        <div class="card-icon">ðŸŒ</div>
+        <div class="card-title">Histoire-GÃ©o-EMC</div>
+        <div class="card-desc">32 chapitres Â· 276 cartes Â· Histoire, GÃ©o, EMC</div>
+        <div class="card-badge new">276 cartes</div>
+      </a>
+      <a href="flashcards-sciences.html" class="card sc">
+        <div class="card-icon">ðŸ”¬</div>
+        <div class="card-title">Sciences</div>
+        <div class="card-desc">26 chapitres Â· 260 cartes Â· SVT + Physique-Chimie</div>
+        <div class="card-badge new">260 cartes</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- â”€â”€ AUTOMATISMES â”€â”€ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">âš¡</span>
+      <span class="section-title">Automatismes</span>
+      <span class="section-desc">RÃ¨gle 20-10-10 Â· Spaced repetition Â· â†’ Suivi parental</span>
+    </div>
+    <div class="cards wide">
+      <a href="automatismes-francais.html" class="card fr">
+        <div class="card-icon">ðŸ‡«ðŸ‡·</div>
+        <div class="card-title">FranÃ§ais</div>
+        <div class="card-desc">40 questions Â· Chapitres faibles en prioritÃ©</div>
+        <div class="card-badge ia">â†’ Suivi parental</div>
+      </a>
+      <a href="automatismes-maths.html" class="card ma">
+        <div class="card-icon">ðŸ“</div>
+        <div class="card-title">MathÃ©matiques</div>
+        <div class="card-desc">40 questions Â· Calcul + notions clÃ©s</div>
+        <div class="card-badge ia">â†’ Suivi parental</div>
+      </a>
+      <a href="automatismes-histgeo.html" class="card hi">
+        <div class="card-icon">ðŸŒ</div>
+        <div class="card-title">Histoire-GÃ©o-EMC</div>
+        <div class="card-desc">40 questions Â· Histoire, GÃ©o, EMC au choix</div>
+        <div class="card-badge ia">â†’ Suivi parental</div>
+      </a>
+      <a href="automatismes-sciences.html" class="card sc">
+        <div class="card-icon">ðŸ”¬</div>
+        <div class="card-title">Sciences</div>
+        <div class="card-desc">40 questions Â· SVT + Physique-Chimie</div>
+        <div class="card-badge ia">â†’ Suivi parental</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- â”€â”€ SUJETS BREVET â”€â”€ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">ðŸ“„</span>
+      <span class="section-title">Sujets officiels DNB</span>
+      <span class="section-desc">Liens PDF vÃ©rifiÃ©s Â· Correction IA Â· Export PDF</span>
+    </div>
+    <div class="cards">
+      <a href="sujets-maths.html" class="card ma">
+        <div class="card-icon">ðŸ“</div>
+        <div class="card-title">Maths â€” 10 sujets</div>
+        <div class="card-desc">2022â€“2024 Â· Correction IA question par question</div>
+        <div class="card-badge pdf">PDF officiel â¬‡</div>
+      </a>
+      <a href="sujets-francais.html" class="card fr">
+        <div class="card-icon">ðŸ‡«ðŸ‡·</div>
+        <div class="card-title">FranÃ§ais â€” 10 sujets</div>
+        <div class="card-desc">ComprÃ©hension Â· DictÃ©e Â· RÃ©daction Â· Correction IA</div>
+        <div class="card-badge pdf">PDF officiel â¬‡</div>
+      </a>
+      <a href="sujets-histgeo.html" class="card hi">
+        <div class="card-icon">ðŸŒ</div>
+        <div class="card-title">Histoire-GÃ©o â€” 10 sujets</div>
+        <div class="card-desc">Documents authentiques Â· Correction IA</div>
+        <div class="card-badge pdf">PDF officiel â¬‡</div>
+      </a>
+      <a href="sujets-sciences.html" class="card sc">
+        <div class="card-icon">ðŸ”¬</div>
+        <div class="card-title">Sciences â€” 10 sujets</div>
+        <div class="card-desc">PC + SVT Â· Correction IA + officielle en rouge</div>
+        <div class="card-badge pdf">PDF officiel â¬‡</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- â”€â”€ OUTILS â”€â”€ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">ðŸ› </span>
+      <span class="section-title">Outils</span>
+      <span class="section-desc">Agent oral Â· Suivi parental</span>
+    </div>
+    <div class="cards">
+      <a href="agent-oral.html" class="card sp">
+        <div class="card-icon">ðŸŽ¤</div>
+        <div class="card-title">Agent oral IA</div>
+        <div class="card-desc">Sujet libre Â· 3+7 questions Â· Correction IA Â· PDF export</div>
+        <div class="card-badge ia">Correcteur IA</div>
+      </a>
+      <a href="suivi-parent.html" class="card" style="--accent:#a07af5">
+        <div class="card-icon">ðŸ“Š</div>
+        <div class="card-title">Suivi parental</div>
+        <div class="card-desc">Streak Â· Chapitres faibles Â· Progression par matiÃ¨re Â· Alertes</div>
+        <div class="card-badge" style="border-color:rgba(160,122,245,.3);color:#a07af5;background:rgba(160,122,245,.06)">Temps rÃ©el</div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>Brevet 2026 â€” Ã‰lÃ¨ve 1 &amp; Ã‰lÃ¨ve 2</span>
+  <span id="footerDate"></span>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+// â”€â”€ COUNTDOWN â”€â”€
+function updateCountdown() {
+  const dnb = new Date('2026-06-26');
+  const now = new Date();
+  const diff = Math.ceil((dnb - now) / (1000*60*60*24));
+  document.getElementById('joursRestants').textContent = diff > 0 ? diff : '0';
+}
+updateCountdown();
+
+// â”€â”€ DATE FOOTER â”€â”€
+document.getElementById('footerDate').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+// â”€â”€ ELEVE â”€â”€
+let eleve = localStorage.getItem('brevet_eleve') || 'eleve1';
+
+function setEleve(e) {
+  eleve = e;
+  localStorage.setItem('brevet_eleve', e);
+  document.getElementById('btn1').className = 'etab' + (e==='eleve1' ? ' e1' : '');
+  document.getElementById('btn2').className = 'etab' + (e==='eleve2' ? ' e2' : '');
+  updateStats();
+}
+
+// â”€â”€ STATS DEPUIS LOCALSTORAGE â”€â”€
+const MATIERES = ['francais','maths','histoire','sciences'];
+const COULEURS = { francais:'var(--teal)', maths:'var(--gold)', histoire:'#f5a623', sciences:'var(--blue)' };
+const IDS = { francais:'Fr', maths:'Ma', histoire:'Hi', sciences:'Sc' };
+
+function getSessions(matiere) {
+  return JSON.parse(localStorage.getItem('suivi_sessions_' + matiere + '_' + eleve) || '[]');
+}
+
+function getAllSessions() {
+  return MATIERES.flatMap(m => getSessions(m).map(s => ({...s, matiere:m})))
+    .sort((a,b) => new Date(b.date) - new Date(a.date));
+}
+
+function calcStreak(sessions) {
+  if (!sessions.length) return 0;
+  const jours = new Set(sessions.map(s => new Date(s.date).toDateString()));
+  let streak = 0, d = new Date();
+  while (jours.has(d.toDateString())) { streak++; d.setDate(d.getDate()-1); }
+  return streak;
+}
+
+function updateStats() {
+  const all = getAllSessions();
+  const streak = calcStreak(all);
+  const moyenne = all.length ? Math.round(all.slice(0,10).reduce((a,s)=>a+s.pourcentage,0)/Math.min(all.length,10)) : 0;
+
+  document.getElementById('statStreak').textContent = streak || 'â€”';
+  document.getElementById('statSessions').textContent = all.length || 'â€”';
+  document.getElementById('statMoyenne').textContent = all.length ? moyenne + '%' : 'â€”';
+
+  // Compter sujets faits (sessions avec matiÃ¨re 'sujet')
+  const sujets = JSON.parse(localStorage.getItem('sujets_faits_' + eleve) || '[]');
+  document.getElementById('statSujets').textContent = sujets.length || '0';
+
+  // Progression par matiÃ¨re
+  MATIERES.forEach(m => {
+    const s = getSessions(m);
+    const moy = s.length ? Math.round(s.slice(0,5).reduce((a,x)=>a+x.pourcentage,0)/Math.min(s.length,5)) : 0;
+    const id = IDS[m];
+    const fill = document.getElementById('prog' + id);
+    const pct = document.getElementById('prog' + id + 'Pct');
+    if (fill) fill.style.width = moy + '%';
+    if (pct) pct.textContent = s.length ? moy + '%' : 'â€”';
+  });
+
+  // Alerte inactivitÃ©
+  if (all.length) {
+    const diff = Math.floor((Date.now() - new Date(all[0].date)) / (1000*60*60*24));
+    const el = document.getElementById('alerteInactivite');
+    if (diff >= 2) {
+      el.classList.remove('hidden');
+      document.getElementById('alerteMsg').textContent =
+        'DerniÃ¨re session il y a ' + diff + ' jour' + (diff>1?'s':'') + '. ' +
+        (eleve==='eleve1'?'Ã‰lÃ¨ve 1':'Ã‰lÃ¨ve 2') + ' doit travailler aujourd\'hui !';
+    } else {
+      el.classList.add('hidden');
+    }
+  }
+}
+
+setEleve(eleve);
+
+}); // DOMContentLoaded
+</script>
+</body>
+</html>

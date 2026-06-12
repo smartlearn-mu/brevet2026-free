@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histoire-GÃ©o â€” 10 sujets DNB avec correction IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#09090f; --s1:#111118; --s2:#1a1a24; --br:#2a2a38;
+  --teal:#5ecfb1; --gold:#e8c87a; --red:#e87a7a;
+  --amber:#f5a623; --amber-dim:#c4841a;
+  --text:#e8e8f0; --dim:#9090a8; --muted:#5a5a72;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;}
+
+/* LANDING */
+.landing{max-width:960px;margin:0 auto;padding:48px 24px 80px;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:24px;height:1px;background:var(--amber);}
+.h1{font-family:'Syne',sans-serif;font-size:clamp(32px,6vw,54px);font-weight:800;line-height:1.08;margin-bottom:14px;}
+.h1 em{font-style:normal;color:var(--amber);}
+.sub{color:var(--dim);font-size:15px;max-width:520px;margin-bottom:24px;}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px;}
+.pill{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--br);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--dim);}
+.pill span{color:var(--text);font-weight:500;}
+
+/* LISTE DES SUJETS (verticale) */
+.sujets-list{display:flex;flex-direction:column;gap:8px;max-width:720px;}
+.sitem{display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:12px 16px;transition:border-color .2s;}
+.sitem:hover{border-color:var(--teal);}
+.sitem-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);min-width:60px;white-space:nowrap;}
+.sitem-info{flex:1;}
+.sitem-titre{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:2px;}
+.sitem-sub{font-size:11px;color:var(--dim);}
+.sitem-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;}
+.ctag{font-size:10px;padding:2px 7px;border-radius:4px;background:var(--s2);border:1px solid var(--br);color:var(--dim);}
+.ctag.y25{border-color:#e8c87a44;color:var(--gold);}
+.ctag.y24{border-color:#e8c87a44;color:var(--gold);}
+.ctag.y23{border-color:#5ecfb144;color:var(--teal);}
+.ctag.y22{border-color:#a07af544;color:#a07af5;}
+.sitem-btns{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.card-dl{display:flex;align-items:center;gap:5px;color:var(--amber);font-size:11px;font-family:'Syne',sans-serif;font-weight:700;text-decoration:none;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:5px;padding:4px 10px;transition:background .2s;}
+.card-dl:hover{background:rgba(245,166,35,.16);}
+.card-open{background:var(--amber);color:#09090f;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;border:none;border-radius:5px;padding:5px 12px;cursor:pointer;transition:background .2s;}
+.card-open:hover{background:var(--amber-dim);}
+
+/* SUJET VIEW */
+.sujet-view{display:none;max-width:900px;margin:0 auto;padding:24px;}
+.sujet-view.active{display:block;}
+.sv-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
+.back-btn{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--br);color:var(--dim);font-size:13px;padding:7px 14px;border-radius:7px;cursor:pointer;transition:.2s;text-decoration:none;}
+.back-btn:hover{border-color:var(--amber);color:var(--amber);}
+.sv-titre{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;flex:1;}
+.sv-dl{display:flex;align-items:center;gap:6px;background:var(--amber);color:#09090f;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;padding:8px 16px;border-radius:7px;text-decoration:none;white-space:nowrap;}
+.sv-dl:hover{background:var(--amber-dim);}
+.sv-warn{font-size:11px;color:var(--red);margin-top:4px;text-align:right;}
+
+/* EXERCICES ET QUESTIONS */
+.exo-header{display:flex;align-items:center;gap:8px;padding:14px 0 6px;border-top:1px solid var(--br);margin-top:8px;}
+.exo-badge{font-size:11px;font-weight:700;font-family:'Syne',sans-serif;padding:3px 10px;border-radius:4px;}
+.exo-badge.hist{background:rgba(245,166,35,.1);color:var(--amber);border:1px solid rgba(245,166,35,.3);}
+.exo-badge.geo{background:rgba(94,207,177,.1);color:var(--teal);border:1px solid rgba(94,207,177,.3);}
+.exo-badge.emc{background:rgba(160,122,245,.1);color:#a07af5;border:1px solid rgba(160,122,245,.3);}
+.exo-pts{font-size:12px;color:var(--muted);}
+
+.qblock{background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:16px 18px 18px;margin-bottom:12px;}
+.qnum{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;color:var(--amber);background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:4px;padding:2px 7px;margin-bottom:8px;}
+.qtexte{font-size:14px;color:var(--text);margin-bottom:10px;line-height:1.55;}
+textarea{width:100%;background:var(--s2);border:1px solid var(--br);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;resize:vertical;min-height:52px;outline:none;transition:border-color .2s;}
+textarea:focus{border-color:var(--amber);}
+textarea::placeholder{color:var(--muted);}
+.qbtns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.btn-corriger{background:var(--amber);color:#09090f;border:none;border-radius:6px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;padding:6px 14px;cursor:pointer;transition:.15s;}
+.btn-corriger:hover{background:var(--amber-dim);}
+.btn-corriger:disabled{opacity:.4;cursor:not-allowed;}
+.btn-off{background:var(--s2);color:var(--dim);border:1px solid var(--br);border-radius:6px;font-size:11px;padding:5px 10px;cursor:pointer;}
+.btn-off:hover{border-color:var(--gold);color:var(--gold);}
+
+.corr-panel{display:none;margin-top:10px;}
+.corr-panel.show{display:block;}
+.corr-ia{background:var(--s2);border-left:3px solid var(--amber);border-radius:0 7px 7px 0;padding:12px 14px;font-size:13px;}
+.corr-note{color:var(--amber);font-weight:700;font-size:15px;margin-bottom:6px;}
+.corr-txt{color:var(--text);white-space:pre-wrap;}
+.corr-conseil{color:var(--dim);font-size:12px;margin-top:8px;}
+.corr-off{margin-top:8px;background:rgba(232,122,122,.06);border-left:3px solid var(--red);border-radius:0 7px 7px 0;padding:10px 14px;font-size:13px;}
+.corr-off strong{color:var(--red);display:block;margin-bottom:4px;font-size:11px;}
+.corr-off-toggle{display:none;margin-top:8px;background:rgba(232,200,122,.06);border-left:3px solid var(--gold);border-radius:0 7px 7px 0;padding:10px 14px;font-size:13px;}
+.corr-off-toggle.show{display:block;}
+.corr-off-toggle strong{color:var(--gold);display:block;margin-bottom:4px;font-size:11px;}
+.btn-copy{background:var(--s2);border:1px solid var(--br);color:var(--dim);font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;margin-top:6px;}
+.btn-copy:hover{border-color:var(--amber);color:var(--amber);}
+.loading{color:var(--amber);font-style:italic;font-size:13px;padding:8px 0;}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);animation:p 1.2s ease-in-out infinite;margin-right:6px;}
+@keyframes p{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+.erreur{color:var(--red);font-size:13px;padding:8px 0;}
+
+.export-zone{margin-top:20px;padding:12px 16px;background:var(--s2);border:1px dashed var(--br);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.export-zone p{font-size:12px;color:var(--dim);}
+.btn-pdf{background:var(--s2);border:1px solid var(--gold);color:var(--gold);font-family:'Syne',sans-serif;font-weight:700;font-size:11px;padding:7px 14px;border-radius:6px;cursor:pointer;}
+.btn-pdf:hover{background:rgba(232,200,122,.1);}
+</style>
+<script>
+const MONETIZATION={prix:29,devise:'EUR',essaiJours:2,wiseUrl:'https://wise.com/pay/r/UeBUFQoUY_B5FYE',email:'smartlearn.mu@gmail.com',STORAGE_KEYS:{trialStart:'brevet_start',paidValid:'brevet_paid',lastReminder:'brevet_last_reminder',overlayDismissed:'brevet_ov_dismiss'}};
+function estEnEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return true;return(Date.now()-parseInt(s))/86400000<MONETIZATION.essaiJours;}
+function essaiExpire(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return false;return(Date.now()-parseInt(s))/86400000>=MONETIZATION.essaiJours;}
+function aAccesComplet(){if(localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true')return true;return estEnEssai();}
+function aAccesPayant(){return localStorage.getItem(MONETIZATION.STORAGE_KEYS.paidValid)==='true';}
+function joursRestantsEssai(){var s=localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart);if(!s)return MONETIZATION.essaiJours;return Math.max(0,Math.ceil(MONETIZATION.essaiJours-(Date.now()-parseInt(s))/86400000));}
+function validerCode(code,cb){var PROXY='https://script.google.com/macros/s/AKfycbxzUhsZ4ewxV_zGsu5h_L2eryTJiW2E-gZLvihC-vPl2DimCJxAeTF2dhbDF8no-ocG/exec';fetch(PROXY,{method:'POST',body:new URLSearchParams({data:JSON.stringify({userId:localStorage.getItem('user_id')||'anon',action:'valider_code',code:code.trim(),source:document.title||''})})}).then(function(r){return r.json();}).then(function(d){if(d&&d.success){localStorage.setItem(MONETIZATION.STORAGE_KEYS.paidValid,'true');if(cb)cb({success:true,message:'Acces debloque!'});}else{if(cb)cb({success:false,message:d.error||'Code invalide.'});}}).catch(function(){if(cb)cb({success:false,message:'Verifiez votre connexion.'});});}
+function afficherOverlay(){if(document.getElementById('monet-overlay'))return;var canClose=estEnEssai();var o=document.createElement('div');o.id='monet-overlay';o.innerHTML='<style>#monet-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,15,0.97);z-index:99999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}.monet-card{background:#111118;border:1px solid #2a2a38;border-radius:16px;padding:32px 28px;max-width:460px;width:92%;color:#e8e8f0;text-align:center;}.monet-wise-btn{display:flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;background:#00b9ff;color:#fff;margin:12px 0;width:100%;box-sizing:border-box;border:none;cursor:pointer;}.monet-input{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e8f0;font-size:15px;padding:12px 16px;text-align:center;outline:none;box-sizing:border-box;margin-bottom:10px;}.monet-btn{padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(94,207,177,0.3);background:rgba(94,207,177,0.1);color:#5ecfb1;margin:4px;}.monet-btn.ghost{background:transparent;color:#9090a8;border:1px solid #2a2a38;}.monet-msg{font-size:13px;margin-top:10px;min-height:24px;}</style><div class="monet-card"><div style="font-size:44px;margin-bottom:10px;">60</div><div style="font-size:22px;font-weight:800;color:#e8c87a;margin-bottom:8px;">Essai termine</div><div style="font-size:40px;font-weight:800;color:#5ecfb1;margin:8px 0;">29 EUR <span style="font-size:16px;color:#9090a8;">/ an</span></div><div style="background:#0d0d14;border-radius:10px;padding:14px;margin:12px 0;text-align:left;font-size:13px;line-height:2;">1. Cliquez Wise ci-dessous<br>2. Payez 29 EUR<br>3. Envoyez confirmation a <strong>smartlearn.mu@gmail.com</strong><br>4. Recevez votre code</div><a href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank" class="monet-wise-btn">Payer 29 EUR via Wise</a><hr style="border:none;border-top:1px solid #2a2a38;margin:16px 0;"><input type="text" class="monet-input" id="monet-code-input" placeholder="Votre code" maxlength="40"><div><button class="monet-btn" id="monet-valider">Valider le code</button>'+(canClose?'<button class="monet-btn ghost" id="monet-close">Continuer essai</button>':'')+' </div><div class="monet-msg" id="monet-msg"></div></div>';document.body.appendChild(o);document.getElementById('monet-valider').onclick=function(){var code=document.getElementById('monet-code-input').value.trim();var msg=document.getElementById('monet-msg');if(!code){msg.style.color='#e87a7a';msg.textContent='Entrez un code.';return;}msg.style.color='#9090a8';msg.textContent='Verification...';validerCode(code,function(r){if(r.success){msg.style.color='#5ecfb1';msg.textContent=r.message;setTimeout(function(){document.getElementById('monet-overlay').remove();location.reload();},1500);}else{msg.style.color='#e87a7a';msg.textContent=r.message;}});};var cl=document.getElementById('monet-close');if(cl)cl.onclick=function(){document.getElementById('monet-overlay').remove();};}
+function afficherBlocageEssaiExpire(){afficherOverlay();}
+function creerBanniere(){if(document.getElementById('monet-banner')||aAccesPayant())return;var j=joursRestantsEssai(),expire=essaiExpire();var bg=expire?'#e87a7a':'#e8c87a',col=expire?'#fff':'#09090f';var b=document.createElement('div');b.id='monet-banner';b.innerHTML='<style>#monet-banner{position:sticky;top:0;left:0;right:0;background:'+bg+';color:'+col+';font-family:Arial,sans-serif;font-size:13px;padding:9px 20px;z-index:9998;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}.monet-banner-btn{padding:5px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:'+col+';color:'+bg+';}</style><span>'+(expire?'Essai termine - IA bloquee':'Essai gratuit - J-'+j+' '+(j<=1?'jour restant':'jours restants')+' - 29 EUR/an')+'</span><button class="monet-banner-btn" onclick="afficherOverlay()">'+(expire?'Debloquer':'Payer via Wise')+'</button>';document.body.insertBefore(b,document.body.firstChild);}
+function initMonetization(){if(!localStorage.getItem(MONETIZATION.STORAGE_KEYS.trialStart))localStorage.setItem(MONETIZATION.STORAGE_KEYS.trialStart,Date.now().toString());if(!localStorage.getItem('user_id'))localStorage.setItem('user_id',(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():'user_'+Date.now());if(aAccesPayant())return;creerBanniere();if(essaiExpire())setTimeout(afficherOverlay,500);}
+window.aAccesComplet=aAccesComplet;window.aAccesPayant=aAccesPayant;window.essaiExpire=essaiExpire;window.afficherBlocageEssaiExpire=afficherBlocageEssaiExpire;window.afficherOverlay=afficherOverlay;window.initMonetization=initMonetization;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMonetization);else initMonetization();
+</script>
+</head>
+<body>
+
+<!-- LANDING -->
+<div class="landing" id="landing">
+  <div class="eyebrow">Brevet 2026 Â· DNB</div>
+  <h1 class="h1">10 vrais sujets <em>Histoire-GÃ©o-EMC</em></h1>
+  <p class="sub">Documents authentiques. TÃ©lÃ©charge le PDF officiel, rÃ©ponds, l'IA corrige avec la mÃ©thode DNB.</p>
+  <div class="pills">
+    <div class="pill">â± <span>2h</span> par sujet</div>
+    <div class="pill">ðŸ“Š <span>50 points</span></div>
+    <div class="pill">ðŸ“… Sujets <span>2020 â†’ 2025</span></div>
+    <div class="pill">ðŸ¤– Correction <span>IA</span> + officielle</div>
+  </div>
+  <div class="sujets-list" id="grid"></div>
+</div>
+
+<!-- SUJET VIEW -->
+<div class="sujet-view" id="sujetView">
+  <div class="sv-header">
+    <a class="back-btn" href="#" onclick="retour();return false;">â† Retour</a>
+    <div class="sv-titre" id="svTitre"></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end">
+      <a class="sv-dl" id="svDl" href="#" target="_blank">â¬‡ TÃ©lÃ©charger le sujet</a>
+      <div class="sv-warn">âš  Ne regarde pas le corrigÃ© !</div>
+    </div>
+  </div>
+  <div id="svContent"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CHARGEMENT DES FICHIERS EXTERNES (monÃ©tisation + IA + tracker) -->
+<!-- ============================================================ -->
+
+<script src="proxy-client.js"></script>
+<script src="tracker_gs.js"></script>
+
+<script>
+// ============================================================
+// DONNÃ‰ES DES 10 SUJETS (contenu pÃ©dagogique intact)
+// ============================================================
+
+const STORAGE_CORRECTIONS_KEY = 'hg_corrections_ia';
+const STORE = {};
+
+// Charger les corrections sauvegardÃ©es
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_CORRECTIONS_KEY) || '{}');
+  Object.assign(STORE, saved);
+} catch(e) {}
+
+// Helper pour sauvegarder
+function saveCorrections() {
+  try {
+    localStorage.setItem(STORAGE_CORRECTIONS_KEY, JSON.stringify(STORE));
+  } catch(e) {}
+}
+
+const SUJETS = [
+  {
+    id:1, annee:'2025', session:'MÃ©tropole (juin)',
+    titre:'25GENHGEMCME1 â€” GÃ©o: VallÃ©e de la batterie Â· Hist: DÃ©colonisation Â· EMC: Ã‰galitÃ© femmes-hommes',
+    pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2025/07/dipl-me-national-du-brevet-2025-histoire-g-ographie-enseignement-moral-et-civique-228363.pdf',
+    tags:[{t:'2025',c:'y25'}],
+    exos:[
+      {type:'geo',label:'EXERCICE 1 â€” GÃ©ographie (20 pts)',pts:20,questions:[
+        {texte:'Document 1 (texte sur la vallÃ©e de la batterie, Hauts-de-France). Q1 â€” Relevez un extrait du texte qui dÃ©finit la gigafactory. (2 pts)',rep:'Â« usines de fabrication de batteries et de leurs composants Â»'},
+        {texte:'Q2 â€” Identifiez deux types d\'acteurs qui participent au dÃ©veloppement de la Â« vallÃ©e de la batterie Â». (4 pts)',rep:'Acteurs publics : l\'Ã‰tat, la RÃ©gion. Acteurs privÃ©s : les entreprises industrielles (Verkor, ACC, Envision AESC).'},
+        {texte:'Document 2 (carte de la vallÃ©e de la batterie). Q3 â€” Situez Â« la vallÃ©e de la batterie Â». (2 pts)',rep:'Dans la rÃ©gion Hauts-de-France, entre Dunkerque (nord), Douvrin (ouest) et Douai (est), prÃ¨s de la frontiÃ¨re belge.'},
+        {texte:'Q4 â€” CaractÃ©risez le type d\'espace productif auquel elle appartient. (4 pts)',rep:'Espace industriel en reconversion/mutation : ancienne rÃ©gion industrielle (mines, sidÃ©rurgie) se rÃ©inventant dans l\'industrie automobile Ã©lectrique.'},
+        {texte:'Documents 1 et 2 â€” Q5 â€” Montrez que la Â« vallÃ©e de la batterie Â» possÃ¨de des atouts qui favorisent l\'implantation des gigafactories et qu\'elle est un espace productif important pour la rÃ©gion. (8 pts)',rep:'Atouts : proximitÃ© des usines automobiles (Renault, Stellantis), port de Dunkerque (logistique), main-d\'Å“uvre disponible, soutien public (60Mâ‚¬). Importance : 2 000 Ã  3 000 emplois directs par site, investissements de milliards d\'euros.'}
+      ]},
+      {type:'hist',label:'EXERCICE 2 â€” Histoire (20 pts)',pts:20,questions:[
+        {texte:'DÃ©veloppement construit d\'une vingtaine de lignes : expliquez l\'accÃ¨s Ã  l\'indÃ©pendance d\'une colonie de votre choix. Vous prÃ©ciserez les principaux acteurs, les Ã©tapes et les consÃ©quences. (14 pts)',rep:'Ex. AlgÃ©rie : FLN, de Gaulle, pieds-noirs. Ã‰tapes : 1er nov. 1954, guerre 1954-62, accords d\'Ã‰vian mars 1962, indÃ©pendance juil. 1962. ConsÃ©quences : exode pieds-noirs, bilan humain lourd, mÃ©moire douloureuse.'},
+        {texte:'Annexe â€” a) Indiquez l\'annÃ©e de l\'Ã©vÃ©nement reprÃ©sentÃ© par chaque piÃ¨ce : chute du mur de Berlin / naissance de l\'ONU / signature du traitÃ© de Rome. (3 pts)',rep:'Chute du mur de Berlin : 1989. Naissance de l\'ONU : 1945. TraitÃ© de Rome : 1957.'},
+        {texte:'b) Placez sur la frise l\'annÃ©e et le nom d\'un autre Ã©vÃ©nement de votre choix (1945 Ã  nos jours). (1 pt)',rep:'Ex : Accords d\'Ã‰vian 1962, TraitÃ© de Maastricht 1992, 11 septembre 2001...'},
+        {texte:'c) Situez la guerre froide sur la frise chronologique par un figurÃ© appropriÃ©. (2 pts)',rep:'Guerre froide : 1947 (doctrine Truman) â†’ 1991 (dissolution URSS). FigurÃ© : accolade ou trait continu entre ces dates.'}
+      ]},
+      {type:'emc',label:'EXERCICE 3 â€” EMC (10 pts)',pts:10,questions:[
+        {texte:'Document 1 : affiche Ada Lovelace â€” Â« seulement 11% des Ã©tudiants en Ã©cole d\'informatique sont des femmes Â». Q1 â€” Identifiez l\'inÃ©galitÃ© mise en avant par cette affiche. (2 pts)',rep:'Sous-reprÃ©sentation des femmes dans les filiÃ¨res informatiques : seulement 11% d\'Ã©tudiantes, malgrÃ© le rÃ´le pionnier d\'Ada Lovelace.'},
+        {texte:'Document 2 : article premier de la Constitution de la Ve RÃ©publique. Q2 â€” Relevez un extrait de la Constitution qui montre que l\'Ã©galitÃ© est une valeur de la RÃ©publique. (2 pts)',rep:'Â« La loi favorise l\'Ã©gal accÃ¨s des femmes et des hommes aux mandats Ã©lectoraux et fonctions Ã©lectives, ainsi qu\'aux responsabilitÃ©s professionnelles et sociales. Â»'},
+        {texte:'Q3 â€” L\'affiche met en avant Ada Lovelace. Expliquez l\'intÃ©rÃªt de recourir Ã  cette figure pour corriger une inÃ©galitÃ©. (2 pts)',rep:'Montrer un modÃ¨le fÃ©minin dans un domaine oÃ¹ les femmes sont absentes. Ada Lovelace prouve que les femmes ont toujours eu leur place en informatique. Effet inspirant pour les jeunes filles.'},
+        {texte:'Q4 â€” Vous devez rÃ©diger un discours Ã  l\'occasion du 8 mars. Montrez que les inÃ©galitÃ©s femmes-hommes existent encore et prÃ©sentez deux idÃ©es concrÃ¨tes pour sensibiliser les Ã©lÃ¨ves. (4 pts)',rep:'InÃ©galitÃ©s : Ã©cart salarial 17%, sous-reprÃ©sentation en informatique. IdÃ©es : atelier dÃ©bat sur les stÃ©rÃ©otypes, invitation de femmes pionniÃ¨res dans des mÃ©tiers masculins.'}
+      ]}
+    ]
+  },
+  {
+    id:2, annee:'2025', session:'Asie-Pacifique',
+    titre:'25GENHGEMCAA1 â€” Hist: Civils et militaires 1GM (Viviani) Â· GÃ©o: AmÃ©nager inÃ©galitÃ©s Â· EMC: Valeurs et symboles RÃ©publique JO 2024',
+    pdf:'https://www.education.gouv.fr/sites/default/files/2025-06/dipl-me-national-du-brevet-2025-histoire-g-ographie---enseignement-moral-et-civique-441168.pdf',
+    tags:[{t:'2025',c:'y25'}],
+    exos:[
+      {type:'hist',label:'EXERCICE 1 â€” Histoire (20 pts)',pts:20,questions:[
+        {texte:'Document 1 : Appel aux femmes franÃ§aises de RenÃ© Viviani, 7 aoÃ»t 1914. Q1 â€” Rappelez le contexte dans lequel le prÃ©sident du Conseil des ministres a prononcÃ© cet appel. (4 pts)',rep:'DÃ©but de la PremiÃ¨re Guerre mondiale : l\'Allemagne a dÃ©clarÃ© la guerre Ã  la France (3 aoÃ»t 1914). Les hommes sont mobilisÃ©s au front. Il faut maintenir l\'activitÃ© agricole et Ã©conomique.'},
+        {texte:'Q2 â€” Expliquez pourquoi le gouvernement franÃ§ais s\'est adressÃ© aux femmes dans ce contexte. (2 pts)',rep:'Les hommes Ã©tant partis au front, les femmes sont les seules disponibles pour remplacer les hommes dans les champs, les usines et les services.'},
+        {texte:'Q3 â€” Relevez dans le texte deux Ã©lÃ©ments qui montrent que la mobilisation des femmes dans les campagnes Ã©tait indispensable. (4 pts)',rep:'1) Â« la moisson est inachevÃ©e, le temps des vendanges est proche Â» 2) Â« maintenir l\'activitÃ© des campagnes Â» â†’ approvisionnement de l\'armÃ©e et des villes en jeu.'},
+        {texte:'Document 2 : atelier de fabrication d\'obus, Seine-Saint-Denis, mai 1917. Q4 â€” Pourquoi des femmes travaillaient-elles dans cet atelier en 1917 ? (deux Ã©lÃ©ments attendus) (4 pts)',rep:'1) Les hommes sont au front depuis 1914. 2) La guerre nÃ©cessite une production industrielle massive d\'armements â†’ les femmes remplacent les hommes dans les usines.'},
+        {texte:'Documents 1 et 2 â€” Q5 â€” Ã€ l\'aide des documents et de vos connaissances, expliquez comment les femmes ont participÃ© Ã  l\'effort de guerre pendant la PremiÃ¨re Guerre mondiale. (6 pts)',rep:'Agriculture : moissons, vendanges. Industrie : usines d\'armement (munitionnettes). Soins : infirmiÃ¨res Croix-Rouge. Vie quotidienne : confection de vÃªtements militaires, ravitaillement.'}
+      ]},
+      {type:'geo',label:'EXERCICE 2 â€” GÃ©ographie (20 pts)',pts:20,questions:[
+        {texte:'DÃ©veloppement construit d\'environ 20 lignes : montrez comment l\'amÃ©nagement du territoire permet de rÃ©pondre aux inÃ©galitÃ©s entre les territoires en France. Appuyez-vous sur un ou plusieurs exemples. (14 pts)',rep:'Intro : inÃ©galitÃ©s territoriales fortes. 1) InÃ©galitÃ©s : opposition mÃ©tropoles/espaces ruraux (dÃ©sertification mÃ©dicale, enclavement). 2) Politiques : QPV, ZRR, Plan Action CÅ“ur de Ville. 3) Exemple concret Ã©tudiÃ© en classe. Concl : l\'amÃ©nagement cherche Ã  rÃ©duire les fractures territoriales.'},
+        {texte:'Carte (annexe 7/7) â€” Q1a : Sur la carte, nommez deux mÃ©tropoles. (2 pts)',rep:'Ex : Paris (mÃ©tropole mondiale) + Lyon, Marseille, Bordeaux, Lille, Toulouse, Nantes, Nice (mÃ©tropoles).'},
+        {texte:'Q1b : Nommez un fleuve. (1 pt)',rep:'La Loire, la Garonne, la Seine, le RhÃ´ne ou le Rhin (au choix sur la carte).'},
+        {texte:'Q1c : Nommez deux massifs montagneux. (1 pt)',rep:'Les Alpes, les PyrÃ©nÃ©es, le Massif central, les Vosges, le Jura (deux au choix, visibles en gris sur la carte).'},
+        {texte:'Q2 : ComplÃ©tez la lÃ©gende. (1 pt)',rep:'ComplÃ©ter la case vide de la lÃ©gende avec le figurÃ© des zones grises = massifs montagneux.'},
+        {texte:'Q3 : ReprÃ©sentez sur la carte un axe de communication terrestre majeur en utilisant le figurÃ© de la lÃ©gende. (1 pt)',rep:'Ex : l\'axe A6/A7 Paris-Lyon-Marseille (axe rhodanien), ou ligne TGV Paris-Lyon, ou autoroute du soleil.'}
+      ]},
+      {type:'emc',label:'EXERCICE 3 â€” EMC (10 pts)',pts:10,questions:[
+        {texte:'Document 1 : photo d\'Axelle Saint-Cirel portant le drapeau tricolore, Marseillaise aux JO Paris 2024. Q1 â€” Identifiez deux symboles de la RÃ©publique franÃ§aise mis en avant lors de la cÃ©rÃ©monie. (2 pts)',rep:'1) Le drapeau tricolore (bleu-blanc-rouge). 2) La Marseillaise (hymne national).'},
+        {texte:'Document 2 : tÃ©moignage d\'Axelle Saint-Cirel sur les 10 statues de femmes illustres. Q2 â€” Que cherche Ã  rappeler l\'apparition de ces statues lors de l\'interprÃ©tation de la chanteuse ? (2 pts)',rep:'Le combat des femmes pour leurs droits et leur place dans l\'Histoire (Olympe de Gouges, Simone Veil, GisÃ¨le Halimi...). CÃ©lÃ©brer la sororitÃ© et la lutte pour l\'Ã©galitÃ©.'},
+        {texte:'Q3 â€” Identifiez une valeur de la RÃ©publique franÃ§aise que l\'on peut associer Ã  ce moment. Justifiez votre rÃ©ponse. (2 pts)',rep:'Ã‰galitÃ© : les femmes reprÃ©sentÃ©es ont combattu pour l\'Ã©galitÃ© des droits. Ou FraternitÃ© : solidaritÃ© entre femmes. Ou LibertÃ© : libertÃ© d\'expression artistique et civique.'},
+        {texte:'Documents 1 et 2 â€” Q4 â€” Expliquez pourquoi il Ã©tait important de mettre en avant les valeurs et les symboles de la RÃ©publique franÃ§aise lors de la cÃ©rÃ©monie des Jeux Olympiques. (4 pts)',rep:'Les JO diffusÃ©s dans le monde â†’ vitrine internationale. Montrer que la France incarne LibertÃ©-Ã‰galitÃ©-FraternitÃ©. Hommage aux femmes de l\'Histoire devant 1 milliard de tÃ©lÃ©spectateurs. Renforce le sentiment national.'}
+      ]}
+    ]
+  },
+  {
+    id:3, annee:'2024', session:'MÃ©tropole (juin)',
+    titre:'24GENHGEMCME1 â€” Hist: WWII Auschwitz gÃ©nocide Â· GÃ©o: France et Europe dans le monde Â· EMC: Service Civique',
+    pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2024/11/dipl-me-national-du-brevet-2024-histoire-g-ographie-enseignement-moral-et-civique-195917.pdf',
+    tags:[{t:'2024',c:'y24'}],
+    exos:[
+      {type:'hist',label:'EXERCICE 1 â€” Histoire (20 pts)',pts:20,questions:[
+        {texte:'Document 1 : tÃ©moignage de Ginette Kolinka, rescapÃ©e d\'Auschwitz-Birkenau (Retour Ã  Birkenau, Grasset, 2020). Q1 â€” Identifiez la nature et l\'auteur de ce document. (2 pts)',rep:'TÃ©moignage autobiographique de Ginette Kolinka, survivante juive du camp d\'Auschwitz-Birkenau, publiÃ© en 2020. Source primaire.'},
+        {texte:'Q2 â€” Relevez trois passages du texte qui montrent diffÃ©rentes formes de violence que subissent les dÃ©portÃ©es. (6 pts)',rep:'1) Violence physique : Â« Si l\'une d\'entre nous dÃ©faille ou sort du rang, elle est frappÃ©e. Â» 2) Violence par l\'Ã©puisement : Â« Des heures au garde-Ã -vous, gelÃ©es, tremblantes, Ã©puisÃ©es. Â» 3) Violence par la faim : Â« Prenez un pain de mie, coupez-le en cinq [...] C\'est le repas du soir, de tous les jours. Â»'},
+        {texte:'Q3 â€” PrÃ©cisez Ã  qui est confiÃ©e la surveillance des dÃ©portÃ©es dans le camp. (2 pts)',rep:'La surveillance est confiÃ©e aux kapos : des dÃ©portÃ©s eux-mÃªmes choisis pour faire rÃ©gner l\'ordre dans le camp.'},
+        {texte:'Document 2 : photographie SS, sÃ©lection des dÃ©portÃ©s Ã  l\'arrivÃ©e au camp (mai-juin 1944). Q4 â€” DÃ©crivez, Ã  partir de la photographie, le processus de sÃ©lection des dÃ©portÃ©s Ã  leur arrivÃ©e au camp. (4 pts)',rep:'Les dÃ©portÃ©s arrivent en grand nombre sur le quai. Les SS procÃ¨dent Ã  une sÃ©lection : certains partent travailler (camp), les autres (vieux, enfants, malades) sont envoyÃ©s directement aux chambres Ã  gaz.'},
+        {texte:'Documents 1 et 2 â€” Q5 â€” Expliquez, Ã  partir de l\'exemple du camp d\'Auschwitz-Birkenau, que les Juifs sont victimes d\'un gÃ©nocide. (6 pts)',rep:'GÃ©nocide = destruction dÃ©libÃ©rÃ©e d\'un groupe. Ã€ Auschwitz : arrestations pour Ãªtre Juif, dÃ©portation organisÃ©e, sÃ©lection Ã  l\'arrivÃ©e, extermination de masse, 1,1 million de victimes dont 90% Juifs.'}
+      ]},
+      {type:'geo',label:'EXERCICE 2 â€” GÃ©ographie (20 pts)',pts:20,questions:[
+        {texte:'DÃ©veloppement construit d\'une vingtaine de lignes : montrez la place et l\'influence culturelle, gÃ©opolitique et Ã©conomique de la France et de l\'Europe dans le monde. (14 pts)',rep:'1) Culturelle : 1er pays touristique (86M visiteurs), 300M francophones, gastronomie, cinÃ©ma. 2) GÃ©opolitique : siÃ¨ge permanent CSNU, OTAN, UE fondatrice. 3) Ã‰conomique : 7e PIB, FMN (LVMH, Airbus). UE : 1er marchÃ© mondial, euro.'},
+        {texte:'Carte annexe (Europe). Q1a â€” Nommez trois pays membres de l\'Union europÃ©enne de votre choix. (1,5 pt)',rep:'Au choix : Allemagne, Italie, Espagne, Pologne, Pays-Bas, Belgique, Portugal, SuÃ¨de, Autriche...'},
+        {texte:'Q1b â€” Nommez trois mÃ©tropoles europÃ©ennes de votre choix. (1,5 pt)',rep:'Au choix : Berlin, Rome, Madrid, Amsterdam, Varsovie, Vienne, Prague, Stockholm...'},
+        {texte:'Q2 â€” Ã€ l\'aide du figurÃ© de la lÃ©gende, situez et nommez une mÃ©tropole siÃ¨ge d\'une institution de l\'Union europÃ©enne de votre choix. (1 pt)',rep:'Bruxelles (Commission europÃ©enne + Conseil de l\'UE), Strasbourg (Parlement europÃ©en), Luxembourg (Cour de justice).'},
+        {texte:'Q3 â€” Dans la lÃ©gende, rÃ©alisez un figurÃ© correspondant Ã  la mÃ©galopole europÃ©enne. Q4 â€” Sur la carte, localisez la mÃ©galopole europÃ©enne. (2 pts)',rep:'MÃ©galopole europÃ©enne (Dorsale) : bande de Londres Ã  Milan, passant par Paris, Bruxelles, Amsterdam, Cologne, Francfort. FigurÃ© : hachures ou couleur sur cette zone.'}
+      ]},
+      {type:'emc',label:'EXERCICE 3 â€” EMC (10 pts)',pts:10,questions:[
+        {texte:'Document 1 : page d\'accueil du site Service Civique (6 Ã  12 mois, 16-25 ans, 10 domaines, 601â‚¬/mois). Q1 â€” Relevez deux avantages pour un jeune qui s\'engage dans le Service Civique. (2 pts)',rep:'1) Ouvert sans condition de diplÃ´me (16-25 ans). 2) IndemnisÃ© : 601â‚¬/mois dont 489,59â‚¬ pris en charge par l\'Ã‰tat. 3) 10 domaines possibles.'},
+        {texte:'Document 2 : tÃ©moignage de Bastien, 200 000e volontaire (mission parcs d\'Avignon, environnement). Q2 â€” Identifiez les deux expÃ©riences d\'engagement de Bastien. (2 pts)',rep:'1) BÃ©nÃ©vole aux Restos du CÅ“ur. 2) Mission Service Civique dans les parcs de la commune d\'Avignon (environnement).'},
+        {texte:'Q3 â€” PrÃ©cisez une valeur de la RÃ©publique Ã  laquelle l\'engagement de Bastien peut Ãªtre associÃ©. (2 pts)',rep:'FraternitÃ© : il aide les autres (Restos du CÅ“ur, sensibilisation environnementale). Ou Ã‰galitÃ© : il agit pour que tous aient accÃ¨s Ã  un environnement de qualitÃ©.'},
+        {texte:'Documents 1 et 2 â€” Q4 â€” Bastien vient tÃ©moigner dans votre collÃ¨ge. Choisissez un des dix domaines du Service Civique et prÃ©sentez une action que vous souhaiteriez mener en montrant les liens avec les valeurs de la RÃ©publique. (4 pts)',rep:'Ex : domaine Â« Ã©ducation pour tous Â» â†’ aide aux devoirs â†’ lien avec Ã‰galitÃ©. Ou domaine Â« environnement Â» â†’ plantation d\'arbres â†’ lien avec FraternitÃ© intergÃ©nÃ©rationnelle.'}
+      ]}
+    ]
+  },
+  {
+    id:4, annee:'2024', session:'AmÃ©rique du Nord',
+    titre:'24GENHGEMCAN1 â€” Hist: Guerre froide chute mur Berlin Â· GÃ©o: Territoires ultramarins DROM Â· EMC: SNU',
+    pdf:'https://www.education.gouv.fr/media/195323/download',
+    tags:[{t:'2024',c:'y24'}],
+    exos:[
+      {type:'hist',label:'EXERCICE 1 â€” Histoire (20 pts)',pts:20,questions:[
+        {texte:'Document 1 : tÃ©moignages sur la chute du mur de Berlin, 9 novembre 1989 (Europe 1, 2019). Q1 â€” PrÃ©sentez et datez l\'Ã©vÃ©nement dÃ©crit dans le document. (2 pts)',rep:'La chute du mur de Berlin, le 9 novembre 1989. Le mur sÃ©parait Berlin-Ouest (capitaliste) de Berlin-Est (communiste) depuis 1961.'},
+        {texte:'Q2 â€” Relevez trois expressions du texte qui montrent le caractÃ¨re exceptionnel de cet Ã©vÃ©nement. (3 pts)',rep:'1) Â« Un Ã©vÃ©nement comme Ã§a, Ã§a reste pour toujours dans ta tÃªte ! Â» 2) Â« Sur le Ku\'damm, c\'Ã©tait la folie ! Â» 3) Â« On rit, on pleure, on s\'embrasse, on danse. Â»'},
+        {texte:'Q3 â€” Montrez que le rÃ©gime politique en RDA Ã©tait autoritaire. Deux Ã©lÃ©ments de rÃ©ponse sont attendus. (4 pts)',rep:'1) Â« Normalement, ils devraient tirer Â» â†’ les soldats avaient ordre de tirer sur les fuyards. 2) Besoin d\'une Â« autorisation spÃ©ciale pour sortir de RDA Â» â†’ libertÃ© de circuler interdite.'},
+        {texte:'Q4 â€” Ã€ l\'aide de la phrase soulignÃ©e (il n\'y a plus besoin d\'autorisation spÃ©ciale pour sortir de RDA), expliquez quelle libertÃ© est retrouvÃ©e par les Allemands de l\'Est. (3 pts)',rep:'La libertÃ© de circulation : les Allemands de l\'Est peuvent dÃ©sormais quitter leur pays et passer Ã  Berlin-Ouest librement.'},
+        {texte:'Document 2 : dessin de Plantu (Le Monde, 2 fÃ©v. 1990). Q5 â€” Relevez deux Ã©lÃ©ments qui prouvent que cet Ã©vÃ©nement s\'inscrit dans un contexte de guerre froide. (4 pts)',rep:'1) Les deux drapeaux : RFA (Ouest, capitaliste) et RDA (Est, communiste). 2) Le dessin montre la rÃ©unification des deux Allemagnes sÃ©parÃ©es depuis 1945 par la guerre froide.'},
+        {texte:'Documents 1 et 2 â€” Q6 â€” Expliquez deux consÃ©quences de la chute du mur de Berlin pour les Allemands. (4 pts)',rep:'1) LibertÃ© de circulation retrouvÃ©e, familles rÃ©unies. 2) RÃ©unification allemande : le 3 octobre 1990, la RDA est absorbÃ©e par la RFA. Fin du communisme en Allemagne.'}
+      ]},
+      {type:'geo',label:'EXERCICE 2 â€” GÃ©ographie (20 pts)',pts:20,questions:[
+        {texte:'DÃ©veloppement construit d\'une vingtaine de lignes : prÃ©sentez les spÃ©cificitÃ©s des territoires ultramarins et expliquez comment les amÃ©nagements permettent de rÃ©duire les inÃ©galitÃ©s. Appuyez-vous sur un ou plusieurs exemples. (14 pts)',rep:'1) SpÃ©cificitÃ©s : Ã©loignement (8h30 de Paris pour la Guyane), insularitÃ©, chÃ´mage Ã©levÃ© (22,9% en Guadeloupe), risques naturels (cyclones, volcans). 2) AmÃ©nagements : aÃ©roport Guadeloupe PÃ´le CaraÃ¯bes, base Kourou, plan ChlordÃ©cone, fonds europÃ©ens. 3) RÃ©sultats : PIB bien supÃ©rieur aux pays voisins.'},
+        {texte:'Carte annexe â€” Indiquez la signification de DROM dans l\'emplacement correspondant. (2 pts)',rep:'DROM = DÃ©partements et RÃ©gions d\'Outre-Mer.'},
+        {texte:'Sur la carte, placez le nom des trois ocÃ©ans sur les traits correspondants. (1,5 pt)',rep:'OcÃ©an Atlantique. OcÃ©an Indien. OcÃ©an Pacifique.'},
+        {texte:'Placez le nom des 5 DROM dans les cadres numÃ©rotÃ©s 1 Ã  5. (2,5 pts)',rep:'1 : Guadeloupe ou Martinique (CaraÃ¯bes). 2 : Martinique ou Guadeloupe. 3 : Guyane (AmÃ©rique du Sud). 4 : La RÃ©union (OcÃ©an Indien). 5 : Mayotte (OcÃ©an Indien).'}
+      ]},
+      {type:'emc',label:'EXERCICE 3 â€” EMC (10 pts)',pts:10,questions:[
+        {texte:'Document 1 : SNU dans les PyrÃ©nÃ©es-Orientales. Q1 â€” Relevez quatre types d\'activitÃ©s organisÃ©es lors de ce stage de SNU. (4 pts)',rep:'ActivitÃ©s sportives (randonnÃ©e, raquettes), initiation aux gestes de premiers secours, Ã©ducation musicale ou Ã  l\'environnement, formation aux valeurs patriotiques (levÃ©e des couleurs, journÃ©e dÃ©fense mÃ©moire).'},
+        {texte:'Q2 â€” Nommez deux acteurs qui encadrent le SNU. (2 pts)',rep:'Guillaume Stoecklin (chef SDJES), accompagnateur de montagne, Banque de France, un maire (reprÃ©sentant des institutions).'},
+        {texte:'Document 2 : dÃ©pliant SNU 2023. Q3 â€” Identifiez deux symboles de la RÃ©publique franÃ§aise. (2 pts)',rep:'1) Le drapeau tricolore. 2) La devise Â« LibertÃ© Ã‰galitÃ© FraternitÃ© Â».'},
+        {texte:'Documents 1 et 2 â€” Q4 â€” Expliquez pourquoi toutes les activitÃ©s menÃ©es permettent de dÃ©velopper l\'engagement citoyen. (2 pts)',rep:'Chaque activitÃ© forme une facette de la citoyennetÃ© : sport â†’ respect collectif, premiers secours â†’ solidaritÃ©, valeurs patriotiques â†’ appartenance nationale, institutions â†’ dÃ©mocratie.'}
+      ]}
+    ]
+  },
+  {
+    id:5, annee:'2024', session:'Session 4',
+    titre:'24GENHGEMCME4 â€” GÃ©o: TÃ©lÃ©phÃ©rique Toulouse Â· Hist: DÃ©colonisation Â· EMC: BÃ©nÃ©volat Restos du CÅ“ur',
+    pdf:'https://www.education.gouv.fr/sites/default/files/document/Dipl%C3%B4me%20national%20du%20brevet%202024%20-%20Histoire-G%C3%A9ographie%20-%20Enseignement%20moral%20et%20civique-401868.pdf',
+    tags:[{t:'2024',c:'y24'}],
+    exos:[
+      {type:'geo',label:'EXERCICE 1 â€” GÃ©ographie (20 pts)',pts:20,questions:[
+        {texte:'Document 1 : plan du rÃ©seau de transports de Toulouse avec le tÃ©lÃ©phÃ©rique TÃ©lÃ©o. Q1 â€” Citez trois modes de transport visibles sur le plan. (3 pts)',rep:'MÃ©tro (lignes A et B), Bus, TÃ©lÃ©phÃ©rique (TÃ©lÃ©o), Parking vÃ©los, Parking-relais, Aire de covoiturage.'},
+        {texte:'Document 2 : article du Monde sur l\'inauguration de TÃ©lÃ©o (13 mai 2022). Q2 â€” Identifiez trois acteurs qui ont permis la construction de cet amÃ©nagement. (3 pts)',rep:'La mairie de Toulouse, la RÃ©gion, l\'Ã‰tat, l\'Union europÃ©enne.'},
+        {texte:'Q3 â€” Expliquez la phrase soulignÃ©e dans le document 2 : Â« TÃ©lÃ©o est un premier pas vers des transports transversaux, alors que les axes toulousains Ã©taient jusqu\'alors construits en Ã©toile. Â» (3 pts)',rep:'Les transports toulousains convergeaient tous vers le centre-ville (Ã©toile). TÃ©lÃ©o relie directement des pÃ´les pÃ©riphÃ©riques entre eux sans passer par le centre.'},
+        {texte:'Documents 1 et 2 â€” Q4 â€” Montrez que le tÃ©lÃ©phÃ©rique vise Ã  connecter diffÃ©rents modes de transport Ã  Toulouse. (5 pts)',rep:'TÃ©lÃ©o est raccordÃ© au mÃ©tro ligne B, aux bus, aux parkings vÃ©los et parkings-relais. Il permet des correspondances entre modes de transport.'},
+        {texte:'Q5 â€” Ã€ l\'aide des documents, expliquez que le renforcement des transports publics favorise l\'accÃ¨s aux activitÃ©s et aux services. (6 pts)',rep:'Le TÃ©lÃ©o relie en 10 minutes l\'universitÃ© Paul-Sabatier (30 000 Ã©tudiants), l\'hÃ´pital Rangueil (210 000 consultations/an) et l\'Oncopole (4 500 emplois). Facilite l\'accÃ¨s Ã  l\'Ã©ducation, la santÃ© et l\'emploi.'}
+      ]},
+      {type:'hist',label:'EXERCICE 2 â€” Histoire (20 pts)',pts:20,questions:[
+        {texte:'DÃ©veloppement construit d\'une vingtaine de lignes : expliquez l\'accÃ¨s Ã  l\'indÃ©pendance d\'une colonie de votre choix. PrÃ©cisez les principaux acteurs, les Ã©tapes et les consÃ©quences. (14 pts)',rep:'Ex. AlgÃ©rie : FLN, de Gaulle, pieds-noirs. 1er nov. 1954 â†’ guerre â†’ accords d\'Ã‰vian 1962 â†’ indÃ©pendance juillet 1962. ConsÃ©quences : exode pieds-noirs, bilan humain lourd.'},
+        {texte:'Annexe â€” ComplÃ©tez le tableau. CrÃ©ation de l\'ONU : annÃ©e ? (1 pt)',rep:'1945'},
+        {texte:'Ã‰vÃ©nement de 1962 (Ã  trouver) ? (1 pt)',rep:'Crise de Cuba. Ou : indÃ©pendance de l\'AlgÃ©rie (accords d\'Ã‰vian).'},
+        {texte:'TraitÃ© de Rome : annÃ©e ? (1 pt)',rep:'1957'},
+        {texte:'Ã‰vÃ©nement de 1989 (Ã  trouver) ? (1 pt)',rep:'Chute du mur de Berlin.'},
+        {texte:'Par un figurÃ© de votre choix, situez la guerre froide sur la frise chronologique et prÃ©cisez les annÃ©es. (2 pts)',rep:'Guerre froide : 1947 â†’ 1991. FigurÃ© : accolade ou trait continu entre ces deux dates.'}
+      ]},
+      {type:'emc',label:'EXERCICE 3 â€” EMC (10 pts)',pts:10,questions:[
+        {texte:'Document 1 : affiche Restos du CÅ“ur Â« Devenez BÃ©nÃ©vole, 3-4-5 mars 2023 Â». Q1 â€” Citez l\'association Ã  l\'origine de l\'affiche. (1 pt)',rep:'Les Restaurants du CÅ“ur (Restos du CÅ“ur).'},
+        {texte:'Q2 â€” PrÃ©sentez l\'objectif de l\'affiche. (2 pts)',rep:'Recruter des bÃ©nÃ©voles pour la Collecte Nationale des 3, 4 et 5 mars 2023, afin de collecter des denrÃ©es alimentaires pour les personnes dans le besoin.'},
+        {texte:'Document 2 : rapport sur le bÃ©nÃ©volat 2022. Q3 â€” Identifiez deux domaines d\'intervention des bÃ©nÃ©voles. (2 pts)',rep:'Ã‰ducation, social, handicap, santÃ©, culture, sauvegarde de la biodiversitÃ©, aide alimentaire (deux au choix).'},
+        {texte:'Documents 1 et 2 â€” Q4 â€” Expliquez ce qu\'est le bÃ©nÃ©volat et ce qu\'il apporte Ã  la sociÃ©tÃ©. (2 pts)',rep:'BÃ©nÃ©volat = engagement non rÃ©munÃ©rÃ© au service de l\'intÃ©rÃªt gÃ©nÃ©ral. 22 millions de personnes engagÃ©es. Apports : solidaritÃ©, liens sociaux entre gÃ©nÃ©rations, action sur des domaines variÃ©s.'},
+        {texte:'Q5 â€” Vous Ãªtes membre du CVC. Proposez une action concrÃ¨te avec un partenaire extÃ©rieur (Croix Rouge, Amnesty International, LICRA, ATD Quart Monde...) dans laquelle les Ã©lÃ¨ves peuvent s\'engager. (3 pts)',rep:'Ex : partenariat Croix-Rouge â†’ collecte alimentaire au collÃ¨ge. Ou LICRA â†’ expo contre le racisme. Lien avec fraternitÃ© rÃ©publicaine.'}
+      ]}
+    ]
+  },
+  {
+    id:6, annee:'2023', session:'MÃ©tropole (juin)',
+    titre:'23GENHGEMCME1 â€” Hist: Civils WW1 (Juliette/affiche emprunt) Â· GÃ©o: Espaces faible densitÃ© Â· EMC: Conseil municipal des jeunes',
+    pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2023/10/sujet_DNB_juin_23GENHGEMCME.pdf',
+    tags:[{t:'2023',c:'y23'}],
+    exos:[
+      {type:'hist',label:'EXERCICE 1 â€” Histoire (20 pts)',pts:20,questions:[
+        {texte:'Document 1 : tÃ©moignage de Juliette Eychenne-Bareil, enfant Ã  Carcassonne pendant la WW1 (1983). Q1 â€” Identifiez la nature de ce document. (2 pts)',rep:'TÃ©moignage oral recueilli en 1983. Source primaire. L\'auteur Ã©tait enfant (7 ans en 1914) Ã  Carcassonne.'},
+        {texte:'Q2 â€” Relevez trois extraits montrant les souffrances des civils. (6 pts)',rep:'1) Â« On manquait de beaucoup de choses Â» 2) Â« c\'Ã©tait quand mÃªme la misÃ¨re Â» 3) Â« il fallait faire des queues interminables pour avoir 2 kg [de pommes de terre] par personne Â»'},
+        {texte:'Q3 â€” Montrez ce qu\'apporte ce document par rapport au point de vue d\'un soldat de la PremiÃ¨re Guerre mondiale. (4 pts)',rep:'Un tÃ©moignage de soldat montre la vie dans les tranchÃ©es. Juliette montre la vie Ã  l\'arriÃ¨re : pÃ©nuries, mobilisation des femmes dans les usines, transformation des Ã©coles en hÃ´pitaux.'},
+        {texte:'Document 2 : affiche Raoul Cabrol 1918 Â« L\'Emprunt des derniÃ¨res cartouches Â». Q4 â€” DÃ©crivez l\'affiche en montrant comment les personnages reprÃ©sentent le front et l\'arriÃ¨re. (4 pts)',rep:'En haut (front) : un soldat en uniforme, casque, fusil, dans les tranchÃ©es. En bas (arriÃ¨re) : une femme et un enfant qui tendent les mains vers le soldat. Le soldat pointe vers les civils â†’ appel Ã  l\'effort.'},
+        {texte:'Q5 â€” Expliquez l\'objectif de cette affiche. (2 pts)',rep:'Inciter les civils Ã  souscrire Ã  l\'emprunt de guerre pour financer l\'effort militaire. Slogan Â« FranÃ§ais, encore un effort ! Â»'},
+        {texte:'Documents 1 et 2 â€” Q6 â€” Montrez comment les civils participent Ã  l\'effort de guerre entre 1914 et 1918. (2 pts)',rep:'Femmes dans les usines d\'armement et les champs, enfants font les courses, souscription aux emprunts de guerre. SolidaritÃ© nationale Ã  l\'arriÃ¨re indispensable au front.'}
+      ]},
+      {type:'geo',label:'EXERCICE 2 â€” GÃ©ographie (20 pts)',pts:20,questions:[
+        {texte:'DÃ©veloppement construit d\'environ vingt lignes : en vous appuyant sur un exemple de votre choix, prÃ©sentez les atouts et les dynamiques des espaces de faible densitÃ© en France. (14 pts)',rep:'Espaces de faible densitÃ© = rural, montagne, littoral peu urbanisÃ©. Atouts : cadre de vie, tourisme, agriculture, Ã©nergies renouvelables, patrimoine naturel. Dynamiques : nÃ©oruraux (tÃ©lÃ©travail), dÃ©veloppement touristique. DÃ©fis : dÃ©sertification mÃ©dicale, enclavement. Politique ZRR.'},
+        {texte:'Annexe â€” Q1a : nommez dans la lÃ©gende les trois espaces qui composent une aire urbaine. (3 pts)',rep:'Centre urbain (ville-centre). Banlieue. Couronne pÃ©riurbaine (communes dont 40% des actifs travaillent dans le pÃ´le urbain).'},
+        {texte:'Q1b : complÃ©tez le schÃ©ma et la lÃ©gende en indiquant les mobilitÃ©s avec un figurÃ© adaptÃ©. (2 pts)',rep:'FlÃ¨ches bidirectionnelles entre couronne pÃ©riurbaine et centre â†’ mobilitÃ©s pendulaires (trajets domicile-travail). FlÃ¨ches vers la pÃ©riphÃ©rie â†’ Ã©talement urbain.'},
+        {texte:'Q2 : sur le fond de carte, localisez et nommez six aires urbaines de votre choix. (5 pts)',rep:'Au choix : Paris, Lyon, Marseille, Bordeaux, Toulouse, Nantes, Lille, Strasbourg, Nice, Rennes + les 5 DROM Ã  droite.'}
+      ]},
+      {type:'emc',label:'EXERCICE 3 â€” EMC (10 pts)',pts:10,questions:[
+        {texte:'Document 1 : conseil municipal des jeunes de Reims. Q1 â€” Indiquez deux conditions qui permettent de participer. (2 pts)',rep:'1) ÃŠtre collÃ©gien (de la 6e Ã  la 3e). 2) Habiter Ã  Reims ou y Ãªtre scolarisÃ©.'},
+        {texte:'Q2 â€” Citez deux thÃ©matiques dans lesquelles les actions doivent s\'inscrire. (2 pts)',rep:'Environnement, culture, sports/loisirs, solidaritÃ©, santÃ© (deux au choix).'},
+        {texte:'Document 2 : affiche CMJ Margencel. Q3 â€” Â« PrÃ©sente-toi ou vote pour Ã©lire tes reprÃ©sentants Â» : montrez que ce slogan fait du CMJ une instance dÃ©mocratique. (2 pts)',rep:'Â« PrÃ©sente-toi Â» = se candidater â†’ dÃ©mocratie reprÃ©sentative. Â« Vote pour Ã©lire Â» = Ã©lection â†’ exercice du suffrage. Les deux formes de dÃ©mocratie sont prÃ©sentes.'},
+        {texte:'Documents 1 et 2 â€” Q4 â€” Vous dÃ©cidez de candidater pour le CMJ de votre commune. RÃ©digez un discours prÃ©sentant vos motivations et une proposition d\'action citoyenne. (4 pts)',rep:'Structure : prÃ©sentation, motivations (agir pour la commune, reprÃ©senter les jeunes), projet concret (jardin partagÃ©, collecte alimentaire, tournoi sportif), lien avec valeurs rÃ©publicaines.'}
+      ]}
+    ]
+  },
+  {
+    id:7, annee:'2023', session:'AmÃ©rique du Nord',
+    titre:'23GENHGEMCAN1 â€” Hist: Lettres FÃ©lix Delaurat 1GM Â· GÃ©o: Espaces productifs Â· EMC: CitoyennetÃ© et vote prÃ©sidentielle 2022',
+    pdf:'https://www.education.gouv.fr/media/155783/download',
+    tags:[{t:'2023',c:'y23'}],
+    exos:[
+      {type:'hist',label:'EXERCICE 1 â€” Histoire (20 pts)',pts:20,questions:[
+        {texte:'Document : lettres de FÃ©lix Delaurat, cultivateur de l\'Allier, Ã  son Ã©pouse Angeline (mai-dÃ©c. 1916). Q1 â€” PrÃ©sentez l\'auteur des lettres et prÃ©cisez le contexte historique dans lequel elles ont Ã©tÃ© Ã©crites. (4 pts)',rep:'FÃ©lix Delaurat est un cultivateur de l\'Allier mobilisÃ© dÃ¨s le 2 aoÃ»t 1914. Il Ã©crit Ã  son Ã©pouse depuis le front en 1916, pendant la PremiÃ¨re Guerre mondiale (bataille de Verdun).'},
+        {texte:'Q2 â€” Relevez des expressions qui Ã©voquent l\'intensitÃ© des combats. (4 pts)',rep:'Â« Il y a toujours des boches avec des canons Â» / Â« un vrai enfer Â» / Â« nous avons perdu prÃ¨s du quart de notre effectif par le bombardement Â» / Â« vacarme d\'une guerre atroce Â»'},
+        {texte:'Q3 â€” Pourquoi les lettres de poilus sont-elles importantes pour comprendre la Grande Guerre ? (4 pts)',rep:'Elles donnent un tÃ©moignage direct et authentique du vÃ©cu des soldats (sources primaires). Elles montrent la rÃ©alitÃ© de la guerre au-delÃ  de la propagande officielle : conditions de vie, Ã©tat d\'esprit, Ã©volution du moral.'},
+        {texte:'Q4 â€” Montrez qu\'au fil de ses courriers, l\'Ã©tat d\'esprit de FÃ©lix Delaurat change. Expliquez pourquoi. (4 pts)',rep:'Mai 1916 : rÃ©signÃ© mais positif. DÃ©c. 1916 : dÃ©sespoir (Â« martyrs Â», Â« assassinats Â»). Plus tard : rÃ©volte (Â« comme une bÃªte traquÃ©e Â»). Causes : durÃ©e de la guerre, pertes Ã©normes, inutilitÃ© apparente des sacrifices.'},
+        {texte:'Q5 â€” DÃ©crivez les conditions de vie quotidienne du soldat et la violence qu\'il subit. (4 pts)',rep:'Dans les tranchÃ©es : bombardements, sans sommeil, 25% de pertes mÃªme en rÃ©serve. Violence physique (obus, canons), psychologique (attente de la mort, Ã©loignement famille), morale (sentiment d\'inutilitÃ©).'}
+      ]},
+      {type:'geo',label:'EXERCICE 2 â€” GÃ©ographie (20 pts)',pts:20,questions:[
+        {texte:'DÃ©veloppement construit d\'une vingtaine de lignes : dÃ©crivez et expliquez, Ã  diffÃ©rentes Ã©chelles, le fonctionnement et les dynamiques d\'un espace productif franÃ§ais face Ã  la mondialisation. (14 pts)',rep:'Ex. Sophia Antipolis (technopÃ´le) ou Fos-sur-Mer (ZIP) ou vallÃ©e de la batterie. Fonctionnement : acteurs, emplois, productions. Dynamiques : reconversion, mondialisation, spÃ©cialisation. Ã€ diffÃ©rentes Ã©chelles : local, national, mondial.'},
+        {texte:'Carte (annexe p.5/8). Q a) â€” Nommez les deux mÃ©tropoles indiquÃ©es par un numÃ©ro (1 et 2). (2 pts)',rep:'1 : Lille (nord, frontiÃ¨re belge). 2 : Nice ou Sophia Antipolis (cÃ´te mÃ©diterranÃ©enne est).'},
+        {texte:'Q b) â€” ComplÃ©tez la lÃ©gende (Espace industriel dynamique / Espace industriel ancien / Espace peu industrialisÃ©). (3 pts)',rep:'Gris foncÃ© = espace industriel ancien (Nord-Pas-de-Calais, Lorraine). Gris clair = espace industriel dynamique (axe Paris-Lyon-Marseille, Toulouse). Blanc = espace peu industrialisÃ© (centre, Bretagne...).'},
+        {texte:'Q c) â€” Reportez les figurÃ©s : mÃ©tropole avec technopÃ´le / zone industrialo-portuaire. (1 pt)',rep:'TechnopÃ´les : cercles vides (â—‹) Ã  Sophia Antipolis, Toulouse, Rennes, Bordeaux. ZIP : carrÃ©s pleins (â– ) Ã  Le Havre, Saint-Nazaire, Dunkerque, Fos-sur-Mer.'}
+      ]},
+      {type:'emc',label:'EXERCICE 3 â€” EMC (10 pts)',pts:10,questions:[
+        {texte:'Document 1 : article sur des jeunes votant pour la 1Ã¨re fois (prÃ©sidentielle avril 2022, Kerfourn, Morbihan). Q1 â€” Citez deux motivations qui ont poussÃ© ce jeune citoyen Ã  accomplir son devoir civique. (2 pts)',rep:'1) Â« C\'est un droit et un devoir important. Â» 2) Â« Ã§a prouve qu\'on existe et qu\'on peut dÃ©cider de l\'avenir commun. Â»'},
+        {texte:'Q2 â€” Relevez deux Ã©lÃ©ments qui garantissent un vote libre et secret. (2 pts)',rep:'1) L\'isoloir : le jeune entre seul pour choisir son bulletin. 2) Â« j\'ai fait seul mon choix Â» â†’ indÃ©pendance de la dÃ©cision.'},
+        {texte:'Document 2 : sondage Ipsos/FAGE sur les jeunes et l\'Ã©lection prÃ©sidentielle 2022. Q3 â€” Citez deux raisons pour lesquelles certains jeunes auraient pu se dÃ©tourner de l\'Ã©lection prÃ©sidentielle. (2 pts)',rep:'1) 66% estiment que les responsables politiques ne se prÃ©occupent pas de ce que pensent les jeunes. 2) 57% estiment que leurs prÃ©occupations ne sont pas Ã©voquÃ©es dans la campagne.'},
+        {texte:'Q4 â€” Comment appelle-t-on le fait de ne pas aller voter ? (1 pt)',rep:'L\'abstention.'},
+        {texte:'Documents 1 et 2 â€” Q5 â€” Candidat aux Ã©lections du CMEJ, quels arguments pour convaincre vos camarades de voter ? (3 pts)',rep:'1) Le vote est un droit et un devoir : ne pas voter c\'est laisser les autres dÃ©cider. 2) Les jeunes ont des prÃ©occupations lÃ©gitimes â†’ le vote permet d\'Ãªtre reprÃ©sentÃ©. 3) La dÃ©mocratie ne fonctionne que si tous participent.'}
+      ]}
+    ]
+  },
+  {
+    id:8, annee:'2022', session:'MÃ©tropole (juin)',
+    titre:'22GENHGEMCME1 â€” Hist: Refonder la RÃ©publique 1944 vote des femmes Â· GÃ©o: DROM amÃ©nagement Â· EMC: Principes dÃ©mocratiques pÃ©tition',
+    pdf:'https://pedagogie.ac-strasbourg.fr/fileadmin/pedagogie/histoiregeographie/Examens_et_concours/DNB_2022/22GENHGEMCME1.pdf',
+    tags:[{t:'2022',c:'y22'}],
+    exos:[
+      {type:'hist',label:'EXERCICE 1 â€” Histoire (20 pts)',pts:20,questions:[
+        {texte:'Document : dÃ©bat du 24 mars 1944 Ã  l\'AssemblÃ©e consultative sur le vote des femmes (amendement Grenier). Q1 â€” Montrez que la France n\'est toujours pas sortie de la guerre en mars 1944 en relevant deux Ã©lÃ©ments dans le document. (4 pts)',rep:'1) Â« l\'absence des rÃ©fugiÃ©s, prisonniers et dÃ©portÃ©s Â» â†’ des hommes sont encore prisonniers. 2) Â« quand le territoire franÃ§ais sera libÃ©rÃ© Â» â†’ la France est encore partiellement occupÃ©e.'},
+        {texte:'Q2 â€” Relevez deux arguments exposÃ©s par les opposants Ã  la participation des femmes aux Ã©lections. (4 pts)',rep:'1) M. Bissagnet : Â« dÃ©sÃ©quilibre trÃ¨s net Â» car deux fois plus de femmes que d\'hommes. 2) M. le PrÃ©sident : le dÃ©lai de 3 mois pour les listes Ã©lectorales est trop court.'},
+        {texte:'Q3 â€” Pourquoi, d\'aprÃ¨s certains participants, le vote des femmes n\'est pas discutable ? Deux Ã©lÃ©ments de rÃ©ponse attendus. (4 pts)',rep:'1) M. Antier : Â« la France, hommes et femmes rÃ©unis, rÃ©siste dans son ensemble Â». 2) M. Grenier : les femmes ont remplacÃ© leurs maris prisonniers/dÃ©portÃ©s â†’ droit encore plus fort de voter.'},
+        {texte:'Q4 â€” Quelle dÃ©cision est prise Ã  l\'issue du dÃ©bat ? Justifiez. (4 pts)',rep:'L\'amendement Grenier est adoptÃ© Ã  la majoritÃ© (51 voix contre 16 sur 67 votants). Les femmes pourront voter Ã  toutes les Ã©lections dÃ¨s la LibÃ©ration.'},
+        {texte:'Q5 â€” Expliquez pourquoi cette dÃ©cision constitue Ã  la fois un retour de la dÃ©mocratie et une avancÃ©e dÃ©mocratique. Deux Ã©lÃ©ments du document attendus. (4 pts)',rep:'Retour de la dÃ©mocratie : rÃ©tablissement des Ã©lections aprÃ¨s Vichy. AvancÃ©e dÃ©mocratique : extension du suffrage universel aux femmes â†’ Â« toute la Nation appelÃ©e Ã  se prononcer Â» (M. Grenier).'}
+      ]},
+      {type:'geo',label:'EXERCICE 2 â€” GÃ©ographie (20 pts)',pts:20,questions:[
+        {texte:'DÃ©veloppement construit d\'environ vingt lignes : montrez que l\'amÃ©nagement des territoires ultramarins permet de rÃ©pondre Ã  des situations spÃ©cifiques. Appuyez-vous sur des exemples Ã©tudiÃ©s en classe. (14 pts)',rep:'1) SpÃ©cificitÃ©s : insularitÃ© (Antilles, RÃ©union), Ã©loignement (8h30 Paris-Guyane), risques naturels, chÃ´mage Ã©levÃ©. 2) AmÃ©nagements spÃ©cifiques : aÃ©roport Guadeloupe PÃ´le CaraÃ¯bes (hub rÃ©gional), base Kourou (accÃ¨s espace), plan ChlordÃ©cone. 3) RÃ©sultats : PIB bien supÃ©rieur aux pays voisins.'},
+        {texte:'Carte A â€” Q1 : Localisez et nommez les trois DROM franÃ§ais citÃ©s dans le texte du ComitÃ© du tourisme de la Guyane. (3 pts)',rep:'Les trois DROM citÃ©s : Guyane, Martinique, Guadeloupe. Ã€ placer sur la carte A (AmÃ©riques).'},
+        {texte:'Q2 : Choisissez un figurÃ© adaptÃ© pour reprÃ©senter ces DROM et complÃ©tez la lÃ©gende. (1 pt)',rep:'Ex : cercle plein ou carrÃ© de couleur pour les DROM. LÃ©gende : â–¡ DROM'},
+        {texte:'Q3 : Localisez et nommez les deux ocÃ©ans sur la carte A. (2 pts)',rep:'OcÃ©an Atlantique. OcÃ©an Pacifique.'},
+        {texte:'Carte B â€” Q4 : ReprÃ©sentez deux trajets aÃ©riens au dÃ©part de la Guyane mentionnÃ©s dans le texte. (2 pts)',rep:'Trajet 1 : Guyane â†’ Paris (8h30). Trajet 2 : Guyane â†’ Martinique ou Guadeloupe (2h). FigurÃ© : flÃ¨ches directionnelles.'},
+        {texte:'Q5 : En vous aidant de la carte A, localisez et nommez le BrÃ©sil sur la carte B. (1 pt)',rep:'Le BrÃ©sil est le grand pays voisin de la Guyane (au sud et Ã  l\'ouest) en AmÃ©rique du Sud.'}
+      ]},
+      {type:'emc',label:'EXERCICE 3 â€” EMC (10 pts)',pts:10,questions:[
+        {texte:'Document 1 : dessin Camille Besse (lycÃ©en remet 5000 pÃ©titions pour rebaptiser son lycÃ©e en lycÃ©e BeyoncÃ©). Document 2 : Constitution 1958, articles 2 et 3. Q1 â€” Recopiez les deux expressions qui correspondent le mieux Ã  la situation dessinÃ©e. (2 pts)',rep:'La dÃ©mocratie reprÃ©sentative, parce que le lycÃ©en est un Ã©lu du CVL. La dÃ©mocratie participative, parce que les Ã©lÃ¨ves font une proposition collective avec une pÃ©tition.'},
+        {texte:'Q2 â€” Pourquoi peut-on dire que la situation illustrÃ©e est garantie par la Constitution ? (4 pts)',rep:'Article 2 : Â« gouvernement du peuple, par le peuple Â» â†’ le CVL reprÃ©sente le peuple lycÃ©en. Article 3 : Â« la souverainetÃ© appartient au peuple qui l\'exerce par ses reprÃ©sentants Â» â†’ le lycÃ©en Ã©lu reprÃ©sente les Ã©lÃ¨ves.'},
+        {texte:'Q3 â€” Suite Ã  votre Ã©lection au CVC, rÃ©digez vos arguments pour convaincre le chef d\'Ã©tablissement d\'accepter votre pÃ©tition en vous appuyant sur les principes dÃ©mocratiques. (4 pts)',rep:'1) La pÃ©tition exprime la volontÃ© collective (dÃ©mocratie participative). 2) Nous sommes Ã©lus pour reprÃ©senter nos camarades (dÃ©mocratie reprÃ©sentative). 3) La Constitution garantit le droit Ã  l\'expression citoyenne. 4) Exemple concret : cette mesure amÃ©liorera la vie de tous.'}
+      ]}
+    ]
+  },
+  {
+    id:9, annee:'2020', session:'AmÃ©rique du Nord',
+    titre:'20GENHGEMCAN1 â€” GÃ©o: Territoires ultramarins (indicateurs + aÃ©roport Guadeloupe) Â· Hist: RÃ©gime nazi frise 1930 Â· EMC: LaÃ¯citÃ© Charte Ã©cole',
+    pdf:'https://www.education.gouv.fr/media/115747/download',
+    tags:[{t:'2020',c:''}],
+    exos:[
+      {type:'geo',label:'EXERCICE 1 â€” GÃ©ographie (20 pts)',pts:20,questions:[
+        {texte:'Document 1 : tableau comparatif PIB/hab., chÃ´mage, mortalitÃ© infantile (Guadeloupe/HaÃ¯ti, Mayotte/Comores, France mÃ©tropolitaine). Q1 â€” Montrez quelles difficultÃ©s particuliÃ¨res rencontrent les territoires ultramarins franÃ§ais comparÃ©s au territoire mÃ©tropolitain. (6 pts)',rep:'PIB/hab. infÃ©rieur (Guadeloupe 20 620$ vs France 33 540$), chÃ´mage supÃ©rieur (Guadeloupe 22,9% vs 9,6%), mortalitÃ© infantile plus Ã©levÃ©e (Mayotte 13,5â€° vs 3,4â€°).'},
+        {texte:'Q2 â€” Que constate-t-on lorsqu\'on compare les territoires ultramarins franÃ§ais Ã  leur voisin ? Justifiez en vous appuyant sur les indicateurs. (6 pts)',rep:'Les DROM sont bien plus dÃ©veloppÃ©s que leurs voisins. Guadeloupe (20 620$) vs HaÃ¯ti (852$) : PIB 24x supÃ©rieur. MortalitÃ© infantile : 7,9â€° vs 52â€°. Les DROM bÃ©nÃ©ficient des politiques sociales franÃ§aises.'},
+        {texte:'Document 2 : affiche aÃ©roport Guadeloupe PÃ´le CaraÃ¯bes Â« Le hub EuropÃ©en dans la CaraÃ¯be ! Â». Q3 â€” Citez les deux espaces qui vont Ãªtre mieux reliÃ©s Ã  la Guadeloupe grÃ¢ce Ã  l\'aÃ©roport. (2 pts)',rep:'1) L\'Europe (Â« Hub EuropÃ©en Â»). 2) La CaraÃ¯be (rÃ©gion caribÃ©enne voisine).'},
+        {texte:'Documents 1 et 2 â€” Q4 â€” En vous appuyant sur les documents et vos connaissances, expliquez les avantages de cet amÃ©nagement pour la Guadeloupe. (6 pts)',rep:'Avantages Ã©conomiques : tourisme (plus de visiteurs), emplois dans le secteur aÃ©rien, dÃ©senclavement. GÃ©opolitiques : rÃ´le de hub dans la CaraÃ¯be. Sociaux : liaisons facilitÃ©es avec la mÃ©tropole (santÃ©, formation).'}
+      ]},
+      {type:'hist',label:'EXERCICE 2 â€” Histoire (20 pts)',pts:20,questions:[
+        {texte:'Q1 â€” RÃ©digez un dÃ©veloppement construit d\'une vingtaine de lignes qui montre les caractÃ©ristiques du rÃ©gime nazi dans l\'entre-deux-guerres. (14 pts)',rep:'Intro : Hitler au pouvoir 1933. 1) Totalitaire : parti unique (NSDAP), suppression des libertÃ©s, Gestapo, propagande (Goebbels). 2) IdÃ©ologie nazie : antisÃ©mitisme, lois de Nuremberg 1935, racisme, Lebensraum. 3) Expansionnisme : rÃ©armement, Anschluss 1938, invasion Pologne 1939. Concl : dictature menant Ã  la WW2 et Ã  la Shoah.'},
+        {texte:'Q2 â€” Sur votre copie, construisez une frise chronologique des annÃ©es 1930 (de 1930 Ã  1939), graduÃ©e d\'annÃ©e en annÃ©e. Placez : l\'annÃ©e de l\'arrivÃ©e au pouvoir d\'Hitler en Allemagne ; l\'annÃ©e de l\'arrivÃ©e au pouvoir du Front populaire en France. (6 pts)',rep:'Frise 1930-1939 (graduation annuelle). Hitler au pouvoir : 1933. Front populaire : 1936 (LÃ©on Blum, mai 1936).'}
+      ]},
+      {type:'emc',label:'EXERCICE 3 â€” EMC (10 pts)',pts:10,questions:[
+        {texte:'Extrait Charte de la laÃ¯citÃ© Ã  l\'Ã‰cole (2013) â€” articles 6, 9, 12, 14. Q1 â€” Relevez dans l\'extrait de la Charte les objectifs de l\'enseignement laÃ¯que. (2 pts)',rep:'Article 6 : Â« forger leur personnalitÃ©, exercer leur libre arbitre et faire l\'apprentissage de la citoyennetÃ© Â» / Â« les protÃ¨ge de tout prosÃ©lytisme Â». Article 12 : ouverture objective Ã  la diversitÃ©, questionnement scientifique sans exclusion.'},
+        {texte:'Q2 â€” De quelle Ã©galitÃ© l\'Ã©cole est-elle garante dans l\'article 9 ? Dans l\'article 14 ? (2 pts)',rep:'Article 9 : Ã©galitÃ© entre les filles et les garÃ§ons. Article 14 : Ã©galitÃ© de traitement de tous les Ã©lÃ¨ves quelle que soit leur religion.'},
+        {texte:'Q3 â€” Comment la Charte de la laÃ¯citÃ© garantit-elle la libertÃ© religieuse ? (2 pts)',rep:'Article 6 : la laÃ¯citÃ© protÃ¨ge le Â« libre arbitre Â» (chaque Ã©lÃ¨ve peut croire ce qu\'il veut). Article 12 : aucun sujet exclu du questionnement â†’ les religions peuvent Ãªtre Ã©tudiÃ©es objectivement.'},
+        {texte:'Q4 â€” InÃ¨s reste songeuse... L\'application de la laÃ¯citÃ© interdit les signes religieux mais son prof a Ã©tudiÃ© la mosquÃ©e de Damas et la Bible en cours. Expliquez-lui pourquoi cela n\'est pas contradictoire. (4 pts)',rep:'Article 14 : interdit les SIGNES D\'APPARTENANCE religieuse portÃ©s par les Ã©lÃ¨ves. Article 12 : Â« aucun sujet n\'est exclu du questionnement pÃ©dagogique Â» â†’ Ã©tudier une mosquÃ©e ou la Bible est un acte pÃ©dagogique objectif, pas une manifestation religieuse personnelle. LaÃ¯citÃ© â‰  ignorance des religions.'}
+      ]}
+    ]
+  },
+  {
+    id:10, annee:'2022', session:'MÃ©tropole (septembre)',
+    titre:'22GENHGEMCME (sept.) â€” Ã€ tÃ©lÃ©charger pour voir les vraies questions',
+    pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2022/10/22GENHGEMCM-sujet-sept.pdf',
+    tags:[{t:'2022',c:'y22'}],
+    exos:[
+      {type:'hist',label:'EXERCICE â€” Ã€ consulter dans le PDF',pts:20,questions:[{texte:'âš  Ce sujet n\'a pas Ã©tÃ© transmis. TÃ©lÃ©chargez le PDF pour accÃ©der aux vraies questions de ce sujet.',rep:'Ouvrez le PDF ci-dessus pour consulter les documents et questions officiels de ce sujet.'}]},
+      {type:'geo',label:'GÃ©ographie â€” voir PDF',pts:20,questions:[{texte:'âš  GÃ©ographie â€” voir le PDF officiel.',rep:'Voir PDF.'}]},
+      {type:'emc',label:'EMC â€” voir PDF',pts:10,questions:[{texte:'âš  EMC â€” voir le PDF officiel.',rep:'Voir PDF.'}]}
+    ]
+  }
+];
+
+// ============================================================
+// FONCTIONS D'AFFICHAGE (prÃ©servation totale du contenu pÃ©dagogique)
+// ============================================================
+
+function buildLanding() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  SUJETS.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'sitem';
+    div.innerHTML = '<div class="sitem-num">S' + String(i+1).padStart(2,'0') + ' Â· ' + s.annee + '</div>'
+      + '<div class="sitem-info">'
+      + '<div class="sitem-titre">' + s.session + '</div>'
+      + '<div class="sitem-sub">' + s.titre + '</div>'
+      + '<div class="sitem-tags">' + (s.tags||[]).map(t=>'<span class="ctag ' + (t.c||'') + '">' + t.t + '</span>').join('') + '</div>'
+      + '</div>'
+      + '<div class="sitem-btns">'
+      + '<a class="card-dl" href="' + s.pdf + '" target="_blank" onclick="event.stopPropagation()">â¬‡ PDF</a>'
+      + '<button class="card-open" onclick="event.stopPropagation();ouvrirSujet(' + i + ')">Commencer â†’</button>'
+      + '</div>';
+    grid.appendChild(div);
+  });
+}
+
+function ouvrirSujet(idx) {
+  const s = SUJETS[idx];
+  document.getElementById('landing').style.display = 'none';
+  const view = document.getElementById('sujetView');
+  view.classList.add('active');
+  document.getElementById('svTitre').innerHTML = 
+    'DNB ' + s.annee + ' â€” ' + s.session 
+    + '<div style="font-size:12px;color:#9090a8;font-weight:400;margin-top:3px">' + s.titre + '</div>';
+  document.getElementById('svDl').href = s.pdf;
+
+  let html = '';
+  s.exos.forEach((exo, ei) => {
+    const cls = exo.type === 'hist' ? 'hist' : exo.type === 'geo' ? 'geo' : 'emc';
+    html += `<div class="exo-header"><span class="exo-badge ${cls}">${exo.label}</span><span class="exo-pts">${exo.pts} pts</span></div>`;
+    exo.questions.forEach((q, qi) => {
+      const qid = `q_${s.id}_${ei}_${qi}`;
+      html += `
+        <div class="qblock">
+          <div class="qnum">Q${ei+1}.${qi+1}</div>
+          <div class="qtexte">${q.texte}</div>
+          <textarea id="ans_${qid}" placeholder="Ta rÃ©ponse ici..."></textarea>
+          <div class="qbtns">
+            <button class="btn-corriger" onclick="corriger(${idx},${ei},${qi},'${qid}')">ðŸ¤– Correction IA</button>
+            <button class="btn-off" onclick="toggleOff('off_${qid}')">ðŸ“– Correction officielle</button>
+          </div>
+          <div class="corr-off-toggle" id="off_${qid}">
+            <strong>ðŸ“– CORRECTION OFFICIELLE</strong><br>${q.rep}
+          </div>
+          <div class="corr-panel" id="panel_${qid}"></div>
+        </div>`;
+    });
+  });
+
+  html += `<div class="export-zone">
+    <p>ðŸ“„ Sauvegarder toutes les corrections IA de ce sujet</p>
+    <button class="btn-pdf" onclick="exportPDF(${idx})">ðŸ“„ GÃ©nÃ©rer PDF</button>
+    <button class="sv-dl" style="margin-left:8px;background:#e87a7a;color:#09090f" onclick="effacerCorrections(${idx})">ðŸ—‘ Effacer corrections</button>
+  </div>`;
+
+  document.getElementById('svContent').innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+function retour() {
+  document.getElementById('landing').style.display = 'block';
+  document.getElementById('sujetView').classList.remove('active');
+  window.scrollTo(0,0);
+}
+
+function toggleOff(id) {
+  document.getElementById(id).classList.toggle('show');
+}
+
+// ============================================================
+// CORRECTION IA (utilise window.callIA du proxy-client.js)
+// ============================================================
+
+async function corriger(sIdx, ei, qi, qid) {
+  const s = SUJETS[sIdx];
+  const q = s.exos[ei].questions[qi];
+  const ans = document.getElementById('ans_'+qid).value.trim();
+  if (!ans) { alert("Ã‰cris ta rÃ©ponse d'abord !"); return; }
+
+  const panel = document.getElementById('panel_'+qid);
+  const btn = panel.previousElementSibling.querySelector('.btn-corriger');
+  panel.classList.add('show');
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction IA en cours...</div>';
+  if (btn) btn.disabled = true;
+
+  const pts = s.exos[ei].pts;
+  const exo_type = s.exos[ei].type || 'hist';
+  const mat_label = exo_type==='hist' ? 'Histoire' : exo_type==='geo' ? 'GÃ©ographie' : 'EMC';
+  
+  const system = `Tu es un correcteur expert DNB en ${mat_label}. RÃ©ponds UNIQUEMENT en JSON avec cette structure exacte:
+  {"note":"X/${pts}","cours_su":"OK/Partiel/Non - brÃ¨ve explication","methode":"OK/Partiel/Non - brÃ¨ve explication","commentaire":"analyse 3-5 lignes","pistes":"conseils prÃ©cis"}`;
+  
+  const prompt = `Sujet: ${s.titre}\nQuestion: ${q.texte}\nCorrection attendue: ${q.rep}\nRÃ©ponse Ã©lÃ¨ve: ${ans}`;
+
+  try {
+    // Utilisation de window.callIA (fourni par proxy-client.js)
+    const txt = await window.callIA(prompt, system);
+    const json = (window.safeJSON ? window.safeJSON(txt) : (()=>{try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}catch(e){return null;}})());
+    
+    if (!STORE[s.id]) STORE[s.id] = [];
+    STORE[s.id].push({exo:s.exos[ei].label, qi:qi+1, question:q.texte, correctionIA:txt, correctionOff:q.rep, pts});
+    saveCorrections();
+
+    panel.innerHTML = `
+      <div class="corr-ia">
+        <div class="corr-note">${json ? 'âœ“ Note : ' + json.note : ''}</div>
+        ${json && json.cours_su ? '<div class="corr-conseil" style="margin-bottom:4px">ðŸ“š <strong>Cours :</strong> ' + json.cours_su + '</div>' : ''}
+        ${json && json.methode ? '<div class="corr-conseil" style="margin-bottom:6px">âœï¸ <strong>MÃ©thode :</strong> ' + json.methode + '</div>' : ''}
+        <div class="corr-txt">${json ? json.commentaire : txt}</div>
+        ${json && json.pistes ? '<div class="corr-conseil" style="margin-top:8px;color:#e8c87a">ðŸŽ¯ <strong>Pistes :</strong> ' + json.pistes + '</div>' : ''}
+      </div>
+      <div class="corr-off"><strong>ðŸ“– CORRECTION OFFICIELLE</strong><br>${q.rep}</div>
+      <button class="btn-copy" onclick="copier(this)">ðŸ“‹ Copier</button>`;
+  } catch(e) {
+    let errMsg = e.message;
+    if (errMsg === 'ACCES_BLOQUE') errMsg = 'AccÃ¨s bloquÃ©. Veuillez activer votre abonnement.';
+    panel.innerHTML = '<div class="erreur">Erreur: '+errMsg+'</div>';
+  }
+  if (btn) btn.disabled = false;
+}
+
+async function copier(btn) {
+  try {
+    await navigator.clipboard.writeText(btn.closest('.corr-panel').innerText);
+    btn.textContent = 'âœ“ CopiÃ© !';
+    setTimeout(()=>btn.textContent='ðŸ“‹ Copier',1500);
+  } catch(e) {}
+}
+
+function effacerCorrections(sIdx) {
+  const s = SUJETS[sIdx];
+  if (!confirm('Effacer toutes les corrections sauvegardÃ©es pour ce sujet ?')) return;
+  delete STORE[s.id];
+  saveCorrections();
+  alert('Corrections effacÃ©es.');
+}
+
+function exportPDF(sIdx) {
+  const s = SUJETS[sIdx];
+  const data = STORE[s.id];
+  if (!data || !data.length) { alert("Corrige au moins une question d'abord."); return; }
+  let totalObt = 0, totalMax = 0;
+  data.forEach(c => { totalObt += c.pts; totalMax += c.pts; });
+  
+  let html = `<html><head><meta charset="UTF-8"><style>
+    body{font-family:Arial,sans-serif;font-size:13px;color:#111;padding:2rem;}
+    h1{font-size:16px;border-bottom:2px solid #f5a623;color:#b87800;padding-bottom:6px;}
+    h2{font-size:13px;margin-top:1.2rem;border-left:4px solid #f5a623;padding-left:8px;color:#333;}
+    .ia{background:#fffbf0;border-left:3px solid #f5a623;padding:8px;border-radius:4px;margin-bottom:6px;}
+    .off{background:#fff0f0;border-left:3px solid #e74c3c;padding:8px;border-radius:4px;}
+    .total{margin-top:16px;padding:10px;background:#f5f5f5;border-radius:6px;font-weight:bold;}
+  </style></head><body>
+  <h1>DNB ${s.annee} â€” ${s.session}</h1>
+  <p>GÃ©nÃ©rÃ© le ${new Date().toLocaleDateString('fr-FR')} Â· ${data.length} question(s)</p>`;
+  data.forEach(c => {
+    html += `<h2>${c.exo} â€” Q${c.qi} (${c.pts} pts)</h2>
+    <div class="ia">ðŸ¤– ${c.correctionIA}</div>
+    <div class="off">ðŸ“– ${c.correctionOff}</div>`;
+  });
+  html += `<div class="total">ðŸ“Š Note totale estimÃ©e : ${totalObt} / ${totalMax} pts</div></body></html>`;
+  const win = window.open('','_blank');
+  win.document.write(html);
+  win.document.close();
+  win.print();
+}
+
+// Initialisation
+buildLanding();
+</script>
+</body>
+</html>
