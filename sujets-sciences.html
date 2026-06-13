@@ -814,35 +814,24 @@ async function corriger(sIdx, ei, qi, qid) {
 
 
 
+  // SYSTEME DE NOTATION CORRIGÉ - JSON attendu par l'affichage
   const system = `Tu es un correcteur expert du DNB en SCIENCES (${disc}), exigeant et bienveillant.
 
-
-
 Ta correction doit être APPROFONDIE. Réponds UNIQUEMENT en JSON valide avec cette structure exacte :
-
 {
-
   "note": "X/${pts}",
-
   "cours_su": "Oui" ou "Partiel" ou "Non",
-
   "methode": "Oui" ou "Partiel" ou "Non",
-
   "commentaire": "Analyse détaillée de la réponse (3-5 lignes)",
-
   "pistes": "2 ou 3 conseils précis pour progresser"
-
 }
 
-
-
 Critères DNB SCIENCES :
-
-- cours_su : définitions, lois, formules, vocabulaire scientifique corrects ?
-
+- cours_su : formules, lois, vocabulaire scientifique corrects ?
 - methode : raisonnement logique, étapes visibles, exploitation des documents, conclusion explicite
+- La note sur ${pts} pts doit refléter la qualité de la réponse
 
-- La note sur ${pts} pts doit refléter la qualité de la réponse`;
+Règle de notation : la note maximale UNIQUEMENT si réponse + méthode + justification sont tous corrects.`;
 
 
 
@@ -888,7 +877,7 @@ Réponse élève: ${ans}`;
 
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
 
-          <div class="corr-note">✓ ${json ? json.note : '?'} / ${pts}</div>
+          <div class="corr-note">✓ ${json && json.note ? json.note : '?'} / ${pts}</div>
 
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
 
@@ -900,7 +889,7 @@ Réponse élève: ${ans}`;
 
         </div>
 
-        <div class="corr-txt">${json ? json.commentaire : txt}</div>
+        <div class="corr-txt">${json && json.commentaire ? json.commentaire : txt}</div>
 
         ${json && json.pistes ? '<div class="corr-conseil" style="margin-top:8px;color:#e8c87a">🎯 ' + esc(json.pistes) + '</div>' : ''}
 

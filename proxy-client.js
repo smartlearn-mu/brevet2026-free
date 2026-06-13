@@ -1,12 +1,12 @@
-﻿// ============================================================
-// SMART LEARN â€” PROXY CLIENT UNIFIÃ‰ (v4.0.0)
+// ============================================================
+// SMART LEARN — PROXY CLIENT UNIFIÉ (v4.0.0)
 // FIX CORS : URLSearchParams (pas de preflight)
 // ============================================================
 
 const PROXY_URL = 'https://script.google.com/macros/s/AKfycbxzUhsZ4ewxV_zGsu5h_L2eryTJiW2E-gZLvihC-vPl2DimCJxAeTF2dhbDF8no-ocG/exec';
 const PROXY_TIMEOUT_MS = 45000;
 
-// â”€â”€ Helpers identitÃ© â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Helpers identité ──────────────────────────────────────────
 function getUserId() {
   var id = localStorage.getItem('user_id');
   if (!id) {
@@ -37,7 +37,7 @@ function safeJSON(t) {
   catch(e) { return null; }
 }
 
-// â”€â”€ Appel proxy (URLSearchParams = pas de preflight CORS) â”€â”€â”€â”€â”€
+// ── Appel proxy (URLSearchParams = pas de preflight CORS) ─────
 function _fetchProxy(payload, timeoutMs) {
   timeoutMs = timeoutMs || PROXY_TIMEOUT_MS;
   var timeout = new Promise(function(_, reject) {
@@ -53,9 +53,9 @@ function _fetchProxy(payload, timeoutMs) {
   return Promise.race([req, timeout]);
 }
 
-// â”€â”€ callIA : correction IA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── callIA : correction IA ────────────────────────────────────
 async function callIA(prompt, system) {
-  // VÃ©rification accÃ¨s avant tout appel
+  // Vérification accès avant tout appel
   if (typeof aAccesComplet !== 'undefined' && !aAccesComplet()) {
     if (typeof essaiExpire !== 'undefined' && essaiExpire()) {
       if (typeof afficherBlocageEssaiExpire !== 'undefined') afficherBlocageEssaiExpire();
@@ -79,10 +79,10 @@ async function callIA(prompt, system) {
   });
 
   if (data.success && data.content) return data.content;
-  throw new Error(data.error || 'RÃ©ponse proxy inattendue');
+  throw new Error(data.error || 'Réponse proxy inattendue');
 }
 
-// â”€â”€ validerCodeServeur : validation d'un code d'accÃ¨s â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── validerCodeServeur : validation d'un code d'accès ─────────
 async function validerCodeServeur(code) {
   var data = await _fetchProxy({
     userId: getUserId(),
@@ -96,7 +96,7 @@ async function validerCodeServeur(code) {
   throw new Error(data.error || 'Code invalide');
 }
 
-// â”€â”€ Surcharge isPaid avec le systÃ¨me de monÃ©tisation â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Surcharge isPaid avec le système de monétisation ─────────
 window.isPaid = function() {
   if (typeof aAccesComplet !== 'undefined') return aAccesComplet();
   return localStorage.getItem('brevet_paid') === 'true';

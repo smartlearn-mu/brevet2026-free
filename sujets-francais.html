@@ -838,17 +838,17 @@ async function corrigerDictee(sIdx, did) {
 
 
 
-  const system = `Tu es correcteur expert DNB pour la DICTÉE.
-
-Compare le texte officiel et le texte de l'élève.
-
-Compte les fautes par catégorie : lexicale, accord sujet-verbe, accord nom-adjectif, participe passé, homophone, ponctuation.
-
-Note sur 10 points : -0.5 par faute (même faute répétée = -0.5 une seule fois).
-
-Réponds UNIQUEMENT en JSON sans markdown :
-
-{"note":X,"sur":10,"total_fautes":N,"liste_fautes":[{"incorrect":"...","correct":"...","regle":"..."}],"commentaire":"bilan","pistes":"règles à retravailler"}`;
+  var typeQ = q.type || 'comprehension';
+  var system = 'Tu es correcteur DNB FRANCAIS ' + (typeQ === 'comprehension' ? 'COMPREHENSION' : 'GRAMMAIRE') + ' — exigeant, bienveillant, precis.'
+    + ' Question (' + pts + ' pts).'
+    + ' COURS=' + Math.round(pts/3*2)/2 + ' pts / REDACTION=' + Math.round(pts/3*2)/2 + ' pts / METHODE=' + Math.round(pts/3*2)/2 + ' pts.'
+    + (typeQ === 'comprehension'
+      ? ' COURS: figures de style avec effet, vocabulaire litteraire, citations avec guillemets. REDACTION: reformulation personnelle, pas de copie. METHODE: nb elements demandes, point de vue+justification+citation.'
+      : ' COURS: regle grammaticale, accord justifie, vocabulaire precis. REDACTION: reponse complete, tous les changements. METHODE: manipulation syntaxique, justification regle.'
+    )
+    + ' NOTE arrondie au 0.5 pres. JAMAIS 1.3/4.'
+    + ' Question : ' + qTexteClean
+    + ' Reponds UNIQUEMENT en JSON : {"note_cours":X,"note_redaction":X,"note_methode":X,"note_finale":X,"sur":' + pts + ',"commentaire":"3 lignes","pistes":"2 conseils"}';
 
 
 

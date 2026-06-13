@@ -1,13 +1,13 @@
-﻿// ============================================================
-// SMART LEARN â€” CONFIGURATION CENTRALISÃ‰E v4.0
-// Proxy Apps Script (URLSearchParams â€” pas de CORS)
+// ============================================================
+// SMART LEARN — CONFIGURATION CENTRALISÉE v4.0
+// Proxy Apps Script (URLSearchParams — pas de CORS)
 // ============================================================
 
 const APP_CONFIG = {
-  // URL proxy Apps Script (unique point d'entrÃ©e)
+  // URL proxy Apps Script (unique point d'entrée)
   proxyUrl: 'https://script.google.com/macros/s/AKfycbxzUhsZ4ewxV_zGsu5h_L2eryTJiW2E-gZLvihC-vPl2DimCJxAeTF2dhbDF8no-ocG/exec',
 
-  // URL tracker (mÃªme proxy)
+  // URL tracker (même proxy)
   trackerUrl: 'https://script.google.com/macros/s/AKfycbxzUhsZ4ewxV_zGsu5h_L2eryTJiW2E-gZLvihC-vPl2DimCJxAeTF2dhbDF8no-ocG/exec',
 
   timeoutMs: 45000,
@@ -16,10 +16,10 @@ const APP_CONFIG = {
 };
 
 // ============================================================
-// callIA â€” via proxy Apps Script (URLSearchParams = pas de preflight CORS)
+// callIA — via proxy Apps Script (URLSearchParams = pas de preflight CORS)
 // ============================================================
 async function callIA(prompt, system) {
-  // VÃ©rification accÃ¨s monÃ©tisation
+  // Vérification accès monétisation
   if (typeof aAccesComplet !== 'undefined' && !aAccesComplet()) {
     if (typeof afficherBlocageEssaiExpire !== 'undefined') afficherBlocageEssaiExpire();
     throw new Error('ACCES_BLOQUE');
@@ -50,7 +50,7 @@ async function callIA(prompt, system) {
     return r.json();
   }).then(function(d) {
     if (d.success && d.content) return d.content;
-    throw new Error(d.error || 'RÃ©ponse proxy inattendue');
+    throw new Error(d.error || 'Réponse proxy inattendue');
   });
 
   return Promise.race([req, timeout]);
