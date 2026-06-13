@@ -966,17 +966,19 @@ async function corriger(sIdx, ei, qi, qid) {
 
   // ============================================================
 
-  // PARTIE 1 : AUTOMATISMES → correction par comparaison directe
+  // PARTIE 1 : AUTOMATISMES → correction par comparaison (contains)
 
   // ============================================================
 
   if (exo.type === 'auto') {
 
-    const reponseEleve = ans.trim().toLowerCase().replace(/[^a-z0-9\/\+\-\*\.\(\)]/g, '');
+    var estAutomatisme = (s.id >= 1 && s.id <= 9 && exo.type === 'auto');
 
-    const reponseAttendue = q.rep.toLowerCase().replace(/[^a-z0-9\/\+\-\*\.\(\)]/g, '');
+    const reponseEleve = ans.trim().toLowerCase().replace(/\s+/g, '');
 
-    const estCorrect = (reponseEleve === reponseAttendue);
+    const reponseAttendue = q.rep.trim().toLowerCase().replace(/\s+/g, '');
+
+    const estCorrect = reponseEleve.includes(reponseAttendue);
 
     const ptsParQuestion = exo.pts / exo.questions.length;
 
