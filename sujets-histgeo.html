@@ -1072,7 +1072,15 @@ async function corriger(sIdx, ei, qi, qid) {
 
   
 
-  var system = 'Tu es correcteur DNB HISTOIRE-GEOGRAPHIE-EMC — exigeant, bienveillant, precis.' + ' Question (' + pts + ' pts). COURS=' + Math.round(pts/3*2)/2 + ' pts / REDACTION=' + Math.round(pts/3*2)/2 + ' pts / METHODE=' + Math.round(pts/3*2)/2 + ' pts.' + ' COURS : dates, acteurs, notions du programme, reperes geographiques.' + ' REDACTION : paragraphe argumente, connecteurs logiques, vocabulaire disciplinaire.' + ' METHODE : exploitation document, fait+argument+exemple, structure intro-dev-conclu.' + ' NOTE arrondie au 0.5 pres. JAMAIS 1.3/4.' + ' Question : ' + q.texte + ' Reponds UNIQUEMENT en JSON : {note_cours:X,note_redaction:X,note_methode:X,note_finale:X,sur:' + pts + ',commentaire:"3 lignes",pistes:"2 conseils"}';
+  var tiers = Math.round(pts / 3 * 2) / 2;
+  var system = 'Tu es correcteur DNB HISTOIRE-GÉOGRAPHIE-EMC — exigeant, bienveillant, précis.' +
+    ' Question (' + pts + ' pts). Barème équilibré : 1/3 par critère.' +
+    ' CONNAISSANCES=' + tiers + ' pts — dates, acteurs, notions du programme, repères géographiques.' +
+    ' TRANSFERT=' + tiers + ' pts — exploitation du document, citer le document à l\'appui de ses connaissances, confronter savoirs et documents, prélever des informations puis les mettre en relation avec le cours.' +
+    ' RÉDACTION=' + tiers + ' pts — paragraphe argumenté, connecteurs logiques, vocabulaire disciplinaire, structure intro-développement-conclusion.' +
+    ' Note finale arrondie au 0,5 près (ex : 5/10, pas 4,3/10). JAMAIS "undefined" ni de note hors barème.' +
+    ' Question : ' + q.texte +
+    ' Réponds UNIQUEMENT en JSON strict : {note_connaissances:X, note_transfert:X, note_redaction:X, note_finale:X, sur:' + pts + ', commentaire:"3 lignes — points forts puis axes de progrès", pistes:"2 conseils concrets pour progresser"}';
 
   
 
@@ -1102,11 +1110,9 @@ async function corriger(sIdx, ei, qi, qid) {
 
       <div class="corr-ia">
 
-        <div class="corr-note">${json ? '✓ Note : ' + json.note : ''}</div>
+        <div class="corr-note">${json ? '✓ Note finale : ' + json.note_finale + ' / ' + json.sur : ''}</div>
+        ${json && json.note_connaissances ? '<div class="corr-detail" style="margin-bottom:4px;font-size:13px">📚 <strong>Connaissances :</strong> ' + json.note_connaissances + ' &nbsp;|&nbsp; 🔗 <strong>Transfert :</strong> ' + json.note_transfert + ' &nbsp;|&nbsp; ✏️ <strong>Rédaction :</strong> ' + json.note_redaction + '</div>' : ''}
 
-        ${json && json.cours_su ? '<div class="corr-conseil" style="margin-bottom:4px">📚 <strong>Cours :</strong> ' + json.cours_su + '</div>' : ''}
-
-        ${json && json.methode ? '<div class="corr-conseil" style="margin-bottom:6px">✏️ <strong>Méthode :</strong> ' + json.methode + '</div>' : ''}
 
         <div class="corr-txt">${json ? json.commentaire : txt}</div>
 
